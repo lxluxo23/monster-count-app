@@ -1,0 +1,8 @@
+# Solo crea el contenedor. Añade la red desde Portainer (contenedor → attach to network).
+
+services:
+  privacy-site:
+    build: .
+    image: privacy-site
+    container_name: privacy-site
+    restart: always
