@@ -28,4 +28,4 @@ y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
-[1.0.0]: https://github.com/tu-usuario/monster-counter/releases/tag/v1.0.0
+[1.0.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.0.0
