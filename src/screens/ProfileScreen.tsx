@@ -18,6 +18,8 @@ interface ProfileScreenProps {
   today: number;
   favoriteMonsterId: string | null;
   countByMonsterId: Record<string, number>;
+  userName: string;
+  onSetUserName: (name: string) => Promise<void>;
 }
 
 export default function ProfileScreen({
@@ -25,8 +27,9 @@ export default function ProfileScreen({
   today,
   favoriteMonsterId,
   countByMonsterId,
+  userName,
+  onSetUserName,
 }: ProfileScreenProps): React.JSX.Element {
-  const [userName, setUserName] = useState('Usuario');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [tempName, setTempName] = useState(userName);
@@ -35,7 +38,7 @@ export default function ProfileScreen({
 
   const handleSaveName = () => {
     if (tempName.trim()) {
-      setUserName(tempName.trim());
+      onSetUserName(tempName.trim());
       setShowEditModal(false);
     }
   };
@@ -68,6 +71,8 @@ export default function ProfileScreen({
     ...m,
     count: countByMonsterId[m.id] ?? 0,
   })).sort((a, b) => b.count - a.count);
+
+  const maxCount = statsData.length > 0 ? Math.max(...statsData.map((m) => m.count), 1) : 1;
 
   return (
     <>
@@ -179,11 +184,24 @@ export default function ProfileScreen({
             <ScrollView style={styles.statsList}>
               {statsData.map((monster) => (
                 <View key={monster.id} style={styles.statsRow}>
-                  <View
-                    style={[styles.statsColorDot, { backgroundColor: monster.color }]}
-                  />
-                  <Text style={styles.statsName}>{monster.name}</Text>
-                  <Text style={styles.statsCount}>{monster.count}</Text>
+                  <View style={styles.statsRowTop}>
+                    <View
+                      style={[styles.statsColorDot, { backgroundColor: monster.color }]}
+                    />
+                    <Text style={styles.statsName}>{monster.name}</Text>
+                    <Text style={styles.statsCount}>{monster.count}</Text>
+                  </View>
+                  <View style={styles.statsBar}>
+                    <View
+                      style={[
+                        styles.statsBarFill,
+                        {
+                          backgroundColor: monster.color,
+                          width: `${(monster.count / maxCount) * 100}%`,
+                        },
+                      ]}
+                    />
+                  </View>
                 </View>
               ))}
               {statsData.every((m) => m.count === 0) && (
@@ -383,11 +401,25 @@ const styles = StyleSheet.create({
     maxHeight: 400,
   },
   statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingVertical: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
+  },
+  statsRowTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  statsBar: {
+    height: 8,
+    backgroundColor: colors.background,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  statsBarFill: {
+    height: 8,
+    borderRadius: 4,
+    minWidth: 4,
   },
   statsColorDot: {
     width: 12,

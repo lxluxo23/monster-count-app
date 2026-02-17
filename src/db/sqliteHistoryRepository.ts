@@ -31,5 +31,9 @@ export function createSqliteHistoryRepository(db: SQLiteDatabase): IHistoryRepos
       );
       return { id, monsterId, date };
     },
+
+    async remove(id: string): Promise<void> {
+      await db.runAsync(`DELETE FROM ${TABLE_ENTRIES} WHERE id = ?`, id);
+    },
   };
 }

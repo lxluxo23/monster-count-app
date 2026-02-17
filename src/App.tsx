@@ -4,7 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { SQLiteProvider } from 'expo-sqlite';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useHistory } from './hooks/useHistory';
+import { usePreferences } from './hooks/usePreferences';
 import { HomeScreen, HistoryScreen, ProfileScreen } from './screens';
 import { migrateDb } from './db';
 import { colors } from './theme';
@@ -16,15 +18,16 @@ function AppContent(): React.JSX.Element {
     history,
     loading,
     add,
+    remove,
     total,
     today,
     countByMonsterId,
     favoriteMonsterId,
   } = useHistory();
+  const { userName, setUserName } = usePreferences();
 
   return (
     <NavigationContainer>
-      <>
         <StatusBar style="light" />
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -53,7 +56,7 @@ function AppContent(): React.JSX.Element {
             {() => <HomeScreen total={total} today={today} onAdd={add} />}
           </Tab.Screen>
           <Tab.Screen name="Historial" options={{ tabBarLabel: 'Historial' }}>
-            {() => <HistoryScreen history={history} loading={loading} />}
+            {() => <HistoryScreen history={history} loading={loading} onRemove={remove} />}
           </Tab.Screen>
           <Tab.Screen
             name="Perfil"
@@ -65,19 +68,22 @@ function AppContent(): React.JSX.Element {
                 today={today}
                 favoriteMonsterId={favoriteMonsterId}
                 countByMonsterId={countByMonsterId}
+                userName={userName}
+                onSetUserName={setUserName}
               />
             )}
           </Tab.Screen>
         </Tab.Navigator>
-      </>
     </NavigationContainer>
   );
 }
 
 export default function App(): React.JSX.Element {
   return (
-    <SQLiteProvider databaseName="monster_counter.db" onInit={migrateDb}>
-      <AppContent />
-    </SQLiteProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SQLiteProvider databaseName="monster_counter.db" onInit={migrateDb}>
+        <AppContent />
+      </SQLiteProvider>
+    </GestureHandlerRootView>
   );
 }

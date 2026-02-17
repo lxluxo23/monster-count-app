@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createSqliteHistoryRepository } from '../db';
 import type { HistoryEntry } from '../types';
@@ -15,6 +15,7 @@ export function useHistory(): {
   history: HistoryEntry[];
   loading: boolean;
   add: (monsterId: string) => Promise<void>;
+  remove: (id: string) => Promise<void>;
   total: number;
   today: number;
   countByMonsterId: Record<string, number>;
@@ -24,7 +25,7 @@ export function useHistory(): {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const repo = createSqliteHistoryRepository(db);
+  const repo = useMemo(() => createSqliteHistoryRepository(db), [db]);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,12 +38,20 @@ export function useHistory(): {
     return () => {
       cancelled = true;
     };
-  }, [db]);
+  }, [repo]);
 
   const add = useCallback(
     async (monsterId: string) => {
       const entry = await repo.add(monsterId);
       setHistory((prev: HistoryEntry[]) => [entry, ...prev]);
+    },
+    [repo]
+  );
+
+  const remove = useCallback(
+    async (id: string) => {
+      await repo.remove(id);
+      setHistory((prev: HistoryEntry[]) => prev.filter((e) => e.id !== id));
     },
     [repo]
   );
@@ -60,5 +69,5 @@ export function useHistory(): {
       ? Object.entries(countByMonsterId).sort((a, b) => b[1] - a[1])[0][0]
       : null;
 
-  return { history, loading, add, total, today, countByMonsterId, favoriteMonsterId };
+  return { history, loading, add, remove, total, today, countByMonsterId, favoriteMonsterId };
 }
