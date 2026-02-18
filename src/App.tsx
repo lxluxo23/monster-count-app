@@ -10,6 +10,7 @@ import { usePreferences } from './hooks/usePreferences';
 import { HomeScreen, HistoryScreen, ProfileScreen } from './screens';
 import { migrateDb } from './db';
 import { colors } from './theme';
+import { AuthProvider } from './contexts/AuthContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -81,9 +82,11 @@ function AppContent(): React.JSX.Element {
 export default function App(): React.JSX.Element {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SQLiteProvider databaseName="monster_counter.db" onInit={migrateDb}>
-        <AppContent />
-      </SQLiteProvider>
+      <AuthProvider>
+        <SQLiteProvider databaseName="monster_counter.db" onInit={migrateDb}>
+          <AppContent />
+        </SQLiteProvider>
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }

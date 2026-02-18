@@ -2,6 +2,7 @@
   "expo": {
     "name": "Monster Counter",
     "slug": "monster-counter",
+    "scheme": "monstercounter",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,13 +24,17 @@
       },
       "package": "com.monstercounter.app",
       "versionCode": 1,
-      "permissions": []
+      "permissions": [
+        "android.permission.INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-web-browser",
+      "@react-native-google-signin/google-signin"
     ],
     "extra": {
       "eas": {

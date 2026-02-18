@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createSqliteHistoryRepository } from '../db';
+import { syncPendingEntries } from '../services/syncService';
+import { useAuth } from '../contexts/AuthContext';
 import type { HistoryEntry } from '../types';
 
 function isSameDay(a: Date, b: Date): boolean {
@@ -22,30 +24,43 @@ export function useHistory(): {
   favoriteMonsterId: string | null;
 } {
   const db = useSQLiteContext();
+  const { status, user } = useAuth();
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   const repo = useMemo(() => createSqliteHistoryRepository(db), [db]);
 
+  // Carga inicial desde SQLite
   useEffect(() => {
     let cancelled = false;
     repo.getAll().then((list) => {
-      if (!cancelled) {
-        setHistory(list);
-      }
+      if (!cancelled) setHistory(list);
       setLoading(false);
     });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [repo]);
+
+  // Sync automático al autenticarse (primer login sube todo; reinicios sincronizan pendientes)
+  useEffect(() => {
+    if (status === 'authenticated' && user) {
+      syncPendingEntries(db, user.id).then(({ uploaded }) => {
+        if (__DEV__ && uploaded > 0) console.log(`[Sync] ${uploaded} entries subidos`);
+      }).catch((err) => {
+        if (__DEV__) console.warn('[Sync] Falló, se reintentará:', err);
+      });
+    }
+  }, [status, user, db]);
 
   const add = useCallback(
     async (monsterId: string) => {
       const entry = await repo.add(monsterId);
       setHistory((prev: HistoryEntry[]) => [entry, ...prev]);
+      // Sync inmediato en background si está logueado
+      if (status === 'authenticated' && user) {
+        syncPendingEntries(db, user.id).catch(() => {});
+      }
     },
-    [repo]
+    [repo, status, user, db]
   );
 
   const remove = useCallback(

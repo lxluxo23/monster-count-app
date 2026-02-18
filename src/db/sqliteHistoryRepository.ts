@@ -24,7 +24,7 @@ export function createSqliteHistoryRepository(db: SQLiteDatabase): IHistoryRepos
       const id = Date.now().toString();
       const date = new Date().toISOString();
       await db.runAsync(
-        `INSERT INTO ${TABLE_ENTRIES} (id, monster_id, date) VALUES (?, ?, ?)`,
+        `INSERT INTO ${TABLE_ENTRIES} (id, monster_id, date, synced) VALUES (?, ?, ?, 0)`,
         id,
         monsterId,
         date

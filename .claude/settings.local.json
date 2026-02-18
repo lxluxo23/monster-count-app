@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/c/Users/luis/monster-counter/.env:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx expo:*)",
+      "WebFetch(domain:docs.expo.dev)",
+      "WebFetch(domain:react-native-google-signin.github.io)",
+      "Bash(keytool -list -v -keystore:*)",
+      "Bash(eas credentials:*)",
+      "Bash(npx eas-cli:*)"
+    ]
+  }
+}
