@@ -25,7 +25,9 @@
       "package": "com.monstercounter.app",
       "versionCode": 1,
       "permissions": [
-        "android.permission.INTERNET"
+        "android.permission.INTERNET",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM"
       ]
     },
     "web": {
@@ -33,12 +35,12 @@
     },
     "plugins": [
       "expo-sqlite",
+      "@react-native-google-signin/google-signin",
       [
-        "react-native-app-auth",
+        "expo-notifications",
         {
-          "redirectUrls": [
-            "com.googleusercontent.apps.102549064676-iiu5adtfj56m4m74716t011skn9b50i9:/oauth2redirect/google"
-          ]
+          "icon": "./assets/adaptive-icon.png",
+          "color": "#2ECC71"
         }
       ]
     ],

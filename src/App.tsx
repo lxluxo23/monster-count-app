@@ -7,7 +7,7 @@ import { SQLiteProvider } from 'expo-sqlite';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useHistory } from './hooks/useHistory';
 import { usePreferences } from './hooks/usePreferences';
-import { HomeScreen, HistoryScreen, ProfileScreen } from './screens';
+import { HomeScreen, HistoryScreen, ProfileScreen, ComunidadScreen } from './screens';
 import { migrateDb } from './db';
 import { colors } from './theme';
 import { AuthProvider } from './contexts/AuthContext';
@@ -22,6 +22,7 @@ function AppContent(): React.JSX.Element {
     remove,
     total,
     today,
+    streak,
     countByMonsterId,
     favoriteMonsterId,
   } = useHistory();
@@ -41,9 +42,10 @@ function AppContent(): React.JSX.Element {
             tabBarActiveTintColor: colors.primary,
             tabBarInactiveTintColor: colors.textMuted,
             tabBarIcon: ({ focused, color, size }) => {
-              const icons: Record<string, 'home' | 'home-outline' | 'list' | 'list-outline' | 'person' | 'person-outline'> = {
+              const icons: Record<string, 'home' | 'home-outline' | 'list' | 'list-outline' | 'people' | 'people-outline' | 'person' | 'person-outline'> = {
                 Inicio: focused ? 'home' : 'home-outline',
                 Historial: focused ? 'list' : 'list-outline',
+                Comunidad: focused ? 'people' : 'people-outline',
                 Perfil: focused ? 'person' : 'person-outline',
               };
               return <Ionicons name={icons[route.name] ?? 'ellipse-outline'} size={size} color={color} />;
@@ -59,6 +61,16 @@ function AppContent(): React.JSX.Element {
           <Tab.Screen name="Historial" options={{ tabBarLabel: 'Historial' }}>
             {() => <HistoryScreen history={history} loading={loading} onRemove={remove} />}
           </Tab.Screen>
+          <Tab.Screen name="Comunidad" options={{ tabBarLabel: 'Comunidad', title: 'Comunidad' }}>
+            {() => (
+              <ComunidadScreen
+                history={history}
+                total={total}
+                streak={streak}
+                countByMonsterId={countByMonsterId}
+              />
+            )}
+          </Tab.Screen>
           <Tab.Screen
             name="Perfil"
             options={{ tabBarLabel: 'Perfil', title: 'Perfil' }}
@@ -67,8 +79,10 @@ function AppContent(): React.JSX.Element {
               <ProfileScreen
                 total={total}
                 today={today}
+                streak={streak}
                 favoriteMonsterId={favoriteMonsterId}
                 countByMonsterId={countByMonsterId}
+                history={history}
                 userName={userName}
                 onSetUserName={setUserName}
               />

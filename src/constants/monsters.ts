@@ -31,6 +31,12 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     color: '#F39C12',
     image: require('../../assets/monsters/mango-loco.webp'),
   },
+  {
+    id: 'aussie-lemonade',
+    name: 'Monster Energy Aussie Lemonade',
+    color: '#F7DC6F',
+    image: require('../../assets/monsters/aussie-lemonade.webp'),
+  },
 ];
 
 export function getMonsterName(id: string): string {

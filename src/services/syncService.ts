@@ -2,6 +2,35 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 import { supabase } from '../lib/supabase';
 import { TABLE_ENTRIES } from '../db/schema';
 
+/**
+ * Descarga de Supabase los entries del usuario que no existen localmente.
+ * Útil al instalar en un nuevo dispositivo o tras tiempo sin conectividad.
+ */
+export async function pullEntriesFromSupabase(
+  db: SQLiteDatabase,
+  userId: string
+): Promise<{ downloaded: number }> {
+  const { data, error } = await supabase
+    .from('entries')
+    .select('id, monster_id, date')
+    .eq('user_id', userId);
+
+  if (error || !data || data.length === 0) return { downloaded: 0 };
+
+  let downloaded = 0;
+  for (const entry of data) {
+    const result = await db.runAsync(
+      `INSERT OR IGNORE INTO ${TABLE_ENTRIES} (id, monster_id, date, synced) VALUES (?, ?, ?, 1)`,
+      entry.id,
+      entry.monster_id,
+      entry.date
+    );
+    if (result.changes > 0) downloaded++;
+  }
+
+  return { downloaded };
+}
+
 interface LocalEntry {
   id: string;
   monster_id: string;

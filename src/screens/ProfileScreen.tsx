@@ -11,15 +11,21 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { MONSTER_TYPES, getMonsterName } from '../constants/monsters';
+import { getMonsterName } from '../constants/monsters';
 import { colors, spacing, radius } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotifications } from '../hooks/useNotifications';
+import SettingsModal from './SettingsModal';
+import StatsScreen from './StatsScreen';
+import type { HistoryEntry } from '../types';
 
 interface ProfileScreenProps {
   total: number;
   today: number;
+  streak: number;
   favoriteMonsterId: string | null;
   countByMonsterId: Record<string, number>;
+  history: HistoryEntry[];
   userName: string;
   onSetUserName: (name: string) => Promise<void>;
 }
@@ -27,14 +33,18 @@ interface ProfileScreenProps {
 export default function ProfileScreen({
   total,
   today,
+  streak,
   favoriteMonsterId,
   countByMonsterId,
+  history,
   userName,
   onSetUserName,
 }: ProfileScreenProps): React.JSX.Element {
   const { status, user, signInWithGoogle, signOut, isSigningIn } = useAuth();
+  const { enabled: notifEnabled, hour: notifHour, setEnabled: setNotifEnabled, setHour: setNotifHour } = useNotifications();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [tempName, setTempName] = useState(userName);
 
   const isAuthenticated = status === 'authenticated';
@@ -69,19 +79,10 @@ export default function ProfileScreen({
         setShowEditModal(true);
         break;
       case 'Estadísticas detalladas':
-        setShowStatsModal(true);
-        break;
-      case 'Notificaciones':
-        Alert.alert('Notificaciones', 'Función disponible próximamente');
-        break;
-      case 'Acerca de':
-        Alert.alert(
-          'Monster Counter',
-          'Versión 1.2\n\nAplicación para llevar registro de tus latas de Monster Energy.\n\n© 2026'
-        );
+        setShowStats(true);
         break;
       case 'Ajustes':
-        Alert.alert('Ajustes', 'Panel de configuración próximamente');
+        setShowSettings(true);
         break;
       case 'Cerrar sesión':
         handleSignOut();
@@ -89,18 +90,9 @@ export default function ProfileScreen({
     }
   };
 
-  const statsData = MONSTER_TYPES.map((m) => ({
-    ...m,
-    count: countByMonsterId[m.id] ?? 0,
-  })).sort((a, b) => b.count - a.count);
-
-  const maxCount = statsData.length > 0 ? Math.max(...statsData.map((m) => m.count), 1) : 1;
-
-  const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string }[] = [
+const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string }[] = [
     { icon: 'person-outline', label: 'Mis datos' },
-    { icon: 'notifications-outline', label: 'Notificaciones' },
     { icon: 'stats-chart-outline', label: 'Estadísticas detalladas' },
-    { icon: 'information-circle-outline', label: 'Acerca de' },
     { icon: 'settings-outline', label: 'Ajustes' },
     ...(isAuthenticated ? [{ icon: 'log-out-outline' as const, label: 'Cerrar sesión' }] : []),
   ];
@@ -166,6 +158,15 @@ export default function ProfileScreen({
               <Text style={styles.statLabel}>Hoy</Text>
             </View>
           </View>
+          {streak > 0 && (
+            <View style={styles.streakCard}>
+              <Text style={styles.streakEmoji}>🔥</Text>
+              <View style={styles.streakText}>
+                <Text style={styles.streakValue}>{streak} {streak === 1 ? 'día' : 'días'} seguidos</Text>
+                <Text style={styles.streakLabel}>Racha activa · ¡sigue así!</Text>
+              </View>
+            </View>
+          )}
           {favoriteMonsterId && (
             <View style={styles.favoriteCard}>
               <Ionicons name="heart" size={24} color={colors.primary} />
@@ -244,46 +245,23 @@ export default function ProfileScreen({
         </View>
       </Modal>
 
-      {/* Modal estadísticas detalladas */}
-      <Modal visible={showStatsModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, styles.modalContentLarge]}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Estadísticas</Text>
-              <TouchableOpacity onPress={() => setShowStatsModal(false)}>
-                <Ionicons name="close" size={28} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.statsList}>
-              {statsData.map((monster) => (
-                <View key={monster.id} style={styles.statsRow}>
-                  <View style={styles.statsRowTop}>
-                    <View style={[styles.statsColorDot, { backgroundColor: monster.color }]} />
-                    <Text style={styles.statsName}>{monster.name}</Text>
-                    <Text style={styles.statsCount}>{monster.count}</Text>
-                  </View>
-                  <View style={styles.statsBar}>
-                    <View
-                      style={[
-                        styles.statsBarFill,
-                        {
-                          backgroundColor: monster.color,
-                          width: `${(monster.count / maxCount) * 100}%`,
-                        },
-                      ]}
-                    />
-                  </View>
-                </View>
-              ))}
-              {statsData.every((m) => m.count === 0) && (
-                <Text style={styles.emptyStats}>
-                  Aún no hay estadísticas. Añade Monsters desde Inicio.
-                </Text>
-              )}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+      {/* Estadísticas detalladas */}
+      <StatsScreen
+        visible={showStats}
+        onClose={() => setShowStats(false)}
+        history={history}
+        countByMonsterId={countByMonsterId}
+      />
+
+      {/* Modal ajustes */}
+      <SettingsModal
+        visible={showSettings}
+        onClose={() => setShowSettings(false)}
+        notificationsEnabled={notifEnabled}
+        notificationHour={notifHour}
+        onToggleNotifications={setNotifEnabled}
+        onSetNotificationHour={setNotifHour}
+      />
     </>
   );
 }
@@ -330,6 +308,17 @@ const styles = StyleSheet.create({
   },
   statValue: { fontSize: 32, fontWeight: '800', color: colors.primary },
   statLabel: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
+  streakCard: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: colors.surface, borderRadius: radius.lg,
+    padding: spacing.lg, gap: spacing.md,
+    marginBottom: spacing.md,
+    borderWidth: 1, borderColor: '#FF6B0050',
+  },
+  streakEmoji: { fontSize: 32 },
+  streakText: { flex: 1 },
+  streakValue: { fontSize: 18, fontWeight: '800', color: colors.text },
+  streakLabel: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
   favoriteCard: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: colors.surface, borderRadius: radius.lg,
@@ -381,16 +370,4 @@ const styles = StyleSheet.create({
   modalButtonSave: { backgroundColor: colors.primary },
   modalButtonTextCancel: { color: colors.text, fontWeight: '600', fontSize: 16 },
   modalButtonTextSave: { color: colors.black, fontWeight: '700', fontSize: 16 },
-  statsList: { maxHeight: 400 },
-  statsRow: {
-    paddingVertical: spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border,
-  },
-  statsRowTop: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm },
-  statsBar: { height: 8, backgroundColor: colors.background, borderRadius: 4, overflow: 'hidden' },
-  statsBarFill: { height: 8, borderRadius: 4, minWidth: 4 },
-  statsColorDot: { width: 12, height: 12, borderRadius: radius.full, marginRight: spacing.md },
-  statsName: { flex: 1, fontSize: 15, color: colors.text },
-  statsCount: { fontSize: 16, fontWeight: '700', color: colors.primary },
-  emptyStats: { textAlign: 'center', color: colors.textMuted, fontSize: 15, marginTop: spacing.lg },
 });
