@@ -1,20 +1,20 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import {
-  GoogleSignin,
-  isSuccessResponse,
-  isErrorWithCode,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+import { authorize } from 'react-native-app-auth';
+import * as Crypto from 'expo-crypto';
 import { supabase } from '../lib/supabase';
 import type { Session, User } from '../lib/supabase';
-import { GOOGLE_WEB_CLIENT_ID } from '../constants/env';
+import { GOOGLE_ANDROID_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '../constants/env';
 
-// Configurar Google Sign-In una vez al cargar el módulo
-GoogleSignin.configure({
-  webClientId: GOOGLE_WEB_CLIENT_ID,
-  scopes: ['profile', 'email'],
-  offlineAccess: false,
-});
+// Derivar el GUID quitando el sufijo de Google
+const GOOGLE_GUID = GOOGLE_ANDROID_CLIENT_ID.replace('.apps.googleusercontent.com', '');
+
+const googleConfig = {
+  issuer: 'https://accounts.google.com',
+  clientId: GOOGLE_ANDROID_CLIENT_ID,
+  clientSecret: GOOGLE_CLIENT_SECRET,
+  redirectUrl: `com.googleusercontent.apps.${GOOGLE_GUID}:/oauth2redirect/google`,
+  scopes: ['openid', 'profile', 'email'],
+};
 
 // ---------------------------------------------------------------
 // Tipos
@@ -67,38 +67,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
     return () => subscription.unsubscribe();
   }, []);
 
-  // Google Sign-In nativo — abre el account picker del sistema, sin browser
+  // Google Sign-In via AppAuth (Chrome Custom Tab, sin browser externo)
   const signInWithGoogle = useCallback(async (): Promise<void> => {
     setIsSigningIn(true);
     try {
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      // Nonce para proteger contra replay attacks
+      const rawNonce = Crypto.randomUUID();
+      const hashedNonce = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        rawNonce
+      );
 
-      const response = await GoogleSignin.signIn();
+      const result = await authorize({
+        ...googleConfig,
+        additionalParameters: { nonce: hashedNonce },
+      });
 
-      if (!isSuccessResponse(response)) {
-        // Usuario canceló
-        return;
-      }
-
-      const idToken = response.data.idToken;
-      if (!idToken) throw new Error('Google no devolvió idToken');
+      if (!result.idToken) throw new Error('Google no devolvió idToken');
 
       const { error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
-        token: idToken,
+        token: result.idToken,
+        nonce: rawNonce,
       });
 
       if (error) throw error;
 
-    } catch (err) {
-      if (isErrorWithCode(err)) {
-        if (err.code === statusCodes.SIGN_IN_CANCELLED) return; // cancelado, silencioso
-        if (err.code === statusCodes.IN_PROGRESS) return;       // ya en progreso
-        if (err.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-          console.error('[Auth] Google Play Services no disponible');
-          return;
-        }
-      }
+    } catch (err: unknown) {
+      // El usuario canceló — silencioso
+      if (err instanceof Error && err.message.includes('cancel')) return;
+      if (err instanceof Error && err.message.includes('Cancel')) return;
       console.error('[Auth] Error en Google Sign-In:', err);
     } finally {
       setIsSigningIn(false);
@@ -106,10 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
   }, []);
 
   const signOut = useCallback(async (): Promise<void> => {
-    await Promise.all([
-      supabase.auth.signOut(),
-      GoogleSignin.signOut(),
-    ]);
+    await supabase.auth.signOut();
   }, []);
 
   const value: AuthContextValue = {

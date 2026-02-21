@@ -8,7 +8,16 @@
       "WebFetch(domain:react-native-google-signin.github.io)",
       "Bash(keytool -list -v -keystore:*)",
       "Bash(eas credentials:*)",
-      "Bash(npx eas-cli:*)"
+      "Bash(npx eas-cli:*)",
+      "WebFetch(domain:docs.benjamineruvieru.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:nearform.com)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run typecheck:*)"
     ]
   }
 }

@@ -33,8 +33,14 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-web-browser",
-      "@react-native-google-signin/google-signin"
+      [
+        "react-native-app-auth",
+        {
+          "redirectUrls": [
+            "com.googleusercontent.apps.102549064676-iiu5adtfj56m4m74716t011skn9b50i9:/oauth2redirect/google"
+          ]
+        }
+      ]
     ],
     "extra": {
       "eas": {
