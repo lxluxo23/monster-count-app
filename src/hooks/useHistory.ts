@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createSqliteHistoryRepository } from '../db';
 import { syncPendingEntries, pullEntriesFromSupabase } from '../services/syncService';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import type { HistoryEntry } from '../types';
 
@@ -86,8 +87,11 @@ export function useHistory(): {
     async (id: string) => {
       await repo.remove(id);
       setHistory((prev: HistoryEntry[]) => prev.filter((e) => e.id !== id));
+      if (status === 'authenticated' && user) {
+        void supabase.from('entries').delete().eq('id', id);
+      }
     },
-    [repo]
+    [repo, status, user]
   );
 
   const now = new Date();

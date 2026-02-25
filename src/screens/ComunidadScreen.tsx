@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, radius } from '../theme';
 import { useAchievements, type Achievement } from '../hooks/useAchievements';
 import { useGlobalStats } from '../hooks/useGlobalStats';
@@ -52,8 +53,9 @@ export default function ComunidadScreen({
   streak,
   countByMonsterId,
 }: ComunidadScreenProps): React.JSX.Element {
+  const { t } = useTranslation();
   const achievements = useAchievements({ history, total, streak, countByMonsterId });
-  const { rankingByMonster, totalCommunityLatas, loading, error, refresh } = useGlobalStats();
+  const { rankingByMonster, rankingByUser, totalCommunityLatas, loading, error, refresh } = useGlobalStats();
 
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
   const maxCount = rankingByMonster.reduce((m, r) => Math.max(m, r.count), 1);
@@ -66,9 +68,9 @@ export default function ComunidadScreen({
     >
       {/* ── LOGROS ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Logros</Text>
+        <Text style={styles.sectionTitle}>{t('comunidad.achievementsTitle')}</Text>
         <Text style={styles.sectionMeta}>
-          {unlockedCount} de {achievements.length} desbloqueados
+          {t('comunidad.unlocked', { count: unlockedCount, total: achievements.length })}
         </Text>
       </View>
 
@@ -78,7 +80,7 @@ export default function ComunidadScreen({
 
       {/* ── COMUNIDAD ── */}
       <View style={[styles.sectionHeader, styles.sectionHeaderCommunity]}>
-        <Text style={styles.sectionTitle}>Comunidad</Text>
+        <Text style={styles.sectionTitle}>{t('comunidad.communityTitle')}</Text>
         <TouchableOpacity onPress={refresh} disabled={loading} activeOpacity={0.7}>
           <Ionicons
             name="refresh-outline"
@@ -93,7 +95,7 @@ export default function ComunidadScreen({
         <Text style={styles.communityTotalNumber}>
           {loading ? '—' : totalCommunityLatas.toLocaleString()}
         </Text>
-        <Text style={styles.communityTotalLabel}>latas registradas en total</Text>
+        <Text style={styles.communityTotalLabel}>{t('comunidad.communityTotal')}</Text>
       </View>
 
       {/* Estado loading / error */}
@@ -103,14 +105,14 @@ export default function ComunidadScreen({
       {!loading && error && (
         <View style={styles.errorWrap}>
           <Ionicons name="cloud-offline-outline" size={20} color={colors.textMuted} />
-          <Text style={styles.errorText}>No se pudieron cargar los datos de la comunidad</Text>
+          <Text style={styles.errorText}>{t('comunidad.error')}</Text>
         </View>
       )}
 
       {/* Ranking sabores */}
       {!loading && !error && (
         <View style={styles.rankingCard}>
-          <Text style={styles.rankingTitle}>Sabores más populares</Text>
+          <Text style={styles.rankingTitle}>{t('comunidad.flavorRanking')}</Text>
           {rankingByMonster.map((entry, i) => {
             const monster = MONSTER_TYPES.find((m) => m.id === entry.monsterId);
             const barWidth = totalCommunityLatas > 0 ? entry.count / maxCount : 0;
@@ -141,6 +143,43 @@ export default function ComunidadScreen({
             );
           })}
         </View>
+      )}
+
+      {/* Ranking usuarios */}
+      {!loading && !error && rankingByUser.length > 0 && (
+        <>
+          <View style={[styles.sectionHeader, styles.sectionHeaderCommunity]}>
+            <Text style={styles.sectionTitle}>{t('comunidad.topDrinkers')}</Text>
+          </View>
+          <View style={styles.rankingCard}>
+            {rankingByUser.map((entry, i) => {
+              const maxUserCount = rankingByUser[0]?.count ?? 1;
+              const medals = ['🥇', '🥈', '🥉'];
+              return (
+                <View key={i} style={styles.rankRow}>
+                  <Text style={styles.rankPos}>{medals[i] ?? i + 1}</Text>
+                  <View style={styles.rankInfo}>
+                    <View style={styles.rankTop}>
+                      <Text style={styles.rankName} numberOfLines={1}>{entry.displayName}</Text>
+                      <Text style={styles.rankCount}>{entry.count} 🥤</Text>
+                    </View>
+                    <View style={styles.rankBar}>
+                      <View
+                        style={[
+                          styles.rankBarFill,
+                          {
+                            backgroundColor: colors.primary,
+                            width: `${(entry.count / maxUserCount) * 100}%`,
+                          },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </>
       )}
     </ScrollView>
   );

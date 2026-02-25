@@ -1,3 +1,4 @@
+import './i18n';
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
@@ -5,8 +6,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { SQLiteProvider } from 'expo-sqlite';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from './hooks/useHistory';
-import { usePreferences } from './hooks/usePreferences';
+import { useDisplayName } from './hooks/useDisplayName';
 import { HomeScreen, HistoryScreen, ProfileScreen, ComunidadScreen } from './screens';
 import { migrateDb } from './db';
 import { colors } from './theme';
@@ -15,6 +17,7 @@ import { AuthProvider } from './contexts/AuthContext';
 const Tab = createBottomTabNavigator();
 
 function AppContent(): React.JSX.Element {
+  const { t } = useTranslation();
   const {
     history,
     loading,
@@ -26,7 +29,7 @@ function AppContent(): React.JSX.Element {
     countByMonsterId,
     favoriteMonsterId,
   } = useHistory();
-  const { userName, setUserName } = usePreferences();
+  const { displayName, setDisplayName } = useDisplayName();
 
   return (
     <NavigationContainer>
@@ -43,25 +46,25 @@ function AppContent(): React.JSX.Element {
             tabBarInactiveTintColor: colors.textMuted,
             tabBarIcon: ({ focused, color, size }) => {
               const icons: Record<string, 'home' | 'home-outline' | 'list' | 'list-outline' | 'people' | 'people-outline' | 'person' | 'person-outline'> = {
-                Inicio: focused ? 'home' : 'home-outline',
-                Historial: focused ? 'list' : 'list-outline',
-                Comunidad: focused ? 'people' : 'people-outline',
-                Perfil: focused ? 'person' : 'person-outline',
+                Home: focused ? 'home' : 'home-outline',
+                History: focused ? 'list' : 'list-outline',
+                Community: focused ? 'people' : 'people-outline',
+                Profile: focused ? 'person' : 'person-outline',
               };
               return <Ionicons name={icons[route.name] ?? 'ellipse-outline'} size={size} color={color} />;
             },
           })}
         >
           <Tab.Screen
-            name="Inicio"
-            options={{ title: 'Monster Counter', tabBarLabel: 'Inicio' }}
+            name="Home"
+            options={{ title: t('tabs.homeTitle'), tabBarLabel: t('tabs.home') }}
           >
             {() => <HomeScreen total={total} today={today} onAdd={add} />}
           </Tab.Screen>
-          <Tab.Screen name="Historial" options={{ tabBarLabel: 'Historial' }}>
+          <Tab.Screen name="History" options={{ tabBarLabel: t('tabs.history'), title: t('tabs.history') }}>
             {() => <HistoryScreen history={history} loading={loading} onRemove={remove} />}
           </Tab.Screen>
-          <Tab.Screen name="Comunidad" options={{ tabBarLabel: 'Comunidad', title: 'Comunidad' }}>
+          <Tab.Screen name="Community" options={{ tabBarLabel: t('tabs.community'), title: t('tabs.community') }}>
             {() => (
               <ComunidadScreen
                 history={history}
@@ -72,8 +75,8 @@ function AppContent(): React.JSX.Element {
             )}
           </Tab.Screen>
           <Tab.Screen
-            name="Perfil"
-            options={{ tabBarLabel: 'Perfil', title: 'Perfil' }}
+            name="Profile"
+            options={{ tabBarLabel: t('tabs.profile'), title: t('tabs.profile') }}
           >
             {() => (
               <ProfileScreen
@@ -83,8 +86,8 @@ function AppContent(): React.JSX.Element {
                 favoriteMonsterId={favoriteMonsterId}
                 countByMonsterId={countByMonsterId}
                 history={history}
-                userName={userName}
-                onSetUserName={setUserName}
+                userName={displayName}
+                onSetUserName={setDisplayName}
               />
             )}
           </Tab.Screen>

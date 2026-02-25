@@ -2,14 +2,17 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
 import type { MonsterType } from '../types';
 import { colors, radius, spacing } from '../theme';
+import { getMonsterName } from '../constants/monsters';
 
 interface MonsterChipProps {
   monster: MonsterType;
   selected: boolean;
   onPress: () => void;
+  onLongPress?: () => void;
 }
 
-export function MonsterChip({ monster, selected, onPress }: MonsterChipProps): React.JSX.Element {
+export function MonsterChip({ monster, selected, onPress, onLongPress }: MonsterChipProps): React.JSX.Element {
+  const name = getMonsterName(monster.id);
   return (
     <TouchableOpacity
       style={[
@@ -18,17 +21,19 @@ export function MonsterChip({ monster, selected, onPress }: MonsterChipProps): R
         selected && styles.chipSelected,
       ]}
       onPress={onPress}
+      onLongPress={onLongPress}
+      delayLongPress={400}
       activeOpacity={0.85}
     >
       {monster.image != null ? (
         <Image source={monster.image} style={styles.image} resizeMode="contain" />
       ) : (
         <View style={[styles.placeholder, { backgroundColor: colors.surface }]}>
-          <Text style={styles.placeholderText}>{monster.name.charAt(0)}</Text>
+          <Text style={styles.placeholderText}>{name.charAt(0)}</Text>
         </View>
       )}
       <Text style={styles.label} numberOfLines={2}>
-        {monster.name}
+        {name}
       </Text>
     </TouchableOpacity>
   );

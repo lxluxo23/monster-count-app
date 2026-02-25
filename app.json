@@ -3,7 +3,7 @@
     "name": "Monster Counter",
     "slug": "monster-counter",
     "scheme": "monstercounter",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -23,7 +23,7 @@
         "backgroundColor": "#2ECC71"
       },
       "package": "com.monstercounter.app",
-      "versionCode": 2,
+      "versionCode": 4,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -42,7 +42,8 @@
           "icon": "./assets/adaptive-icon.png",
           "color": "#2ECC71"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "extra": {
       "eas": {

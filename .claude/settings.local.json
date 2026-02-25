@@ -22,7 +22,9 @@
       "Bash(./gradlew :react-native-google-signin:generateCodegenArtifactsFromSchema:*)",
       "Bash(./gradlew tasks:*)",
       "Bash(./gradlew:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "WebFetch(domain:monster-energy.fandom.com)",
+      "WebFetch(domain:www.theimpulsivebuy.com)"
     ]
   }
 }

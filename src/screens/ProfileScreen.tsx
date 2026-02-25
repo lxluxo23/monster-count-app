@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { getMonsterName } from '../constants/monsters';
 import { colors, spacing, radius } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
@@ -30,6 +31,8 @@ interface ProfileScreenProps {
   onSetUserName: (name: string) => Promise<void>;
 }
 
+type MenuAction = 'edit' | 'stats' | 'settings' | 'logout';
+
 export default function ProfileScreen({
   total,
   today,
@@ -40,6 +43,7 @@ export default function ProfileScreen({
   userName,
   onSetUserName,
 }: ProfileScreenProps): React.JSX.Element {
+  const { t } = useTranslation();
   const { status, user, signInWithGoogle, signOut, isSigningIn } = useAuth();
   const { enabled: notifEnabled, hour: notifHour, setEnabled: setNotifEnabled, setHour: setNotifHour } = useNotifications();
   const [showEditModal, setShowEditModal] = useState(false);
@@ -50,9 +54,7 @@ export default function ProfileScreen({
   const isAuthenticated = status === 'authenticated';
   const favoriteCount = favoriteMonsterId ? countByMonsterId[favoriteMonsterId] ?? 0 : 0;
 
-  const displayName = isAuthenticated
-    ? (user?.user_metadata?.full_name as string | undefined) ?? userName
-    : userName;
+  const displayName = userName;
 
   const handleSaveName = () => {
     if (tempName.trim()) {
@@ -63,38 +65,38 @@ export default function ProfileScreen({
 
   const handleSignOut = () => {
     Alert.alert(
-      'Cerrar sesión',
-      '¿Seguro? Tus datos locales se conservarán.',
+      t('profile.logoutTitle'),
+      t('profile.logoutMsg'),
       [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Cerrar sesión', style: 'destructive', onPress: () => signOut().catch(console.error) },
+        { text: t('profile.logoutCancel'), style: 'cancel' },
+        { text: t('profile.logoutConfirm'), style: 'destructive', onPress: () => signOut().catch(console.error) },
       ]
     );
   };
 
-  const handleMenuPress = (label: string) => {
-    switch (label) {
-      case 'Mis datos':
-        setTempName(userName);
+  const handleMenuPress = (action: MenuAction) => {
+    switch (action) {
+      case 'edit':
+        setTempName(displayName);
         setShowEditModal(true);
         break;
-      case 'Estadísticas detalladas':
+      case 'stats':
         setShowStats(true);
         break;
-      case 'Ajustes':
+      case 'settings':
         setShowSettings(true);
         break;
-      case 'Cerrar sesión':
+      case 'logout':
         handleSignOut();
         break;
     }
   };
 
-const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string }[] = [
-    { icon: 'person-outline', label: 'Mis datos' },
-    { icon: 'stats-chart-outline', label: 'Estadísticas detalladas' },
-    { icon: 'settings-outline', label: 'Ajustes' },
-    ...(isAuthenticated ? [{ icon: 'log-out-outline' as const, label: 'Cerrar sesión' }] : []),
+  const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; action: MenuAction }[] = [
+    { icon: 'person-outline', label: t('profile.editName'), action: 'edit' },
+    { icon: 'stats-chart-outline', label: t('profile.statsDetail'), action: 'stats' },
+    { icon: 'settings-outline', label: t('profile.settings'), action: 'settings' },
+    ...(isAuthenticated ? [{ icon: 'log-out-outline' as const, label: t('profile.logout'), action: 'logout' as MenuAction }] : []),
   ];
 
   return (
@@ -116,9 +118,9 @@ const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: s
               </View>
             )}
           </View>
-          <Text style={styles.greeting}>¡Hola, {displayName}!</Text>
+          <Text style={styles.greeting}>{t('profile.greeting', { name: displayName })}</Text>
           <Text style={styles.subGreeting}>
-            {isAuthenticated ? 'Sincronización activa ☁️' : 'Tu resumen de Monsters'}
+            {isAuthenticated ? t('profile.syncActive') : t('profile.syncInactive')}
           </Text>
         </View>
 
@@ -127,10 +129,8 @@ const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: s
           <View style={styles.authBanner}>
             <Ionicons name="cloud-upload-outline" size={26} color={colors.primary} />
             <View style={styles.authBannerText}>
-              <Text style={styles.authBannerTitle}>Activa la sincronización</Text>
-              <Text style={styles.authBannerSub}>
-                Inicia sesión con Google para guardar en la nube
-              </Text>
+              <Text style={styles.authBannerTitle}>{t('profile.authBannerTitle')}</Text>
+              <Text style={styles.authBannerSub}>{t('profile.authBannerSub')}</Text>
             </View>
             <TouchableOpacity
               style={styles.googleButton}
@@ -140,7 +140,7 @@ const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: s
             >
               {isSigningIn
                 ? <ActivityIndicator size="small" color={colors.black} />
-                : <Text style={styles.googleButtonText}>Google</Text>
+                : <Text style={styles.googleButtonText}>{t('profile.googleBtn')}</Text>
               }
             </TouchableOpacity>
           </View>
@@ -151,19 +151,19 @@ const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: s
           <View style={styles.statRow}>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{total}</Text>
-              <Text style={styles.statLabel}>Total latas</Text>
+              <Text style={styles.statLabel}>{t('profile.totalLabel')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{today}</Text>
-              <Text style={styles.statLabel}>Hoy</Text>
+              <Text style={styles.statLabel}>{t('profile.todayLabel')}</Text>
             </View>
           </View>
           {streak > 0 && (
             <View style={styles.streakCard}>
               <Text style={styles.streakEmoji}>🔥</Text>
               <View style={styles.streakText}>
-                <Text style={styles.streakValue}>{streak} {streak === 1 ? 'día' : 'días'} seguidos</Text>
-                <Text style={styles.streakLabel}>Racha activa · ¡sigue así!</Text>
+                <Text style={styles.streakValue}>{t('profile.streak', { count: streak })}</Text>
+                <Text style={styles.streakLabel}>{t('profile.streakLabel')}</Text>
               </View>
             </View>
           )}
@@ -171,9 +171,9 @@ const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: s
             <View style={styles.favoriteCard}>
               <Ionicons name="heart" size={24} color={colors.primary} />
               <View style={styles.favoriteText}>
-                <Text style={styles.favoriteLabel}>Tu favorito</Text>
+                <Text style={styles.favoriteLabel}>{t('profile.favoriteLabel')}</Text>
                 <Text style={styles.favoriteName}>
-                  {getMonsterName(favoriteMonsterId)} · {favoriteCount} veces
+                  {getMonsterName(favoriteMonsterId)} · {t('profile.favoriteUnit', { count: favoriteCount })}
                 </Text>
               </View>
             </View>
@@ -182,48 +182,48 @@ const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: s
 
         {/* Menú */}
         <View style={styles.menuSection}>
-          <Text style={styles.menuTitle}>Opciones</Text>
+          <Text style={styles.menuTitle}>{t('profile.menuTitle')}</Text>
           {menuItems.map((item, index, arr) => (
             <TouchableOpacity
-              key={item.label}
+              key={item.action}
               style={[
                 styles.menuRow,
                 index === arr.length - 1 && styles.menuRowLast,
               ]}
               activeOpacity={0.7}
-              onPress={() => handleMenuPress(item.label)}
+              onPress={() => handleMenuPress(item.action)}
             >
               <Ionicons
                 name={item.icon}
                 size={22}
-                color={item.label === 'Cerrar sesión' ? '#E74C3C' : colors.textSecondary}
+                color={item.action === 'logout' ? '#E74C3C' : colors.textSecondary}
               />
               <Text style={[
                 styles.menuLabel,
-                item.label === 'Cerrar sesión' && styles.menuLabelDestructive,
+                item.action === 'logout' && styles.menuLabelDestructive,
               ]}>
                 {item.label}
               </Text>
-              {item.label !== 'Cerrar sesión' && (
+              {item.action !== 'logout' && (
                 <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
               )}
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.footer}>Monster Counter · v1.2</Text>
+        <Text style={styles.footer}>{t('profile.footer')}</Text>
       </ScrollView>
 
       {/* Modal editar nombre */}
       <Modal visible={showEditModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Editar nombre</Text>
+            <Text style={styles.modalTitle}>{t('profile.editModalTitle')}</Text>
             <TextInput
               style={styles.input}
               value={tempName}
               onChangeText={setTempName}
-              placeholder="Escribe tu nombre"
+              placeholder={t('profile.editPlaceholder')}
               placeholderTextColor={colors.textMuted}
               autoFocus
             />
@@ -232,13 +232,13 @@ const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: s
                 style={[styles.modalButton, styles.modalButtonCancel]}
                 onPress={() => setShowEditModal(false)}
               >
-                <Text style={styles.modalButtonTextCancel}>Cancelar</Text>
+                <Text style={styles.modalButtonTextCancel}>{t('profile.editCancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.modalButtonSave]}
                 onPress={handleSaveName}
               >
-                <Text style={styles.modalButtonTextSave}>Guardar</Text>
+                <Text style={styles.modalButtonTextSave}>{t('profile.editSave')}</Text>
               </TouchableOpacity>
             </View>
           </View>

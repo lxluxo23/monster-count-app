@@ -2,12 +2,16 @@ import React, { useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, Animated, Alert } from 'react-native';
 import { Swipeable, RectButton } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { HistoryCard } from '../components';
 import { getMonsterName } from '../constants/monsters';
 import type { HistoryEntry } from '../types';
 import { colors, spacing, radius } from '../theme';
+import i18n from '../i18n';
 
-function formatDate(iso: string): string {
+function formatDate(iso: string, todayLabel: string): string {
+  const lang = i18n.language;
+  const locale = lang === 'pt' ? 'pt-BR' : lang;
   const d = new Date(iso);
   const now = new Date();
   const isToday =
@@ -15,9 +19,9 @@ function formatDate(iso: string): string {
     d.getMonth() === now.getMonth() &&
     d.getFullYear() === now.getFullYear();
   if (isToday) {
-    return 'Hoy ' + d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    return todayLabel + ' ' + d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
   }
-  return d.toLocaleDateString('es', {
+  return d.toLocaleDateString(locale, {
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
@@ -55,12 +59,13 @@ export default function HistoryScreen({
   loading,
   onRemove,
 }: HistoryScreenProps): React.JSX.Element {
+  const { t } = useTranslation();
   const openSwipeableRef = useRef<Swipeable | null>(null);
 
   if (loading) {
     return (
       <View style={styles.center}>
-        <Text style={styles.loading}>Cargando…</Text>
+        <Text style={styles.loading}>{t('history.loading')}</Text>
       </View>
     );
   }
@@ -68,17 +73,19 @@ export default function HistoryScreen({
   if (history.length === 0) {
     return (
       <View style={styles.center}>
-        <Text style={styles.empty}>Aún no hay Monsters en el historial.</Text>
-        <Text style={styles.emptySub}>Añade una desde la pestaña Inicio.</Text>
+        <Text style={styles.empty}>{t('history.emptyTitle')}</Text>
+        <Text style={styles.emptySub}>{t('history.emptySubtitle')}</Text>
       </View>
     );
   }
 
+  const todayLabel = t('history.today');
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Historial</Text>
-        <Text style={styles.count}>{history.length} registros</Text>
+        <Text style={styles.title}>{t('tabs.history')}</Text>
+        <Text style={styles.count}>{t('history.records', { count: history.length })}</Text>
       </View>
       <FlatList<HistoryEntry>
         data={history}
@@ -94,16 +101,16 @@ export default function HistoryScreen({
             overshootRight={false}
             onSwipeableOpen={() => {
               Alert.alert(
-                'Eliminar registro',
-                `¿Eliminar ${getMonsterName(item.monsterId)}?`,
+                t('history.deleteTitle'),
+                t('history.deleteMessage', { name: getMonsterName(item.monsterId) }),
                 [
                   {
-                    text: 'Cancelar',
+                    text: t('history.cancel'),
                     style: 'cancel',
                     onPress: () => openSwipeableRef.current?.close(),
                   },
                   {
-                    text: 'Eliminar',
+                    text: t('history.delete'),
                     style: 'destructive',
                     onPress: () => onRemove(item.id),
                   },
@@ -114,7 +121,7 @@ export default function HistoryScreen({
           >
             <HistoryCard
               title={getMonsterName(item.monsterId)}
-              dateLabel={formatDate(item.date)}
+              dateLabel={formatDate(item.date, todayLabel)}
             />
           </Swipeable>
         )}

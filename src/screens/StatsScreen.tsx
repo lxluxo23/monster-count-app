@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, radius } from '../theme';
 import { useStats } from '../hooks/useStats';
-import { MONSTER_TYPES, getMonsterName } from '../constants/monsters';
+import { MONSTER_TYPES, MONSTER_I18N_KEY } from '../constants/monsters';
 import type { HistoryEntry } from '../types';
 
 interface StatsScreenProps {
@@ -33,6 +34,7 @@ export default function StatsScreen({
   history,
   countByMonsterId,
 }: StatsScreenProps): React.JSX.Element {
+  const { t } = useTranslation();
   const stats = useStats(history);
 
   const max7 = Math.max(...stats.last7Days.map((d) => d.count), 1);
@@ -40,10 +42,14 @@ export default function StatsScreen({
   const maxHour = Math.max(...stats.byHourBucket.map((b) => b.count), 1);
   const totalHour = stats.byHourBucket.reduce((s, b) => s + b.count, 0);
 
-  const flavorData = MONSTER_TYPES.map((m) => ({
-    ...m,
-    count: countByMonsterId[m.id] ?? 0,
-  })).sort((a, b) => b.count - a.count);
+  const flavorData = MONSTER_TYPES.map((m) => {
+    const mKey = MONSTER_I18N_KEY[m.id];
+    return {
+      ...m,
+      name: mKey ? t(`monsters.${mKey}.name`) : (m.name ?? m.id),
+      count: countByMonsterId[m.id] ?? 0,
+    };
+  }).sort((a, b) => b.count - a.count);
   const maxFlavor = Math.max(...flavorData.map((m) => m.count), 1);
 
   return (
@@ -51,7 +57,7 @@ export default function StatsScreen({
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Estadísticas</Text>
+          <Text style={styles.headerTitle}>{t('stats.title')}</Text>
           <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
             <Ionicons name="close" size={28} color={colors.text} />
           </TouchableOpacity>
@@ -65,24 +71,24 @@ export default function StatsScreen({
           <View style={styles.kpiGrid}>
             <View style={styles.kpiCard}>
               <Text style={styles.kpiValue}>{history.length}</Text>
-              <Text style={styles.kpiLabel}>Total latas</Text>
+              <Text style={styles.kpiLabel}>{t('stats.totalCans')}</Text>
             </View>
             <View style={styles.kpiCard}>
               <Text style={styles.kpiValue}>{stats.totalDaysActive}</Text>
-              <Text style={styles.kpiLabel}>Días activos</Text>
+              <Text style={styles.kpiLabel}>{t('stats.activeDays')}</Text>
             </View>
             <View style={styles.kpiCard}>
               <Text style={styles.kpiValue}>{stats.averagePerActiveDay}</Text>
-              <Text style={styles.kpiLabel}>Media / día</Text>
+              <Text style={styles.kpiLabel}>{t('stats.avgPerDay')}</Text>
             </View>
             <View style={styles.kpiCard}>
               <Text style={styles.kpiValue}>{stats.averagePerWeek}</Text>
-              <Text style={styles.kpiLabel}>Media / semana</Text>
+              <Text style={styles.kpiLabel}>{t('stats.avgPerWeek')}</Text>
             </View>
           </View>
 
           {/* Últimos 7 días */}
-          <SectionTitle title="Últimos 7 días" />
+          <SectionTitle title={t('stats.last7Days')} />
           <View style={styles.card}>
             <View style={styles.columnChart}>
               {stats.last7Days.map((d, i) => (
@@ -105,12 +111,12 @@ export default function StatsScreen({
               ))}
             </View>
             {history.length === 0 && (
-              <Text style={styles.emptyText}>Sin datos aún</Text>
+              <Text style={styles.emptyText}>{t('stats.noData')}</Text>
             )}
           </View>
 
           {/* Distribución por hora */}
-          <SectionTitle title="Hora del día" />
+          <SectionTitle title={t('stats.hourOfDay')} />
           <View style={styles.card}>
             {stats.byHourBucket.map((b) => (
               <View key={b.label} style={styles.hourRow}>
@@ -137,7 +143,7 @@ export default function StatsScreen({
           </View>
 
           {/* Tendencia mensual */}
-          <SectionTitle title="Tendencia mensual" />
+          <SectionTitle title={t('stats.monthlyTrend')} />
           <View style={styles.card}>
             <View style={styles.columnChart}>
               {stats.last6Months.map((m, i) => (
@@ -162,22 +168,22 @@ export default function StatsScreen({
           </View>
 
           {/* Récord personal */}
-          <SectionTitle title="Récord personal" />
+          <SectionTitle title={t('stats.personalRecord')} />
           <View style={[styles.card, styles.recordCard]}>
             {stats.recordDay ? (
               <>
                 <Text style={styles.recordNumber}>{stats.recordDay.count}</Text>
                 <Text style={styles.recordLabel}>
-                  latas en un día · {stats.recordDay.dateLabel}
+                  {t('stats.cansInDay', { date: stats.recordDay.dateLabel })}
                 </Text>
               </>
             ) : (
-              <Text style={styles.emptyText}>Empieza a registrar para ver tu récord</Text>
+              <Text style={styles.emptyText}>{t('stats.startTracking')}</Text>
             )}
           </View>
 
           {/* Por sabor */}
-          <SectionTitle title="Por sabor" />
+          <SectionTitle title={t('stats.byFlavor')} />
           <View style={styles.card}>
             {flavorData.map((m) => (
               <View key={m.id} style={styles.flavorRow}>
@@ -199,7 +205,7 @@ export default function StatsScreen({
               </View>
             ))}
             {flavorData.every((m) => m.count === 0) && (
-              <Text style={styles.emptyText}>Sin datos aún</Text>
+              <Text style={styles.emptyText}>{t('stats.noData')}</Text>
             )}
           </View>
         </ScrollView>

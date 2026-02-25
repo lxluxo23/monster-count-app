@@ -9,7 +9,10 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, radius } from '../theme';
+import { useAuth } from '../contexts/AuthContext';
+import { usePrivacy } from '../hooks/usePrivacy';
 
 const HOUR_PRESETS = [
   { label: '9:00', hour: 9 },
@@ -35,6 +38,10 @@ export default function SettingsModal({
   onToggleNotifications,
   onSetNotificationHour,
 }: SettingsModalProps): React.JSX.Element {
+  const { t } = useTranslation();
+  const { status } = useAuth();
+  const { showInRanking, setShowInRanking } = usePrivacy();
+
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.overlay}>
@@ -44,7 +51,7 @@ export default function SettingsModal({
 
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Ajustes</Text>
+            <Text style={styles.title}>{t('settings.title')}</Text>
             <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
               <Ionicons name="close" size={26} color={colors.text} />
             </TouchableOpacity>
@@ -52,11 +59,11 @@ export default function SettingsModal({
 
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* NOTIFICACIONES */}
-            <Text style={styles.sectionLabel}>NOTIFICACIONES</Text>
+            <Text style={styles.sectionLabel}>{t('settings.notificationsSection')}</Text>
             <View style={styles.card}>
               <View style={styles.row}>
                 <Ionicons name="notifications-outline" size={20} color={colors.textSecondary} />
-                <Text style={styles.rowLabel}>Recordatorio diario</Text>
+                <Text style={styles.rowLabel}>{t('settings.dailyReminder')}</Text>
                 <Switch
                   value={notificationsEnabled}
                   onValueChange={onToggleNotifications}
@@ -67,7 +74,7 @@ export default function SettingsModal({
 
               {notificationsEnabled && (
                 <View style={styles.presetWrap}>
-                  <Text style={styles.presetLabel}>Hora del recordatorio</Text>
+                  <Text style={styles.presetLabel}>{t('settings.reminderTime')}</Text>
                   <View style={styles.presets}>
                     {HOUR_PRESETS.map((p) => (
                       <TouchableOpacity
@@ -94,16 +101,34 @@ export default function SettingsModal({
               )}
             </View>
 
+            {/* PRIVACIDAD */}
+            {status === 'authenticated' && (
+              <>
+                <Text style={styles.sectionLabel}>{t('settings.privacySection')}</Text>
+                <View style={styles.card}>
+                  <View style={styles.row}>
+                    <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
+                    <Text style={styles.rowLabel}>{t('settings.showInRanking')}</Text>
+                    <Switch
+                      value={showInRanking}
+                      onValueChange={setShowInRanking}
+                      trackColor={{ false: colors.border, true: colors.primary + '80' }}
+                      thumbColor={showInRanking ? colors.primary : colors.textMuted}
+                    />
+                  </View>
+                  <Text style={styles.privacyDesc}>{t('settings.showInRankingDesc')}</Text>
+                </View>
+              </>
+            )}
+
             {/* ACERCA DE */}
-            <Text style={styles.sectionLabel}>ACERCA DE</Text>
+            <Text style={styles.sectionLabel}>{t('settings.aboutSection')}</Text>
             <View style={styles.card}>
               <View style={styles.aboutRow}>
-                <Text style={styles.aboutApp}>Monster Counter</Text>
-                <Text style={styles.aboutVersion}>Versión 1.2</Text>
+                <Text style={styles.aboutApp}>{t('settings.appName')}</Text>
+                <Text style={styles.aboutVersion}>{t('settings.version')}</Text>
               </View>
-              <Text style={styles.aboutCopyright}>
-                Aplicación para llevar registro de tus latas de Monster Energy.{'\n'}© 2026
-              </Text>
+              <Text style={styles.aboutCopyright}>{t('settings.copyright')}</Text>
             </View>
           </ScrollView>
         </View>
@@ -186,6 +211,13 @@ const styles = StyleSheet.create({
   },
   presetChipText: { fontSize: 14, color: colors.textSecondary, fontWeight: '500' },
   presetChipTextActive: { color: colors.black, fontWeight: '700' },
+  privacyDesc: {
+    fontSize: 12,
+    color: colors.textMuted,
+    paddingBottom: spacing.md,
+    paddingHorizontal: spacing.sm,
+    lineHeight: 16,
+  },
   aboutRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -5,6 +5,40 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.4.0] - 2026-02-24
+
+### Añadido
+
+- **Sistema de internacionalización (i18n)** – Integración de `i18next` + `react-i18next` + `expo-localization`. Archivos de locale para Español (es), Inglés (en) y Portugués (pt). Todos los textos de la app (tabs, pantallas, logros, meses, días, notificaciones, nombres de monsters, etc.) externalizados y traducidos a los tres idiomas.
+- **Modal de detalle de Monster** – Nuevo `MonsterDetailModal` accesible con _long press_ sobre cualquier chip en la pantalla Inicio. Muestra imagen, descripción, "leyenda" del producto e información nutricional completa (volumen, calorías, cafeína, azúcar, sodio) con aviso de consumo máximo recomendado.
+- **Datos nutricionales** – Nuevo tipo `MonsterNutrition` (kcal, caffeine mg, sugar g, sodium mg, volume ml) añadido a `MonsterType` y rellenado para los 6 sabores disponibles.
+- **Privacidad en el ranking** – Nueva sección en Ajustes (solo usuarios autenticados) con un toggle para ocultar el nombre del Top bebedores de la comunidad. Persiste en SQLite y se sincroniza con la columna `show_in_ranking` de `profiles` en Supabase.
+- **Top bebedores en Comunidad** – Ranking de usuarios con más latas registradas (top 10), con medallas 🥇🥈🥉 y barra de progreso relativa. Sólo aparecen usuarios con `show_in_ranking = true`.
+- **Long press en MonsterChip** – Nuevo prop `onLongPress` con `delayLongPress: 400` para abrir el modal de detalle.
+
+### Corregido
+
+- **Notificaciones Android silenciosas** – En Android 8+ (API 26) todas las notificaciones locales requieren un canal explícito. `notificationService.ts` nunca llamaba a `setNotificationChannelAsync`, por lo que el SO descartaba silenciosamente los recordatorios diarios. Se añade `ensureAndroidChannel()` que crea el canal `daily-reminder` con importancia `HIGH` antes de solicitar permiso o programar cualquier notificación.
+- **Eliminación no sincronizada** – Al borrar un entry localmente (`remove()` en `useHistory`), la entrada también se elimina de la tabla `entries` de Supabase cuando el usuario está autenticado.
+
+### Cambiado
+
+- **Nombres de Monster localizados** – `getMonsterName()` ahora lee de i18n (`monsters.<key>.name`) en lugar de la constante `name` hardcodeada en el objeto; `name` se elimina de `MonsterType`.
+- **`usePreferences` → `useDisplayName`** – Hook refactorizado con lógica de sincronización bidireccional con `profiles.display_name` en Supabase (carga inicial SQLite → sync al autenticarse → escritura simultánea local + cloud).
+- **Menú de Perfil tipado** – Las acciones del menú usan el tipo `MenuAction` (`'edit' | 'stats' | 'settings' | 'logout'`) en lugar de strings de etiqueta, eliminando comparaciones frágiles.
+- **Formato de fecha localizado en Historial** – `formatDate()` detecta el idioma activo y pasa el locale correspondiente (`pt-BR`, `en`, `es`) a `Intl.DateTimeFormat`.
+- **Estadísticas i18n** – Etiquetas de días de la semana, meses y bloques horarios en `useStats` y `StatsScreen` provienen del sistema de traducciones.
+- **Logros i18n** – Títulos y descripciones de los 9 logros en `useAchievements` provienen de las traducciones.
+- Los usuarios con `show_in_ranking = false` quedan excluidos de la query de `profiles` en `useGlobalStats`.
+
+### Dependencias
+
+- `i18next` ^25.8.13
+- `react-i18next` ^16.5.4
+- `expo-localization` ~17.0.8
+
+---
+
 ## [1.3.0] - 2026-02-21
 
 ### Añadido
@@ -58,5 +92,6 @@ y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+[1.4.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.4.0
 [1.3.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.3.0
 [1.0.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.0.0

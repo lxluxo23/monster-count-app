@@ -9,9 +9,12 @@ import {
   Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { StatCard, MonsterChip } from '../components';
 import { MONSTER_TYPES } from '../constants/monsters';
 import { colors, spacing, radius } from '../theme';
+import MonsterDetailModal from './MonsterDetailModal';
+import type { MonsterType } from '../types';
 
 interface HomeScreenProps {
   total: number;
@@ -23,8 +26,10 @@ const { width } = Dimensions.get('window');
 const cardWidth = (width - spacing.lg * 2 - spacing.md) / 2;
 
 export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): React.JSX.Element {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  const [detailMonster, setDetailMonster] = useState<MonsterType | null>(null);
   
   // Animaciones
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -98,18 +103,18 @@ export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): Re
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>¿Cuál te tomaste?</Text>
-          <Text style={styles.heroSubtitle}>Registra cada Monster que tomes</Text>
+          <Text style={styles.heroTitle}>{t('home.heroTitle')}</Text>
+          <Text style={styles.heroSubtitle}>{t('home.heroSubtitle')}</Text>
         </View>
 
         <View style={styles.stats}>
-          <StatCard value={today} label="Hoy" />
+          <StatCard value={today} label={t('home.today')} />
           <View style={styles.statGap} />
-          <StatCard value={total} label="Total" />
+          <StatCard value={total} label={t('home.total')} />
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Selecciona tu Monster</Text>
+          <Text style={styles.sectionTitle}>{t('home.selectMonster')}</Text>
           <View style={styles.grid}>
             {MONSTER_TYPES.map((m) => (
               <View key={m.id} style={[styles.gridItem, { width: cardWidth }]}>
@@ -117,6 +122,7 @@ export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): Re
                   monster={m}
                   selected={selected === m.id}
                   onPress={() => setSelected(selected === m.id ? null : m.id)}
+                  onLongPress={() => setDetailMonster(m)}
                 />
               </View>
             ))}
@@ -180,6 +186,13 @@ export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): Re
           </Animated.View>
         )}
       </Animated.View>
+
+      {/* Modal info nutricional */}
+      <MonsterDetailModal
+        monster={detailMonster}
+        visible={detailMonster !== null}
+        onClose={() => setDetailMonster(null)}
+      />
     </View>
   );
 }

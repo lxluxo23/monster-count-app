@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { HistoryEntry } from '../types';
 
 export interface DayBar {
@@ -29,27 +30,22 @@ export interface Stats {
   averagePerWeek: number;
 }
 
-const DAY_LABELS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-const MONTH_LABELS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-
 function localDayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 
-function formatDateLabel(d: Date): string {
-  return `${d.getDate()} ${MONTH_LABELS[d.getMonth()]}`;
-}
-
-const HOUR_BUCKETS: Pick<HourBucket, 'label' | 'emoji' | 'from' | 'to'>[] = [
-  { label: 'Madrugada', emoji: '🌙', from: 0, to: 8 },
-  { label: 'Mañana', emoji: '☀️', from: 8, to: 13 },
-  { label: 'Tarde', emoji: '🌤️', from: 13, to: 20 },
-  { label: 'Noche', emoji: '🌃', from: 20, to: 24 },
-];
-
 export function useStats(history: HistoryEntry[]): Stats {
+  const { t } = useTranslation();
+
   return useMemo(() => {
     const now = new Date();
+
+    const hourBucketDefs = [
+      { labelKey: 'earlyMorning', emoji: '🌙', from: 0, to: 8 },
+      { labelKey: 'morning', emoji: '☀️', from: 8, to: 13 },
+      { labelKey: 'afternoon', emoji: '🌤️', from: 13, to: 20 },
+      { labelKey: 'night', emoji: '🌃', from: 20, to: 24 },
+    ];
 
     // ── Últimos 7 días ──────────────────────────────────────────────────────
     const last7Days: DayBar[] = Array.from({ length: 7 }, (_, i) => {
@@ -57,7 +53,7 @@ export function useStats(history: HistoryEntry[]): Stats {
       d.setDate(d.getDate() - (6 - i));
       const key = localDayKey(d);
       return {
-        dayLabel: DAY_LABELS[d.getDay()],
+        dayLabel: t(`stats.days.${d.getDay()}`),
         count: history.filter((e) => localDayKey(new Date(e.date)) === key).length,
       };
     });
@@ -68,7 +64,7 @@ export function useStats(history: HistoryEntry[]): Stats {
       const y = d.getFullYear();
       const m = d.getMonth();
       return {
-        monthLabel: MONTH_LABELS[m],
+        monthLabel: t(`stats.months.${m}`),
         count: history.filter((e) => {
           const ed = new Date(e.date);
           return ed.getFullYear() === y && ed.getMonth() === m;
@@ -77,8 +73,11 @@ export function useStats(history: HistoryEntry[]): Stats {
     });
 
     // ── Distribución horaria ─────────────────────────────────────────────────
-    const byHourBucket: HourBucket[] = HOUR_BUCKETS.map((b) => ({
-      ...b,
+    const byHourBucket: HourBucket[] = hourBucketDefs.map((b) => ({
+      label: t(`stats.${b.labelKey}`),
+      emoji: b.emoji,
+      from: b.from,
+      to: b.to,
       count: history.filter((e) => {
         const h = new Date(e.date).getHours();
         return h >= b.from && h < b.to;
@@ -98,7 +97,9 @@ export function useStats(history: HistoryEntry[]): Stats {
       dayEntries.length > 0
         ? (() => {
             const best = dayEntries.reduce((a, b) => (b.count > a.count ? b : a));
-            return { dateLabel: formatDateLabel(best.date), count: best.count };
+            const d = best.date;
+            const dateLabel = `${d.getDate()} ${t(`stats.months.${d.getMonth()}`)}`;
+            return { dateLabel, count: best.count };
           })()
         : null;
 
@@ -125,5 +126,5 @@ export function useStats(history: HistoryEntry[]): Stats {
       averagePerActiveDay,
       averagePerWeek,
     };
-  }, [history]);
+  }, [history, t]);
 }
