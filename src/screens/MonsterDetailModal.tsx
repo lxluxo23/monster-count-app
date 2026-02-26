@@ -5,9 +5,10 @@ import {
   StyleSheet,
   Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
-  ScrollView,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, radius } from '../theme';
@@ -52,9 +53,13 @@ export default function MonsterDetailModal({
   const monsterLegend = mKey ? t(`monsters.${mKey}.legend`) : monster.legend;
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose}>
-        <TouchableOpacity activeOpacity={1} style={[styles.sheet, { borderTopColor: monster.color }]}>
+    <Modal visible={visible} transparent animationType="slide" statusBarTranslucent>
+      <View style={styles.overlay}>
+        {/* Solo el backdrop cierra al tocar. El sheet es View puro para que el ScrollView reciba los gestos sin conflicto */}
+        <TouchableWithoutFeedback onPress={onClose}>
+          <View style={styles.backdrop} />
+        </TouchableWithoutFeedback>
+        <View style={[styles.sheet, { borderTopColor: monster.color }]}>
           {/* Handle */}
           <View style={styles.handle} />
 
@@ -65,7 +70,11 @@ export default function MonsterDetailModal({
             )}
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={styles.body}
+            nestedScrollEnabled
+          >
             {/* Nombre + close */}
             <View style={styles.titleRow}>
               <Text style={styles.name}>{monsterName}</Text>
@@ -111,8 +120,8 @@ export default function MonsterDetailModal({
 
             <View style={{ height: spacing.xl }} />
           </ScrollView>
-        </TouchableOpacity>
-      </TouchableOpacity>
+        </View>
+      </View>
     </Modal>
   );
 }
@@ -120,8 +129,12 @@ export default function MonsterDetailModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    flexDirection: 'column',
     justifyContent: 'flex-end',
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
   },
   sheet: {
     backgroundColor: colors.surface,
@@ -129,6 +142,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: radius.xl,
     borderTopWidth: 3,
     maxHeight: '85%',
+    elevation: 10,
   },
   handle: {
     width: 40,

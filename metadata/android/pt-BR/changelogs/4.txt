@@ -1,0 +1,9 @@
+🌍 O app agora está disponível em espanhol, inglês e português — se adapta automaticamente ao idioma do seu celular.
+
+🥤 Pressione qualquer Monster por alguns segundos para ver as informações nutricionais e a história por trás de cada lata.
+
+🏆 Novidade na Comunidade: ranking dos maiores bebedores, com medalhas para o pódio.
+
+🔒 Prefere não aparecer no ranking? Novo ajuste de privacidade nas Configurações.
+
+🔔 Corrigido o problema em que os lembretes diários não chegavam no Android.

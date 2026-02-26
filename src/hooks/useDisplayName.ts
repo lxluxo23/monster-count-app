@@ -43,21 +43,33 @@ export function useDisplayName(): {
     (async () => {
       const { data } = await supabase
         .from('profiles')
-        .select('display_name')
+        .select('display_name, avatar_url')
         .eq('id', user.id)
         .single();
 
       if (cancelled) return;
 
+      const avatarUrl = (user.user_metadata?.picture ?? user.user_metadata?.avatar_url) as string | undefined;
+
       if (data?.display_name) {
         // Ya tiene nombre en Supabase → úsalo
         setDisplayNameState(data.display_name);
         await repo.set(KEY_USER_NAME, data.display_name);
+        // Sincronizar avatar_url de Google si no está en profiles
+        if (avatarUrl && !data.avatar_url) {
+          await supabase.from('profiles').upsert({ id: user.id, avatar_url: avatarUrl });
+        }
       } else {
-        // Primer login: inicializar con nombre de Google
+        // Primer login: inicializar con nombre y avatar de Google
         const googleName =
-          (user.user_metadata?.full_name as string | undefined) ?? DEFAULT_NAME;
-        await supabase.from('profiles').upsert({ id: user.id, display_name: googleName });
+          (user.user_metadata?.full_name as string | undefined) ??
+          (user.user_metadata?.name as string | undefined) ??
+          DEFAULT_NAME;
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          display_name: googleName,
+          ...(avatarUrl && { avatar_url: avatarUrl }),
+        });
         if (!cancelled) setDisplayNameState(googleName);
         await repo.set(KEY_USER_NAME, googleName);
       }
@@ -72,9 +84,12 @@ export function useDisplayName(): {
       setDisplayNameState(name);
       await repo.set(KEY_USER_NAME, name);
       if (status === 'authenticated' && user) {
-        await supabase
-          .from('profiles')
-          .upsert({ id: user.id, display_name: name });
+        const avatarUrl = (user.user_metadata?.picture ?? user.user_metadata?.avatar_url) as string | undefined;
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          display_name: name,
+          ...(avatarUrl && { avatar_url: avatarUrl }),
+        });
       }
     },
     [repo, status, user]

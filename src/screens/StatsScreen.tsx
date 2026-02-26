@@ -74,6 +74,10 @@ export default function StatsScreen({
               <Text style={styles.kpiLabel}>{t('stats.totalCans')}</Text>
             </View>
             <View style={styles.kpiCard}>
+              <Text style={styles.kpiValue}>{stats.verifiedCount}</Text>
+              <Text style={styles.kpiLabel}>{t('stats.verifiedCans')}</Text>
+            </View>
+            <View style={styles.kpiCard}>
               <Text style={styles.kpiValue}>{stats.totalDaysActive}</Text>
               <Text style={styles.kpiLabel}>{t('stats.activeDays')}</Text>
             </View>

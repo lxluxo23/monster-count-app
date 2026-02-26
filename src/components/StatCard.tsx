@@ -1,19 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, radius, spacing } from '../theme';
 
 interface StatCardProps {
   value: number;
   label: string;
+  onPress?: () => void;
 }
 
-export function StatCard({ value, label }: StatCardProps): React.JSX.Element {
-  return (
-    <View style={styles.card}>
+export function StatCard({ value, label, onPress }: StatCardProps): React.JSX.Element {
+  const content = (
+    <>
       <Text style={styles.value}>{value}</Text>
       <Text style={styles.label}>{label}</Text>
-    </View>
+    </>
   );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+        {content}
+      </TouchableOpacity>
+    );
+  }
+
+  return <View style={styles.card}>{content}</View>;
 }
 
 const styles = StyleSheet.create({

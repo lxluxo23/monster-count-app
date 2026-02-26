@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Animated,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -14,22 +15,28 @@ import { StatCard, MonsterChip } from '../components';
 import { MONSTER_TYPES } from '../constants/monsters';
 import { colors, spacing, radius } from '../theme';
 import MonsterDetailModal from './MonsterDetailModal';
-import type { MonsterType } from '../types';
+import StatsScreen from './StatsScreen';
+import { RateLimitError } from '../hooks/useHistory';
+import type { MonsterType, HistoryEntry } from '../types';
 
 interface HomeScreenProps {
   total: number;
   today: number;
   onAdd: (monsterId: string) => Promise<void>;
+  history: HistoryEntry[];
+  countByMonsterId: Record<string, number>;
+  dailyGoal: number;
 }
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - spacing.lg * 2 - spacing.md) / 2;
 
-export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): React.JSX.Element {
+export default function HomeScreen({ total, today, onAdd, history, countByMonsterId, dailyGoal }: HomeScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const [selected, setSelected] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [detailMonster, setDetailMonster] = useState<MonsterType | null>(null);
+  const [showStats, setShowStats] = useState(false);
   
   // Animaciones
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -90,6 +97,15 @@ export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): Re
     try {
       await onAdd(selected);
       setSelected(null);
+    } catch (err) {
+      if (err instanceof RateLimitError) {
+        Alert.alert(
+          t('rateLimit.title'),
+          t('rateLimit.exceeded', { minutes: err.waitMinutes })
+        );
+      } else {
+        throw err;
+      }
     } finally {
       setAdding(false);
     }
@@ -108,10 +124,35 @@ export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): Re
         </View>
 
         <View style={styles.stats}>
-          <StatCard value={today} label={t('home.today')} />
+          <StatCard value={today} label={t('home.today')} onPress={() => setShowStats(true)} />
           <View style={styles.statGap} />
-          <StatCard value={total} label={t('home.total')} />
+          <StatCard value={total} label={t('home.total')} onPress={() => setShowStats(true)} />
         </View>
+
+        {dailyGoal > 0 && (
+          <View style={styles.goalSection}>
+            <View style={styles.goalHeader}>
+              <Text style={styles.goalLabel}>{t('home.dailyGoal')}</Text>
+              <Text style={styles.goalCount}>
+                {today} / {dailyGoal}
+              </Text>
+            </View>
+            <View style={styles.goalBarBg}>
+              <View
+                style={[
+                  styles.goalBarFill,
+                  {
+                    width: `${Math.min(100, (today / dailyGoal) * 100)}%`,
+                    backgroundColor: today >= dailyGoal ? '#27AE60' : colors.primary,
+                  },
+                ]}
+              />
+            </View>
+            {today >= dailyGoal && (
+              <Text style={styles.goalDone}>{t('home.dailyGoalDone')}</Text>
+            )}
+          </View>
+        )}
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('home.selectMonster')}</Text>
@@ -127,6 +168,7 @@ export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): Re
               </View>
             ))}
           </View>
+          <Text style={styles.longPressHint}>{t('home.longPressHint')}</Text>
         </View>
 
         <View style={{ height: 120 }} />
@@ -193,6 +235,14 @@ export default function HomeScreen({ total, today, onAdd }: HomeScreenProps): Re
         visible={detailMonster !== null}
         onClose={() => setDetailMonster(null)}
       />
+
+      {/* Estadísticas detalladas */}
+      <StatsScreen
+        visible={showStats}
+        onClose={() => setShowStats(false)}
+        history={history}
+        countByMonsterId={countByMonsterId}
+      />
     </View>
   );
 }
@@ -210,26 +260,66 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   hero: {
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
     paddingTop: spacing.sm,
   },
   heroTitle: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: '800',
     color: colors.text,
     letterSpacing: -0.5,
   },
   heroSubtitle: {
-    fontSize: 17,
+    fontSize: 15,
     color: colors.textSecondary,
-    marginTop: 8,
+    marginTop: 4,
   },
   stats: {
     flexDirection: 'row',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   statGap: {
     width: spacing.md,
+  },
+  goalSection: {
+    marginBottom: spacing.xl,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+  },
+  goalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  goalLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  goalCount: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.text,
+  },
+  goalBarBg: {
+    height: 10,
+    backgroundColor: colors.background,
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  goalBarFill: {
+    height: '100%',
+    borderRadius: 5,
+    minWidth: 4,
+  },
+  goalDone: {
+    marginTop: spacing.sm,
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#27AE60',
+    textAlign: 'center',
   },
   section: {
     marginBottom: spacing.xl,
@@ -247,7 +337,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   gridItem: {
-    minHeight: 140,
+    height: 150,
+  },
+  longPressHint: {
+    marginTop: spacing.md,
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: 'center',
   },
   fabContainer: {
     position: 'absolute',

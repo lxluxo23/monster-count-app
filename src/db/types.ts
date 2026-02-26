@@ -1,4 +1,4 @@
-import type { HistoryEntry } from '../types';
+import type { HistoryEntry, EntrySource } from '../types';
 
 /**
  * Contrato del repositorio de historial.
@@ -6,7 +6,7 @@ import type { HistoryEntry } from '../types';
  */
 export interface IHistoryRepository {
   getAll(): Promise<HistoryEntry[]>;
-  add(monsterId: string): Promise<HistoryEntry>;
+  add(monsterId: string, source?: EntrySource): Promise<HistoryEntry>;
   remove(id: string): Promise<void>;
 }
 

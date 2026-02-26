@@ -11,7 +11,7 @@ import i18n from '../i18n';
 
 function formatDate(iso: string, todayLabel: string): string {
   const lang = i18n.language;
-  const locale = lang === 'pt' ? 'pt-BR' : lang;
+  const locale = lang === 'pt' ? 'pt-BR' : lang === 'zh' ? 'zh-CN' : lang === 'ja' ? 'ja-JP' : lang;
   const d = new Date(iso);
   const now = new Date();
   const isToday =

@@ -9,6 +9,7 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +30,8 @@ interface ProfileScreenProps {
   history: HistoryEntry[];
   userName: string;
   onSetUserName: (name: string) => Promise<void>;
+  dailyGoal: number;
+  onSetDailyGoal: (value: number) => Promise<void>;
 }
 
 type MenuAction = 'edit' | 'stats' | 'settings' | 'logout';
@@ -42,6 +45,8 @@ export default function ProfileScreen({
   history,
   userName,
   onSetUserName,
+  dailyGoal,
+  onSetDailyGoal,
 }: ProfileScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { status, user, signInWithGoogle, signOut, isSigningIn } = useAuth();
@@ -110,7 +115,14 @@ export default function ProfileScreen({
         <View style={styles.header}>
           <View style={styles.avatarWrap}>
             <View style={styles.avatar}>
-              <Ionicons name="person" size={40} color={colors.textMuted} />
+              {isAuthenticated && (user?.user_metadata?.picture ?? user?.user_metadata?.avatar_url) ? (
+                <Image
+                  source={{ uri: (user.user_metadata.picture ?? user.user_metadata.avatar_url) as string }}
+                  style={styles.avatarImage}
+                />
+              ) : (
+                <Ionicons name="person" size={40} color={colors.textMuted} />
+              )}
             </View>
             {isAuthenticated && (
               <View style={styles.syncBadge}>
@@ -261,6 +273,8 @@ export default function ProfileScreen({
         notificationHour={notifHour}
         onToggleNotifications={setNotifEnabled}
         onSetNotificationHour={setNotifHour}
+        dailyGoal={dailyGoal}
+        onSetDailyGoal={onSetDailyGoal}
       />
     </>
   );
@@ -275,6 +289,10 @@ const styles = StyleSheet.create({
     width: 88, height: 88, borderRadius: radius.full,
     backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center',
     borderWidth: 3, borderColor: colors.surfaceElevated,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 88, height: 88, borderRadius: radius.full,
   },
   syncBadge: {
     position: 'absolute', bottom: 0, right: 0,

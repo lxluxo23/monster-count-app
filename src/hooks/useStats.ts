@@ -28,6 +28,7 @@ export interface Stats {
   totalDaysActive: number;
   averagePerActiveDay: number;
   averagePerWeek: number;
+  verifiedCount: number; // Entradas por cámara (más verificables)
 }
 
 function localDayKey(d: Date): string {
@@ -117,6 +118,8 @@ export function useStats(history: HistoryEntry[]): Stats {
     const last28Count = history.filter((e) => new Date(e.date) >= cutoff28).length;
     const averagePerWeek = Math.round((last28Count / 4) * 10) / 10;
 
+    const verifiedCount = history.filter((e) => e.source === 'camera').length;
+
     return {
       last7Days,
       last6Months,
@@ -125,6 +128,7 @@ export function useStats(history: HistoryEntry[]): Stats {
       totalDaysActive,
       averagePerActiveDay,
       averagePerWeek,
+      verifiedCount,
     };
   }, [history, t]);
 }

@@ -1,0 +1,11 @@
+📊 Tap "Today" or "Total" on Home to open detailed stats instantly.
+
+🎯 New daily goal: set a can target per day in Settings and track your progress with a bar on Home.
+
+📷 Scan the can barcode with the center button in the bottom menu to log verified entries (with the can in hand).
+
+🛡️ Anti-cheat limit: max 2 entries every 10 minutes to keep counts honest.
+
+📈 Camera-scanned entries count as "verified" in statistics.
+
+✨ Visual improvements: clearer hierarchy, uniform grid, and hint for nutrition info (long press).

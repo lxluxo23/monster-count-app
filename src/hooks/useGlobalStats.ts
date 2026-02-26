@@ -8,6 +8,7 @@ export interface MonsterRankEntry {
 }
 
 export interface UserRankEntry {
+  userId: string;
   displayName: string;
   count: number;
 }
@@ -76,27 +77,32 @@ export function useGlobalStats(): GlobalStats {
       setRankingByMonster(monsterRanking);
       setTotalCommunityLatas(total);
 
-      // Fetch display_names de profiles
+      // Fetch profiles: display_name + show_in_ranking (para respetar privacidad)
       const userIds = Object.keys(userCountMap);
-      const profileMap: Record<string, string> = {};
+      const profileMap: Record<string, { displayName: string; showInRanking: boolean }> = {};
 
       if (userIds.length > 0) {
-        const { data: profiles } = await supabase
+        const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
-          .select('id, display_name')
-          .in('id', userIds)
-          .eq('show_in_ranking', true);
+          .select('id, display_name, show_in_ranking')
+          .in('id', userIds);
 
         for (const p of profiles ?? []) {
-          if (p.display_name) profileMap[p.id] = p.display_name as string;
+          const showInRanking = p.show_in_ranking !== false; // default true si null
+          profileMap[p.id] = {
+            displayName: (p.display_name as string) || 'Usuario',
+            showInRanking,
+          };
         }
       }
 
       if (!cancelled) {
-        // Incluir TODOS los usuarios con entries, aunque no tengan perfil
+        // Solo incluir usuarios con show_in_ranking = true (excluir si no hay perfil o está en false)
         const userRanking = Object.entries(userCountMap)
+          .filter(([uid]) => profileMap[uid]?.showInRanking === true)
           .map(([uid, count]) => ({
-            displayName: profileMap[uid] ?? 'Usuario',
+            userId: uid,
+            displayName: profileMap[uid]?.displayName ?? 'Usuario',
             count,
           }))
           .sort((a, b) => b.count - a.count)

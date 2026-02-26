@@ -21,6 +21,8 @@ const HOUR_PRESETS = [
   { label: '21:00', hour: 21 },
 ];
 
+const GOAL_PRESETS = [0, 1, 2, 3, 4, 5];
+
 interface SettingsModalProps {
   visible: boolean;
   onClose: () => void;
@@ -28,6 +30,8 @@ interface SettingsModalProps {
   notificationHour: number;
   onToggleNotifications: (value: boolean) => Promise<void>;
   onSetNotificationHour: (hour: number) => Promise<void>;
+  dailyGoal: number;
+  onSetDailyGoal: (value: number) => Promise<void>;
 }
 
 export default function SettingsModal({
@@ -37,10 +41,19 @@ export default function SettingsModal({
   notificationHour,
   onToggleNotifications,
   onSetNotificationHour,
+  dailyGoal,
+  onSetDailyGoal,
 }: SettingsModalProps): React.JSX.Element {
   const { t } = useTranslation();
   const { status } = useAuth();
-  const { showInRanking, setShowInRanking } = usePrivacy();
+  const {
+    showInRanking,
+    setShowInRanking,
+    showAchievements,
+    setShowAchievements,
+    showStats,
+    setShowStats,
+  } = usePrivacy();
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -101,13 +114,47 @@ export default function SettingsModal({
               )}
             </View>
 
+            {/* META DIARIA */}
+            <Text style={styles.sectionLabel}>{t('settings.dailyGoalSection')}</Text>
+            <View style={styles.card}>
+              <View style={styles.row}>
+                <Ionicons name="flag-outline" size={20} color={colors.textSecondary} />
+                <Text style={styles.rowLabel}>{t('settings.dailyGoal')}</Text>
+              </View>
+              <Text style={styles.privacyDesc}>{t('settings.dailyGoalDesc')}</Text>
+              <View style={styles.presetWrap}>
+                <View style={styles.presets}>
+                  {GOAL_PRESETS.map((g) => (
+                    <TouchableOpacity
+                      key={g}
+                      style={[
+                        styles.presetChip,
+                        dailyGoal === g && styles.presetChipActive,
+                      ]}
+                      onPress={() => onSetDailyGoal(g)}
+                      activeOpacity={0.7}
+                    >
+                      <Text
+                        style={[
+                          styles.presetChipText,
+                          dailyGoal === g && styles.presetChipTextActive,
+                        ]}
+                      >
+                        {g === 0 ? t('settings.dailyGoalOff') : String(g)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
+
             {/* PRIVACIDAD */}
             {status === 'authenticated' && (
               <>
                 <Text style={styles.sectionLabel}>{t('settings.privacySection')}</Text>
                 <View style={styles.card}>
                   <View style={styles.row}>
-                    <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
+                    <Ionicons name="podium-outline" size={20} color={colors.textSecondary} />
                     <Text style={styles.rowLabel}>{t('settings.showInRanking')}</Text>
                     <Switch
                       value={showInRanking}
@@ -117,6 +164,30 @@ export default function SettingsModal({
                     />
                   </View>
                   <Text style={styles.privacyDesc}>{t('settings.showInRankingDesc')}</Text>
+
+                  <View style={[styles.row, styles.rowBorder]}>
+                    <Ionicons name="trophy-outline" size={20} color={colors.textSecondary} />
+                    <Text style={styles.rowLabel}>{t('settings.showAchievements')}</Text>
+                    <Switch
+                      value={showAchievements}
+                      onValueChange={setShowAchievements}
+                      trackColor={{ false: colors.border, true: colors.primary + '80' }}
+                      thumbColor={showAchievements ? colors.primary : colors.textMuted}
+                    />
+                  </View>
+                  <Text style={styles.privacyDesc}>{t('settings.showAchievementsDesc')}</Text>
+
+                  <View style={[styles.row, styles.rowBorder]}>
+                    <Ionicons name="stats-chart-outline" size={20} color={colors.textSecondary} />
+                    <Text style={styles.rowLabel}>{t('settings.showStats')}</Text>
+                    <Switch
+                      value={showStats}
+                      onValueChange={setShowStats}
+                      trackColor={{ false: colors.border, true: colors.primary + '80' }}
+                      thumbColor={showStats ? colors.primary : colors.textMuted}
+                    />
+                  </View>
+                  <Text style={styles.privacyDesc}>{t('settings.showStatsDesc')}</Text>
                 </View>
               </>
             )}
@@ -187,6 +258,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     paddingVertical: spacing.md,
+  },
+  rowBorder: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
   },
   rowLabel: { flex: 1, fontSize: 16, color: colors.text, fontWeight: '500' },
   presetWrap: {

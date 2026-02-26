@@ -5,6 +5,39 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.5.0] - 2026-02-26
+
+### Añadido
+
+- **Stats clicables** – Tocar "Hoy" o "Total" en Inicio abre el modal de estadísticas detalladas al instante.
+- **Meta diaria** – Objetivo de latas al día configurable en Ajustes (0–5, 0 = desactivado). Barra de progreso en Inicio cuando la meta está activa. Mensaje "¡Meta cumplida!" al alcanzarla.
+- **Escáner de códigos de barras** – Botón central elevado en el tab bar (estilo COPEC) que abre la cámara para escanear el código de la lata. Registro automático si el código está en la base de datos. Soporta UPC/EAN de los 6 sabores (Ultra Zero White, Original Green, Ultra Blue Hawaiian, Classic Zero Sugar, Mango Loco, Aussie Lemonade).
+- **Campo `source` en entries** – Nuevo campo `manual` | `camera` para distinguir el origen del registro. Las marcaciones por cámara se consideran más verificables (lata física en mano). Visible en estadísticas como "Verificadas (cámara)".
+- **Límite anti-trampos** – Máximo 2 registros cada 10 minutos (fijo en código, no configurable). Evita añadir demasiadas latas en poco tiempo.
+- **Hint de long press** – Texto "Mantén pulsado para ver info nutricional" debajo del grid de Monsters.
+
+### Cambiado
+
+- **Jerarquía visual en Home** – Hero más compacto (título 26px, subtítulo 15px) para dar más protagonismo a las stats.
+- **Grid uniforme** – Altura fija de 150px en los MonsterChips para un diseño consistente.
+- **Tab bar personalizado** – `CustomTabBar` con 5 tabs: Inicio, Historial, [Escáner], Comunidad, Perfil. El botón central abre el escáner sin navegar.
+- **Rate limit** – Eliminado de Ajustes; ahora siempre activo (2 en 10 min).
+
+### Corregido
+
+- **Migración SQLite v4** – Paso de reparación que comprueba si la columna `source` existe y la añade si falta. Evita el error "table entries has no column named source" en instalaciones donde la migración falló previamente.
+
+### Base de datos
+
+- **SQLite** – Migración v4: columna `source TEXT NOT NULL DEFAULT 'manual'` en `entries`.
+- **Supabase** – Migración en `docs/supabase-migrations.sql` (sección 5): columna `source` en tabla `entries`.
+
+### Dependencias
+
+- `expo-camera` – Para escaneo de códigos de barras (UPC, EAN-13, etc.).
+
+---
+
 ## [1.4.0] - 2026-02-24
 
 ### Añadido
@@ -92,6 +125,7 @@ y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+[1.5.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.5.0
 [1.4.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.4.0
 [1.3.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.3.0
 [1.0.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.0.0

@@ -12,18 +12,20 @@ export async function pullEntriesFromSupabase(
 ): Promise<{ downloaded: number }> {
   const { data, error } = await supabase
     .from('entries')
-    .select('id, monster_id, date')
+    .select('id, monster_id, date, source')
     .eq('user_id', userId);
 
   if (error || !data || data.length === 0) return { downloaded: 0 };
 
   let downloaded = 0;
   for (const entry of data) {
+    const source = (entry as { source?: string }).source ?? 'manual';
     const result = await db.runAsync(
-      `INSERT OR IGNORE INTO ${TABLE_ENTRIES} (id, monster_id, date, synced) VALUES (?, ?, ?, 1)`,
+      `INSERT OR IGNORE INTO ${TABLE_ENTRIES} (id, monster_id, date, synced, source) VALUES (?, ?, ?, 1, ?)`,
       entry.id,
       entry.monster_id,
-      entry.date
+      entry.date,
+      source
     );
     if (result.changes > 0) downloaded++;
   }
@@ -35,6 +37,7 @@ interface LocalEntry {
   id: string;
   monster_id: string;
   date: string;
+  source?: string;
 }
 
 interface RemoteEntry {
@@ -42,6 +45,7 @@ interface RemoteEntry {
   user_id: string;
   monster_id: string;
   date: string;
+  source?: string;
 }
 
 /**
@@ -53,7 +57,7 @@ export async function syncPendingEntries(
   userId: string
 ): Promise<{ uploaded: number; errors: number }> {
   const pending = await db.getAllAsync<LocalEntry>(
-    `SELECT id, monster_id, date FROM ${TABLE_ENTRIES} WHERE synced = 0 ORDER BY date ASC`
+    `SELECT id, monster_id, date, source FROM ${TABLE_ENTRIES} WHERE synced = 0 ORDER BY date ASC`
   );
 
   if (pending.length === 0) return { uploaded: 0, errors: 0 };
@@ -63,6 +67,7 @@ export async function syncPendingEntries(
     user_id: userId,
     monster_id: e.monster_id,
     date: e.date,
+    source: e.source ?? 'manual',
   }));
 
   const { error } = await supabase

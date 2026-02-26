@@ -1,0 +1,11 @@
+📊 Toca "Hoy" o "Total" en Inicio para abrir las estadísticas detalladas al instante.
+
+🎯 Nueva meta diaria: configura un objetivo de latas al día en Ajustes y sigue tu progreso con una barra en Inicio.
+
+📷 Escanea el código de barras de la lata con el botón central del menú inferior para registrar de forma verificada (con la lata en mano).
+
+🛡️ Límite anti-trampos: máximo 2 registros cada 10 minutos para mantener la integridad del conteo.
+
+📈 Las marcaciones por cámara se cuentan como "verificadas" en las estadísticas.
+
+✨ Mejoras visuales: jerarquía más clara, grid uniforme y hint para ver info nutricional (mantén pulsado).

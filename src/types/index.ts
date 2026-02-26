@@ -1,10 +1,17 @@
 /**
+ * Origen del registro: manual (grid) o cámara (escaneo de código).
+ * Las marcaciones por cámara se consideran más verificables (lata física en mano).
+ */
+export type EntrySource = 'manual' | 'camera';
+
+/**
  * Entrada del historial: una lata registrada.
  */
 export interface HistoryEntry {
   id: string;
   monsterId: string;
   date: string; // ISO
+  source?: EntrySource; // default 'manual' para compatibilidad
 }
 
 import type { ImageSourcePropType } from 'react-native';

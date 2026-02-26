@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { colors, spacing, radius } from '../theme';
 import { useAchievements, type Achievement } from '../hooks/useAchievements';
 import { useGlobalStats } from '../hooks/useGlobalStats';
 import { getMonsterName, MONSTER_TYPES } from '../constants/monsters';
+import PublicProfileScreen from './PublicProfileScreen';
 import type { HistoryEntry } from '../types';
 
 interface ComunidadScreenProps {
@@ -54,6 +55,7 @@ export default function ComunidadScreen({
   countByMonsterId,
 }: ComunidadScreenProps): React.JSX.Element {
   const { t } = useTranslation();
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const achievements = useAchievements({ history, total, streak, countByMonsterId });
   const { rankingByMonster, rankingByUser, totalCommunityLatas, loading, error, refresh } = useGlobalStats();
 
@@ -156,7 +158,12 @@ export default function ComunidadScreen({
               const maxUserCount = rankingByUser[0]?.count ?? 1;
               const medals = ['🥇', '🥈', '🥉'];
               return (
-                <View key={i} style={styles.rankRow}>
+                <TouchableOpacity
+                  key={entry.userId}
+                  style={styles.rankRow}
+                  onPress={() => setSelectedUserId(entry.userId)}
+                  activeOpacity={0.7}
+                >
                   <Text style={styles.rankPos}>{medals[i] ?? i + 1}</Text>
                   <View style={styles.rankInfo}>
                     <View style={styles.rankTop}>
@@ -175,12 +182,19 @@ export default function ComunidadScreen({
                       />
                     </View>
                   </View>
-                </View>
+                  <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+                </TouchableOpacity>
               );
             })}
           </View>
         </>
       )}
+
+      <PublicProfileScreen
+        userId={selectedUserId}
+        visible={selectedUserId !== null}
+        onClose={() => setSelectedUserId(null)}
+      />
     </ScrollView>
   );
 }

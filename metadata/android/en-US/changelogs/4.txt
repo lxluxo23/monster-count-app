@@ -1,0 +1,9 @@
+🌍 The app is now available in Spanish, English and Portuguese — it adapts automatically to your phone's language.
+
+🥤 Long press any Monster to see its nutritional info and the story behind each can.
+
+🏆 New in Community: a Top drinkers ranking with medals for the podium.
+
+🔒 Rather stay anonymous? New privacy toggle in Settings to hide your name from the ranking.
+
+🔔 Fixed an issue where daily reminders were not delivered on Android.

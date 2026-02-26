@@ -2,9 +2,28 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createSqliteHistoryRepository } from '../db';
 import { syncPendingEntries, pullEntriesFromSupabase } from '../services/syncService';
+import { syncAchievementsToSupabase } from '../services/achievementSyncService';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import type { HistoryEntry } from '../types';
+import { checkRateLimit } from './useRateLimit';
+import type { HistoryEntry, EntrySource } from '../types';
+
+export interface RateLimitConfig {
+  enabled: boolean;
+  maxPerWindow: number;
+  windowMinutes: number;
+}
+
+export class RateLimitError extends Error {
+  constructor(
+    message: string,
+    public readonly waitUntil: Date | null,
+    public readonly waitMinutes: number = 0
+  ) {
+    super(message);
+    this.name = 'RateLimitError';
+  }
+}
 
 function isSameDay(a: Date, b: Date): boolean {
   return (
@@ -19,10 +38,10 @@ function localDayKey(date: Date): string {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
-export function useHistory(): {
+export function useHistory(rateLimit?: RateLimitConfig): {
   history: HistoryEntry[];
   loading: boolean;
-  add: (monsterId: string) => Promise<void>;
+  add: (monsterId: string, source?: EntrySource) => Promise<void>;
   remove: (id: string) => Promise<void>;
   total: number;
   today: number;
@@ -64,23 +83,61 @@ export function useHistory(): {
       // 3. Push: sube los entries locales pendientes
       const { uploaded } = await syncPendingEntries(db, user.id);
 
-      if (__DEV__ && (downloaded > 0 || uploaded > 0)) {
-        console.log(`[Sync] ↓${downloaded} descargados, ↑${uploaded} subidos`);
-      }
     })().catch((err) => {
       if (__DEV__) console.warn('[Sync] Falló, se reintentará:', err);
     });
   }, [status, user, db, repo]);
 
+  // Sync logros a Supabase (solo autenticados). Guests: cálculo local únicamente.
+  useEffect(() => {
+    if (status !== 'authenticated' || !user) return;
+
+    const total = history.length;
+    const todayCount = history.filter((e) => isSameDay(new Date(e.date), new Date())).length;
+    const countByMonsterId: Record<string, number> = {};
+    for (const e of history) {
+      countByMonsterId[e.monsterId] = (countByMonsterId[e.monsterId] ?? 0) + 1;
+    }
+    const streak = (() => {
+      const dayKeys = new Set(history.map((e) => localDayKey(new Date(e.date))));
+      let count = 0;
+      const ref = new Date();
+      for (let i = 0; i < 365; i++) {
+        const d = new Date(ref);
+        d.setDate(d.getDate() - i);
+        if (dayKeys.has(localDayKey(d))) count++;
+        else break;
+      }
+      return count;
+    })();
+
+    void syncAchievementsToSupabase(user.id, history, total, streak, countByMonsterId);
+  }, [status, user, history]);
+
   const add = useCallback(
-    async (monsterId: string) => {
-      const entry = await repo.add(monsterId);
+    async (monsterId: string, source: EntrySource = 'manual') => {
+      const enabled = rateLimit?.enabled ?? false;
+      const maxPerWindow = rateLimit?.maxPerWindow ?? 2;
+      const windowMinutes = rateLimit?.windowMinutes ?? 10;
+      const { allowed, waitUntil } = checkRateLimit(
+        history,
+        enabled,
+        maxPerWindow,
+        windowMinutes
+      );
+      if (!allowed) {
+        const mins = waitUntil
+          ? Math.ceil((waitUntil.getTime() - Date.now()) / 60000)
+          : windowMinutes;
+        throw new RateLimitError('rateLimit.exceeded', waitUntil, mins);
+      }
+      const entry = await repo.add(monsterId, source);
       setHistory((prev: HistoryEntry[]) => [entry, ...prev]);
       if (status === 'authenticated' && user) {
         syncPendingEntries(db, user.id).catch(() => {});
       }
     },
-    [repo, status, user, db]
+    [repo, status, user, db, history, rateLimit]
   );
 
   const remove = useCallback(

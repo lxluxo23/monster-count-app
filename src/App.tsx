@@ -9,15 +9,20 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from './hooks/useHistory';
 import { useDisplayName } from './hooks/useDisplayName';
-import { HomeScreen, HistoryScreen, ProfileScreen, ComunidadScreen } from './screens';
+import { useDailyGoal } from './hooks/useDailyGoal';
+import { CustomTabBar } from './components/CustomTabBar';
+import { HomeScreen, HistoryScreen, ProfileScreen, ComunidadScreen, BarcodeScannerModal } from './screens';
 import { migrateDb } from './db';
 import { colors } from './theme';
 import { AuthProvider } from './contexts/AuthContext';
 
 const Tab = createBottomTabNavigator();
 
+const RATE_LIMIT = { enabled: true, maxPerWindow: 2, windowMinutes: 10 };
+
 function AppContent(): React.JSX.Element {
   const { t } = useTranslation();
+  const [showScanner, setShowScanner] = React.useState(false);
   const {
     history,
     loading,
@@ -28,13 +33,15 @@ function AppContent(): React.JSX.Element {
     streak,
     countByMonsterId,
     favoriteMonsterId,
-  } = useHistory();
+  } = useHistory(RATE_LIMIT);
   const { displayName, setDisplayName } = useDisplayName();
+  const { goal: dailyGoal, setGoal: setDailyGoal } = useDailyGoal();
 
   return (
     <NavigationContainer>
         <StatusBar style="light" />
         <Tab.Navigator
+          tabBar={(props) => <CustomTabBar {...props} onScanPress={() => setShowScanner(true)} />}
           screenOptions={({ route }) => ({
             headerStyle: { backgroundColor: colors.background },
             headerTintColor: colors.text,
@@ -44,25 +51,32 @@ function AppContent(): React.JSX.Element {
             },
             tabBarActiveTintColor: colors.primary,
             tabBarInactiveTintColor: colors.textMuted,
-            tabBarIcon: ({ focused, color, size }) => {
-              const icons: Record<string, 'home' | 'home-outline' | 'list' | 'list-outline' | 'people' | 'people-outline' | 'person' | 'person-outline'> = {
-                Home: focused ? 'home' : 'home-outline',
-                History: focused ? 'list' : 'list-outline',
-                Community: focused ? 'people' : 'people-outline',
-                Profile: focused ? 'person' : 'person-outline',
-              };
-              return <Ionicons name={icons[route.name] ?? 'ellipse-outline'} size={size} color={color} />;
-            },
+            tabBarShowLabel: false,
           })}
         >
           <Tab.Screen
             name="Home"
             options={{ title: t('tabs.homeTitle'), tabBarLabel: t('tabs.home') }}
           >
-            {() => <HomeScreen total={total} today={today} onAdd={add} />}
+            {() => (
+              <HomeScreen
+                total={total}
+                today={today}
+                onAdd={add}
+                history={history}
+                countByMonsterId={countByMonsterId}
+                dailyGoal={dailyGoal}
+              />
+            )}
           </Tab.Screen>
           <Tab.Screen name="History" options={{ tabBarLabel: t('tabs.history'), title: t('tabs.history') }}>
             {() => <HistoryScreen history={history} loading={loading} onRemove={remove} />}
+          </Tab.Screen>
+          <Tab.Screen
+            name="Scan"
+            options={{ tabBarLabel: '', title: t('scanner.title') }}
+          >
+            {() => null}
           </Tab.Screen>
           <Tab.Screen name="Community" options={{ tabBarLabel: t('tabs.community'), title: t('tabs.community') }}>
             {() => (
@@ -88,10 +102,18 @@ function AppContent(): React.JSX.Element {
                 history={history}
                 userName={displayName}
                 onSetUserName={setDisplayName}
+                dailyGoal={dailyGoal}
+                onSetDailyGoal={setDailyGoal}
               />
             )}
           </Tab.Screen>
         </Tab.Navigator>
+
+        <BarcodeScannerModal
+          visible={showScanner}
+          onClose={() => setShowScanner(false)}
+          onAdd={add}
+        />
     </NavigationContainer>
   );
 }
