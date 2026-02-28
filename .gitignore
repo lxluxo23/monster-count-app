@@ -43,3 +43,7 @@ yarn-error.*
 
 # archives (evitar subir zips al repo)
 *.zip
+
+# Open Food Facts DB local + docs
+openfoodfacts-db/
+docs/

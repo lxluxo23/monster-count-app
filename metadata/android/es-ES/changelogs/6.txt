@@ -1,0 +1,11 @@
+🛡️ Área segura: la app ya no se superpone a los botones de navegación del móvil.
+
+📷 Escáner: al escanear un código desconocido, el mensaje de error no se repite; debes pulsar "Escanear de nuevo" para continuar.
+
+✅ Escáner: al registrar correctamente una Monster, se muestra un mensaje de confirmación con el nombre del sabor.
+
+🔄 Sincronización: los registros eliminados ya no vuelven al recargar la app.
+
+⬅️ Botón atrás: cierra correctamente el perfil, estadísticas, ajustes y el escáner.
+
+📦 Más códigos de barras para variantes regionales de todos los sabores.

@@ -2,10 +2,12 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 import {
   DATABASE_VERSION,
   TABLE_ENTRIES,
+  TABLE_PENDING_DELETES,
   CREATE_ENTRIES_SQL,
   CREATE_PREFERENCES_SQL,
   MIGRATE_V3_ADD_SYNCED_SQL,
   MIGRATE_V4_ADD_SOURCE_SQL,
+  MIGRATE_V5_PENDING_DELETES_SQL,
 } from './schema';
 
 /**
@@ -63,6 +65,17 @@ export async function migrateDb(db: SQLiteDatabase): Promise<void> {
     } catch {
       // Ignorar si falla (tabla vacía o ya existe).
     }
+  }
+
+  if (currentVersion < 5) {
+    await db.execAsync(MIGRATE_V5_PENDING_DELETES_SQL);
+  }
+
+  // Reparación: si pending_deletes no existe (p. ej. migración falló), crearla
+  try {
+    await db.getFirstAsync(`SELECT 1 FROM ${TABLE_PENDING_DELETES} LIMIT 1`);
+  } catch {
+    await db.execAsync(MIGRATE_V5_PENDING_DELETES_SQL);
   }
 
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);

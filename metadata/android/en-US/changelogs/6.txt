@@ -1,0 +1,11 @@
+🛡️ Safe area: the app no longer overlaps with the phone's navigation buttons.
+
+📷 Scanner: when scanning an unknown code, the error message no longer repeats; tap "Scan again" to continue.
+
+✅ Scanner: when successfully registering a Monster, a confirmation message shows the flavor name.
+
+🔄 Sync: deleted entries no longer reappear when reloading the app.
+
+⬅️ Back button: properly closes profile, stats, settings, and scanner.
+
+📦 More barcodes for regional variants of all flavors.

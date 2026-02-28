@@ -53,7 +53,7 @@ export default function StatsScreen({
   const maxFlavor = Math.max(...flavorData.map((m) => m.count), 1);
 
   return (
-    <Modal visible={visible} animationType="slide">
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>

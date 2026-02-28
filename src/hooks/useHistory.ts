@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createSqliteHistoryRepository } from '../db';
-import { syncPendingEntries, pullEntriesFromSupabase } from '../services/syncService';
+import { syncPendingEntries, pullEntriesFromSupabase, processPendingDeletes, addPendingDelete } from '../services/syncService';
 import { syncAchievementsToSupabase } from '../services/achievementSyncService';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -71,18 +71,20 @@ export function useHistory(rateLimit?: RateLimitConfig): {
     if (status !== 'authenticated' || !user) return;
 
     (async () => {
-      // 1. Pull: descarga entries de la nube que no estén localmente
+      // 1. Procesar deletes pendientes (eliminados localmente pero no en Supabase)
+      await processPendingDeletes(db, user.id);
+
+      // 2. Pull: descarga entries de la nube que no estén localmente
       const { downloaded } = await pullEntriesFromSupabase(db, user.id);
 
-      // 2. Si llegaron nuevos datos, refrescar la lista local
+      // 3. Si llegaron nuevos datos, refrescar la lista local
       if (downloaded > 0) {
         const updated = await repo.getAll();
         setHistory(updated);
       }
 
-      // 3. Push: sube los entries locales pendientes
-      const { uploaded } = await syncPendingEntries(db, user.id);
-
+      // 4. Push: sube los entries locales pendientes
+      await syncPendingEntries(db, user.id);
     })().catch((err) => {
       if (__DEV__) console.warn('[Sync] Falló, se reintentará:', err);
     });
@@ -144,11 +146,21 @@ export function useHistory(rateLimit?: RateLimitConfig): {
     async (id: string) => {
       await repo.remove(id);
       setHistory((prev: HistoryEntry[]) => prev.filter((e) => e.id !== id));
+
       if (status === 'authenticated' && user) {
-        void supabase.from('entries').delete().eq('id', id);
+        const { error } = await supabase
+          .from('entries')
+          .delete()
+          .eq('id', id)
+          .eq('user_id', user.id);
+
+        if (error) {
+          if (__DEV__) console.warn('[Sync] Delete en Supabase falló, se reintentará:', error.message);
+          await addPendingDelete(db, id);
+        }
       }
     },
-    [repo, status, user]
+    [repo, status, user, db]
   );
 
   const now = new Date();

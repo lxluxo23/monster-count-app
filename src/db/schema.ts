@@ -1,6 +1,7 @@
-export const DATABASE_VERSION = 4;
+export const DATABASE_VERSION = 5;
 export const TABLE_ENTRIES = 'entries';
 export const TABLE_PREFERENCES = 'preferences';
+export const TABLE_PENDING_DELETES = 'pending_deletes';
 
 export const CREATE_ENTRIES_SQL = `
   CREATE TABLE IF NOT EXISTS ${TABLE_ENTRIES} (
@@ -27,4 +28,11 @@ export const MIGRATE_V3_ADD_SYNCED_SQL = `
 // Migración v4: añade columna source para distinguir manual vs cámara
 export const MIGRATE_V4_ADD_SOURCE_SQL = `
   ALTER TABLE ${TABLE_ENTRIES} ADD COLUMN source TEXT NOT NULL DEFAULT 'manual';
+`;
+
+// Migración v5: tabla para reintentar deletes en Supabase cuando fallan (offline, etc.)
+export const MIGRATE_V5_PENDING_DELETES_SQL = `
+  CREATE TABLE IF NOT EXISTS ${TABLE_PENDING_DELETES} (
+    id TEXT PRIMARY KEY NOT NULL
+  );
 `;

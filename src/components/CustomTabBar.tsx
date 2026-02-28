@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Platform, Text } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing } from '../theme';
 
@@ -10,9 +11,10 @@ interface CustomTabBarProps extends BottomTabBarProps {
 
 export function CustomTabBar({ state, descriptors, navigation, onScanPress }: CustomTabBarProps): React.JSX.Element {
   const SCAN_INDEX = 2; // Home, History, Scan, Community, Profile
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, Platform.OS === 'ios' ? 28 : 12) }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
@@ -84,7 +86,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopWidth: 1,
     borderTopColor: colors.border,
-    paddingBottom: Platform.OS === 'ios' ? 28 : 12,
     paddingTop: 8,
     alignItems: 'center',
     justifyContent: 'space-around',

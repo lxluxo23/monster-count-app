@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, radius } from '../theme';
 import { barcodeToMonsterId } from '../constants/barcodes';
+import { getMonsterName } from '../constants/monsters';
 import { RateLimitError } from '../hooks/useHistory';
 
 interface BarcodeScannerModalProps {
@@ -31,10 +32,22 @@ export default function BarcodeScannerModal({
   const [scanned, setScanned] = useState(false);
   const [adding, setAdding] = useState(false);
   const [lastBarcode, setLastBarcode] = useState<string | null>(null);
+  const [successMonster, setSuccessMonster] = useState<string | null>(null);
+  const lastUnknownTime = useRef(0);
+
+  useEffect(() => {
+    if (!visible) {
+      setScanned(false);
+      setAdding(false);
+      setLastBarcode(null);
+      setSuccessMonster(null);
+    }
+  }, [visible]);
 
   const handleBarCodeScanned = useCallback(
     async ({ data }: { data: string }) => {
-      if (scanned || adding) return;
+      if (scanned || adding || successMonster) return;
+      if (Date.now() - lastUnknownTime.current < 2000) return;
       setScanned(true);
       setLastBarcode(data);
 
@@ -44,7 +57,12 @@ export default function BarcodeScannerModal({
         setAdding(true);
         try {
           await onAdd(monsterId, 'camera');
-          onClose();
+          setAdding(false);
+          setSuccessMonster(monsterId);
+          setTimeout(() => {
+            setSuccessMonster(null);
+            onClose();
+          }, 1500);
         } catch (err) {
           if (err instanceof RateLimitError) {
             Alert.alert(
@@ -54,23 +72,23 @@ export default function BarcodeScannerModal({
           } else {
             throw err;
           }
+          setScanned(false);
         } finally {
           setAdding(false);
-          setScanned(false);
         }
       } else {
-        setScanned(false);
+        lastUnknownTime.current = Date.now();
         Alert.alert(
           t('scanner.unknownTitle'),
           t('scanner.unknownMessage', { code: data }),
           [
-            { text: t('history.cancel'), style: 'cancel', onPress: () => setScanned(false) },
-            { text: t('scanner.addManually'), onPress: () => { setScanned(false); onClose(); } },
+            { text: t('history.cancel'), style: 'cancel' },
+            { text: t('scanner.addManually'), onPress: () => { setScanned(false); setLastBarcode(null); onClose(); } },
           ]
         );
       }
     },
-    [scanned, adding, onAdd, onClose, t]
+    [scanned, adding, successMonster, onAdd, onClose, t]
   );
 
   const resetScanner = useCallback(() => {
@@ -82,7 +100,7 @@ export default function BarcodeScannerModal({
 
   if (!permission) {
     return (
-      <Modal visible transparent animationType="slide">
+      <Modal visible transparent animationType="slide" onRequestClose={onClose}>
         <View style={styles.center}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
@@ -92,7 +110,7 @@ export default function BarcodeScannerModal({
 
   if (!permission.granted) {
     return (
-      <Modal visible transparent animationType="slide">
+      <Modal visible transparent animationType="slide" onRequestClose={onClose}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>{t('scanner.title')}</Text>
@@ -113,7 +131,7 @@ export default function BarcodeScannerModal({
   }
 
   return (
-    <Modal visible animationType="slide">
+    <Modal visible animationType="slide" onRequestClose={onClose}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{t('scanner.title')}</Text>
@@ -138,11 +156,18 @@ export default function BarcodeScannerModal({
               <Text style={styles.addingText}>{t('scanner.adding')}</Text>
             </View>
           )}
+          {successMonster && (
+            <View style={styles.successOverlay}>
+              <Ionicons name="checkmark-circle" size={64} color="#27AE60" />
+              <Text style={styles.successText}>{t('scanner.registered')}</Text>
+              <Text style={styles.successMonster}>{getMonsterName(successMonster)}</Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>{t('scanner.hint')}</Text>
-          {lastBarcode && !adding && (
+          {lastBarcode && !adding && !successMonster && (
             <TouchableOpacity style={styles.rescanBtn} onPress={resetScanner}>
               <Text style={styles.rescanText}>{t('scanner.rescan')}</Text>
             </TouchableOpacity>
@@ -205,6 +230,24 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 16,
     fontWeight: '600',
+  },
+  successOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  successText: {
+    color: '#27AE60',
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  successMonster: {
+    color: colors.text,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   permissionBox: {
     flex: 1,

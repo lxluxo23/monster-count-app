@@ -53,7 +53,7 @@ export default function MonsterDetailModal({
   const monsterLegend = mKey ? t(`monsters.${mKey}.legend`) : monster.legend;
 
   return (
-    <Modal visible={visible} transparent animationType="slide" statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="slide" statusBarTranslucent onRequestClose={onClose}>
       <View style={styles.overlay}>
         {/* Solo el backdrop cierra al tocar. El sheet es View puro para que el ScrollView reciba los gestos sin conflicto */}
         <TouchableWithoutFeedback onPress={onClose}>

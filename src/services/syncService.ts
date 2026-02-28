@@ -1,10 +1,69 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import { supabase } from '../lib/supabase';
-import { TABLE_ENTRIES } from '../db/schema';
+import { TABLE_ENTRIES, TABLE_PENDING_DELETES } from '../db/schema';
+
+/**
+ * Procesa los deletes pendientes: intenta borrar en Supabase y limpia la cola local.
+ * Debe ejecutarse ANTES de pull para evitar que los registros eliminados vuelvan.
+ */
+export async function processPendingDeletes(
+  db: SQLiteDatabase,
+  userId: string
+): Promise<{ processed: number }> {
+  try {
+    const rows = await db.getAllAsync<{ id: string }>(
+      `SELECT id FROM ${TABLE_PENDING_DELETES}`
+    );
+    if (rows.length === 0) return { processed: 0 };
+
+    let processed = 0;
+    for (const { id } of rows) {
+      const { error } = await supabase
+        .from('entries')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+
+      if (!error) {
+        await db.runAsync(`DELETE FROM ${TABLE_PENDING_DELETES} WHERE id = ?`, id);
+        processed++;
+      }
+    }
+    return { processed };
+  } catch (e) {
+    const msg = String(e);
+    if (__DEV__ && (msg.includes('no such table') || msg.includes('closed resource'))) {
+      return { processed: 0 };
+    }
+    throw e;
+  }
+}
+
+/**
+ * Añade un id a la cola de deletes pendientes (cuando falla el delete en Supabase).
+ */
+export async function addPendingDelete(
+  db: SQLiteDatabase,
+  id: string
+): Promise<void> {
+  try {
+    await db.runAsync(
+      `INSERT OR IGNORE INTO ${TABLE_PENDING_DELETES} (id) VALUES (?)`,
+      id
+    );
+  } catch (e) {
+    const msg = String(e);
+    if (__DEV__ && (msg.includes('no such table') || msg.includes('closed resource'))) {
+      return;
+    }
+    throw e;
+  }
+}
 
 /**
  * Descarga de Supabase los entries del usuario que no existen localmente.
  * Útil al instalar en un nuevo dispositivo o tras tiempo sin conectividad.
+ * IMPORTANTE: ejecutar processPendingDeletes antes para no re-insertar eliminados.
  */
 export async function pullEntriesFromSupabase(
   db: SQLiteDatabase,

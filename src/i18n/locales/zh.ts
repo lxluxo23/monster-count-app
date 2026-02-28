@@ -55,7 +55,7 @@ const zh = {
     editPlaceholder: '输入你的名字',
     editCancel: '取消',
     editSave: '保存',
-    footer: 'Monster Counter · v1.5',
+    footer: 'Monster Counter · v1.5.1',
   },
   publicProfile: {
     title: '个人资料',
@@ -112,7 +112,7 @@ const zh = {
     showStatsDesc: '其他用户可查看你的总计、连续天数和最爱',
     aboutSection: '关于',
     appName: 'Monster Counter',
-    version: '版本 1.5',
+    version: '版本 1.5.1',
     copyright: 'Monster Energy 罐装饮料记录应用。\n© 2026',
   },
   detail: {
@@ -145,6 +145,7 @@ const zh = {
     addManually: '手动添加',
     adding: '添加中…',
     rescan: '重新扫描',
+    registered: '已登记！',
   },
   rateLimit: {
     title: '已达上限',

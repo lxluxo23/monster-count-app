@@ -56,7 +56,7 @@ export default function SettingsModal({
   } = usePrivacy();
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.sheet}>
           {/* Handle */}

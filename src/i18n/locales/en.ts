@@ -55,7 +55,7 @@ const en = {
     editPlaceholder: 'Enter your name',
     editCancel: 'Cancel',
     editSave: 'Save',
-    footer: 'Monster Counter · v1.5',
+    footer: 'Monster Counter · v1.5.1',
   },
   publicProfile: {
     title: 'Profile',
@@ -112,7 +112,7 @@ const en = {
     showStatsDesc: 'Other users can see your total, streak and favorite on your profile',
     aboutSection: 'ABOUT',
     appName: 'Monster Counter',
-    version: 'Version 1.5',
+    version: 'Version 1.5.1',
     copyright: 'App for tracking your Monster Energy cans.\n© 2026',
   },
   detail: {
@@ -172,6 +172,7 @@ const en = {
     addManually: 'Add manually',
     adding: 'Adding…',
     rescan: 'Scan again',
+    registered: 'Registered!',
   },
   rateLimit: {
     title: 'Limit reached',

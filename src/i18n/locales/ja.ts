@@ -55,7 +55,7 @@ const ja = {
     editPlaceholder: '名前を入力',
     editCancel: 'キャンセル',
     editSave: '保存',
-    footer: 'Monster Counter · v1.5',
+    footer: 'Monster Counter · v1.5.1',
   },
   publicProfile: {
     title: 'プロフィール',
@@ -112,7 +112,7 @@ const ja = {
     showStatsDesc: '他のユーザーが合計・連続日数・お気に入りを見られます',
     aboutSection: 'について',
     appName: 'Monster Counter',
-    version: 'バージョン 1.5',
+    version: 'バージョン 1.5.1',
     copyright: 'Monster Energyの記録アプリ。\n© 2026',
   },
   detail: {
@@ -145,6 +145,7 @@ const ja = {
     addManually: '手動で追加',
     adding: '追加中…',
     rescan: '再スキャン',
+    registered: '登録完了！',
   },
   rateLimit: {
     title: '上限に達しました',

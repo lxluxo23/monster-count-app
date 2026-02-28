@@ -52,7 +52,7 @@ export default function PublicProfileScreen({
   const isGuest = status !== 'authenticated';
 
   return (
-    <Modal visible={visible} animationType="slide" statusBarTranslucent>
+    <Modal visible={visible} animationType="slide" statusBarTranslucent onRequestClose={onClose}>
       <View style={styles.fullScreen}>
         <View style={styles.header}>
             <Text style={styles.title}>{t('publicProfile.title')}</Text>

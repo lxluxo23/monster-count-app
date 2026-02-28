@@ -5,6 +5,26 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.5.1] - 2026-02-26
+
+### Corregido
+
+- **Área segura** – La app ya no se superpone a los botones de navegación del móvil (gestos o botones virtuales). Se usa `SafeAreaProvider` y `useSafeAreaInsets` en el tab bar para respetar el área segura inferior.
+- **Spam del escáner** – Al escanear un código que no es Monster, el mensaje de error ya no se repite constantemente. El escáner se bloquea hasta que el usuario pulse "Escanear de nuevo".
+- **Feedback al registrar** – Al escanear correctamente una Monster, se muestra un overlay de éxito con el nombre del sabor durante 1,5 s antes de cerrar el modal.
+- **Sincronización de eliminados** – Al borrar un registro, ahora se espera correctamente el delete en Supabase. Si falla (offline), se encola en `pending_deletes` y se reintenta en el próximo sync. Evita que los registros eliminados vuelvan al recargar la app.
+- **Botón atrás en modales** – El botón atrás de Android cierra correctamente el perfil público, la info nutricional, Ajustes, el escáner y las estadísticas (uso de `onRequestClose` en lugar de `BackHandler`).
+
+### Añadido
+
+- **Códigos de barras** – Más de 100 códigos nuevos para variantes regionales (Argentina, UK, Australia, etc.): Ultra Zero White (+7), Original Green (+22), Ultra Blue Hawaiian (+1), Classic Zero Sugar (+8), Mango Loco (+58), Aussie Lemonade (+27).
+
+### Base de datos
+
+- **SQLite** – Migración v5: tabla `pending_deletes` para reintentar deletes fallidos en Supabase.
+
+---
+
 ## [1.5.0] - 2026-02-26
 
 ### Añadido
