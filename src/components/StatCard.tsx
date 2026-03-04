@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { colors, radius, spacing } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { radius, spacing } from '../theme';
+import type { ColorPalette } from '../theme';
 
 interface StatCardProps {
   value: number;
@@ -9,6 +11,9 @@ interface StatCardProps {
 }
 
 export function StatCard({ value, label, onPress }: StatCardProps): React.JSX.Element {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+
   const content = (
     <>
       <Text style={styles.value}>{value}</Text>
@@ -27,7 +32,7 @@ export function StatCard({ value, label, onPress }: StatCardProps): React.JSX.El
   return <View style={styles.card}>{content}</View>;
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   card: {
     flex: 1,
     backgroundColor: colors.surface,

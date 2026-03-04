@@ -72,7 +72,7 @@ export function usePrivacy(): {
           await repo.set(KEY_SHOW_STATS, String(val));
         }
       }
-    })().catch(() => {});
+    })().catch((err) => { if (__DEV__) console.warn('[Privacy] Sync falló:', err); });
 
     return () => { cancelled = true; };
   }, [status, user, repo]);

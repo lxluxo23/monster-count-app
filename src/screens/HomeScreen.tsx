@@ -13,10 +13,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { StatCard, MonsterChip } from '../components';
 import { MONSTER_TYPES } from '../constants/monsters';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { spacing, radius } from '../theme';
+import type { ColorPalette } from '../theme';
 import MonsterDetailModal from './MonsterDetailModal';
 import StatsScreen from './StatsScreen';
 import { RateLimitError } from '../hooks/useHistory';
+import { useCaffeineWarning } from '../hooks/useCaffeineWarning';
+import { useWeeklySummary } from '../hooks/useWeeklySummary';
 import type { MonsterType, HistoryEntry } from '../types';
 
 interface HomeScreenProps {
@@ -33,18 +37,23 @@ const cardWidth = (width - spacing.lg * 2 - spacing.md) / 2;
 
 export default function HomeScreen({ total, today, onAdd, history, countByMonsterId, dailyGoal }: HomeScreenProps): React.JSX.Element {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [selected, setSelected] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [detailMonster, setDetailMonster] = useState<MonsterType | null>(null);
   const [showStats, setShowStats] = useState(false);
-  
+  const [caffeineDismissed, setCaffeineDismissed] = useState(false);
+  const { isOverLimit } = useCaffeineWarning(history);
+  const weekly = useWeeklySummary(history);
+  const [weeklyExpanded, setWeeklyExpanded] = useState(false);
+
   // Animaciones
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (selected) {
-      // Aparece con bounce
       Animated.spring(scaleAnim, {
         toValue: 1,
         friction: 6,
@@ -52,7 +61,6 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
         useNativeDriver: true,
       }).start();
 
-      // Pulso continuo
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
@@ -79,8 +87,7 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
   const handleAdd = async (): Promise<void> => {
     if (!selected || adding) return;
     setAdding(true);
-    
-    // Animación de feedback
+
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 0.85,
@@ -154,6 +161,65 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
           </View>
         )}
 
+        {/* 3.2: Resumen semanal */}
+        {weekly.hasData && (
+          <TouchableOpacity
+            style={styles.weeklyCard}
+            onPress={() => setWeeklyExpanded(!weeklyExpanded)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.weeklyHeader}>
+              <Text style={styles.weeklyTitle}>{t('home.weeklySummary')}</Text>
+              <Ionicons
+                name={weeklyExpanded ? 'chevron-up' : 'chevron-down'}
+                size={18}
+                color={colors.textMuted}
+              />
+            </View>
+            {weeklyExpanded && (
+              <View style={styles.weeklyBody}>
+                <View style={styles.weeklyRow}>
+                  <Ionicons name="beer-outline" size={16} color={colors.primary} />
+                  <Text style={styles.weeklyValue}>
+                    {t('home.weeklyCans', { count: weekly.thisWeekCans })}
+                  </Text>
+                </View>
+                <View style={styles.weeklyRow}>
+                  <Ionicons name="flash-outline" size={16} color="#E67E22" />
+                  <Text style={styles.weeklyValue}>
+                    {t('home.weeklyCaffeine', { amount: weekly.caffeineThisWeek })}
+                  </Text>
+                </View>
+                <View style={styles.weeklyRow}>
+                  <Ionicons
+                    name={weekly.change >= 0 ? 'arrow-up' : 'arrow-down'}
+                    size={16}
+                    color={weekly.change >= 0 ? '#E74C3C' : '#27AE60'}
+                  />
+                  <Text style={[styles.weeklyValue, { color: weekly.change >= 0 ? '#E74C3C' : '#27AE60' }]}>
+                    {t('home.weeklyCompare', {
+                      change: `${weekly.change >= 0 ? '+' : ''}${weekly.change}%`,
+                    })}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
+        )}
+
+        {/* 3.1: Banner aviso de cafeína */}
+        {isOverLimit && !caffeineDismissed && (
+          <View style={styles.caffeineBanner}>
+            <View style={styles.caffeineBannerContent}>
+              <Ionicons name="warning" size={20} color="#E67E22" />
+              <Text style={styles.caffeineBannerText}>{t('home.caffeineWarning')}</Text>
+            </View>
+            <TouchableOpacity onPress={() => setCaffeineDismissed(true)} hitSlop={8}>
+              <Ionicons name="close" size={18} color={colors.textMuted} />
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('home.selectMonster')}</Text>
           <View style={styles.grid}>
@@ -185,7 +251,6 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
         ]}
         pointerEvents={selected ? 'auto' : 'none'}
       >
-        {/* Círculos de resplandor */}
         <Animated.View
           style={[
             styles.fabGlow,
@@ -198,7 +263,7 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
             },
           ]}
         />
-        
+
         <TouchableOpacity
           style={[styles.fab, adding && styles.fabAdding]}
           onPress={handleAdd}
@@ -214,7 +279,6 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
           )}
         </TouchableOpacity>
 
-        {/* Indicador de cantidad si hay selección */}
         {selected && !adding && (
           <Animated.View
             style={[
@@ -229,14 +293,12 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
         )}
       </Animated.View>
 
-      {/* Modal info nutricional */}
       <MonsterDetailModal
         monster={detailMonster}
         visible={detailMonster !== null}
         onClose={() => setDetailMonster(null)}
       />
 
-      {/* Estadísticas detalladas */}
       <StatsScreen
         visible={showStats}
         onClose={() => setShowStats(false)}
@@ -247,7 +309,7 @@ export default function HomeScreen({ total, today, onAdd, history, countByMonste
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -320,6 +382,61 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#27AE60',
     textAlign: 'center',
+  },
+  weeklyCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  weeklyHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  weeklyTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  weeklyBody: {
+    marginTop: spacing.md,
+    gap: spacing.sm,
+  },
+  weeklyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  weeklyValue: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    fontWeight: '600',
+  },
+  caffeineBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#E67E22' + '18',
+    borderWidth: 1,
+    borderColor: '#E67E22' + '40',
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.lg,
+    gap: spacing.sm,
+  },
+  caffeineBannerContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  caffeineBannerText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#E67E22',
+    lineHeight: 18,
   },
   section: {
     marginBottom: spacing.xl,

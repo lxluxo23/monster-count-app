@@ -11,11 +11,13 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { spacing, radius } from '../theme';
+import type { ColorPalette } from '../theme';
 import { getMonsterName } from '../constants/monsters';
 import { usePublicProfile } from '../hooks/usePublicProfile';
 import { useAuth } from '../contexts/AuthContext';
-import type { Achievement } from '../hooks/useAchievements';
+import type { Achievement } from '../utils/achievementUtils';
 
 interface PublicProfileScreenProps {
   userId: string | null;
@@ -23,7 +25,8 @@ interface PublicProfileScreenProps {
   onClose: () => void;
 }
 
-function AchievementCard({ a }: { a: Achievement }): React.JSX.Element {
+function AchievementCard({ a, colors }: { a: Achievement; colors: ColorPalette }): React.JSX.Element {
+  const styles = getStyles(colors);
   return (
     <View style={[styles.achCard, a.unlocked && styles.achCardUnlocked]}>
       <Text style={styles.achEmoji}>{a.emoji}</Text>
@@ -46,6 +49,8 @@ export default function PublicProfileScreen({
   onClose,
 }: PublicProfileScreenProps): React.JSX.Element {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { status } = useAuth();
   const { data, loading, error } = usePublicProfile(visible ? userId : null);
 
@@ -139,7 +144,7 @@ export default function PublicProfileScreen({
                     {t('comunidad.achievementsTitle')} ({data.achievements.filter((a) => a.unlocked).length}/{data.achievements.length})
                   </Text>
                   {data.achievements.map((a) => (
-                    <AchievementCard key={a.id} a={a} />
+                    <AchievementCard key={a.id} a={a} colors={colors} />
                   ))}
                 </>
               )}
@@ -157,7 +162,7 @@ export default function PublicProfileScreen({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   fullScreen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -217,7 +222,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
     borderRadius: radius.lg,
     padding: spacing.lg,
     alignItems: 'center',
@@ -227,7 +232,7 @@ const styles = StyleSheet.create({
   favoriteCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
     borderRadius: radius.lg,
     padding: spacing.lg,
     gap: spacing.md,
@@ -252,12 +257,12 @@ const styles = StyleSheet.create({
   },
   achCard: {
     flexDirection: 'row',
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
     borderRadius: radius.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
     gap: spacing.md,
-    opacity: 0.55,
+    opacity: 0.7,
   },
   achCardUnlocked: {
     opacity: 1,

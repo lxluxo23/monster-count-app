@@ -11,7 +11,9 @@ import {
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { spacing, radius } from '../theme';
+import type { ColorPalette } from '../theme';
 import { barcodeToMonsterId } from '../constants/barcodes';
 import { getMonsterName } from '../constants/monsters';
 import { RateLimitError } from '../hooks/useHistory';
@@ -28,6 +30,8 @@ export default function BarcodeScannerModal({
   onAdd,
 }: BarcodeScannerModalProps): React.JSX.Element {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -178,7 +182,7 @@ export default function BarcodeScannerModal({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

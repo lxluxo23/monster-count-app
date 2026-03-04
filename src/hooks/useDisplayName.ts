@@ -73,7 +73,7 @@ export function useDisplayName(): {
         if (!cancelled) setDisplayNameState(googleName);
         await repo.set(KEY_USER_NAME, googleName);
       }
-    })().catch(() => {});
+    })().catch((err) => { if (__DEV__) console.warn('[DisplayName] Sync falló:', err); });
 
     return () => { cancelled = true; };
   }, [status, user, repo]);

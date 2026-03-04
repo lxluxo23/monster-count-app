@@ -1,7 +1,9 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
 import type { MonsterType } from '../types';
-import { colors, radius, spacing } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { radius, spacing } from '../theme';
+import type { ColorPalette } from '../theme';
 import { getMonsterName } from '../constants/monsters';
 
 interface MonsterChipProps {
@@ -12,6 +14,8 @@ interface MonsterChipProps {
 }
 
 export function MonsterChip({ monster, selected, onPress, onLongPress }: MonsterChipProps): React.JSX.Element {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const name = getMonsterName(monster.id);
   return (
     <TouchableOpacity
@@ -39,7 +43,7 @@ export function MonsterChip({ monster, selected, onPress, onLongPress }: Monster
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   chip: {
     flex: 1,
     paddingVertical: spacing.lg,

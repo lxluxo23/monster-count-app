@@ -5,6 +5,73 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.6.0] - 2026-03-02
+
+### Añadido
+
+- **Modo claro/oscuro/sistema** — Nuevo `ThemeContext` con soporte para Dark, Light y System. Persistido en SQLite (key `themeMode`). Todas las pantallas y componentes migrados al patrón `useTheme()` + `getStyles(colors)`.
+- **Selector de idioma manual** — Sección "Idioma" en Ajustes con chips Auto/ES/EN/PT/ZH/JA. Persistido en SQLite (key `appLanguage`). Al seleccionar "Auto" re-detecta desde el sistema.
+- **Filtro por sabor en Historial** — Fila de chips horizontales con color de cada Monster para filtrar la lista. Chip "Todos" para mostrar todo.
+- **Aviso de cafeína** — Banner naranja en Home cuando el consumo del día supera los 400mg recomendados. Dismissible por sesión. Hook `useCaffeineWarning`.
+- **Resumen semanal** — Card colapsable en Home con latas de la semana, cafeína total y comparación porcentual vs semana anterior. Hook `useWeeklySummary`.
+- **Notificación semanal push** — Toggle en Ajustes para recibir un resumen cada lunes a las 10:00. `scheduleWeeklySummary()` en notificationService.
+- **Animación de logros desbloqueados** — Pulse + glow en achievement cards recién desbloqueados. Detecta "nuevos" comparando con AsyncStorage (`unlockedAchievementsShown`).
+- **Avatares en ranking** — Imagen circular (28x28) con fallback a iniciales coloreadas (hash del nombre) en el ranking de usuarios de Comunidad.
+- **Gráficos avanzados** — Migrado de charts manuales a `react-native-gifted-charts`:
+  - Últimos 7 días: `<BarChart>` animado con gradiente
+  - Distribución horaria: `<PieChart>` donut con leyenda (emoji + etiqueta + count + %)
+  - Tendencia mensual: `<BarChart>` con gradiente y labels de count
+  - Por sabor: `<PieChart>` donut con leyenda de colores Monster
+  - Ranking de sabores (Comunidad): `<PieChart>` donut con leyenda y porcentajes
+- **Estado vacío en filtro de Historial** — Mensaje localizado "Sin registros de este sabor" cuando un filtro no tiene resultados. i18n key `history.emptyFilter` en los 5 idiomas.
+- **Layout de chips en Historial** — Chips de filtro integrados como header de la FlatList para evitar problemas de layout flex.
+- **Audio Mood** — Cada Monster ahora tiene canción asociada (Deezer preview). Al abrir el detalle, se reproduce un fragmento si el audio está habilitado en Ajustes. Hooks `useMonsterSound` y `useAudioSettings`. Componente `MusicAnnouncer` con slide-in y mini botón.
+
+### Cambiado
+
+- **Handle del modal de detalle** — Aumentado de 40x4 a 48x6 px para mejor affordance de arrastre.
+- **Leyenda más sutil** — Comilla decorativa reducida de 48px a 32px, color cambiado a textMuted.
+- **Agrupación del menú en Perfil** — Opciones separadas en secciones "CUENTA" (Mis datos, Estadísticas) y "APP" (Ajustes), con logout separado.
+- **Opacidad de logros bloqueados** — Subida de 0.55 a 0.7 en ComunidadScreen.
+- **i18n** — Añadidas 15+ keys nuevas en los 5 idiomas: caffeineWarning, caffeineDismiss, weeklySummary, weeklyCompare, weeklyCans, weeklyCaffeine, filterAll, menuGroupAccount, menuGroupApp, appearanceSection, darkMode, lightMode, systemMode, languageSection, languageAuto, weeklySummaryDesc, emptyFilter.
+- **Versión** — Bump a 1.6.0 en package.json, app.json y los 5 archivos de locale (footer y settings).
+
+### Refactoring
+
+- **`localDayKey()` centralizado** — Extraído a `src/utils/dateUtils.ts` con formato YYYY-MM-DD zero-padded. Eliminadas 3 copias en useHistory, usePublicProfile y useStats.
+- **`calculateStreak()` centralizado** — Extraído a `src/utils/streakUtils.ts`. Eliminadas 3 implementaciones duplicadas.
+- **`buildAchievementList()` unificado** — Extraído a `src/utils/achievementUtils.ts`. Reutilizado en useAchievements y usePublicProfile, eliminando duplicación.
+- **Error handling en hooks Supabase** — Añadido logging en `__DEV__` para usePrivacy, useDisplayName y useGlobalStats (antes `.catch(() => {})`).
+- **Tema dinámico** — Todos los `StyleSheet.create` estáticos convertidos a funciones `getStyles(colors: ColorPalette)` en las 9 pantallas y 5 componentes.
+
+### Dependencias
+
+- **Añadidas**: `react-native-gifted-charts`, `react-native-svg`, `expo-linear-gradient`, `expo-audio`
+- **Eliminadas**: `expo-auth-session`, `expo-web-browser` (no se usaban desde la migración a @react-native-google-signin nativo)
+- **Overrides**: `"expo-asset": "~12.0.12"` — forzamos esta versión porque expo-audio @1.1.1 tiene `peerDep "expo-asset": "*"` que instalaba SDK 55 incompatible con SDK 54
+
+### Corregido
+
+- **Iconos invisibles (Ionicons)** — Añadida precarga explícita `Ionicons.loadFont()` en App.tsx antes de renderizar la app. Sin esto, los iconos podían no aparecer en algunas instalaciones.
+- **Compatibilidad expo-audio** — El override de expo-asset evita el error de versión al instalar expo-audio en SDK 54.
+- **Nutrición de Aussie Lemonade** — Corregidos los valores nutricionales (kcal: 105, caffeine: 155mg, sugar: 24g, sodium: 175mg).
+- **Persistencia del idioma manual** — El selector de idioma ahora persiste correctamente al reiniciar la app. Antes se perdía la preferencia y había que cambiar el idioma dos veces para que se aplicara.
+- **Gráficos en StatsScreen** — Ajustado el ancho de los BarChart (últimos 7 días y tendencia mensual) con `adjustToWidth` y `overflow: hidden` para que se vean completos sin salirse de la card.
+
+### Archivos nuevos
+
+- `src/utils/dateUtils.ts` — `localDayKey()` centralizado
+- `src/utils/streakUtils.ts` — `calculateStreak()` centralizado
+- `src/contexts/ThemeContext.tsx` — proveedor de tema con persistencia SQLite
+- `src/contexts/LanguageContext.tsx` — proveedor de idioma con persistencia SQLite y cambio reactivo
+- `src/hooks/useCaffeineWarning.ts` — aviso de cafeína >400mg
+- `src/hooks/useWeeklySummary.ts` — datos de resumen semanal
+- `src/hooks/useAudioSettings.ts` — settings de audio (enabled, volume)
+- `src/hooks/useMonsterSound.ts` — reproducción de preview Deezer con fetch dinámico de URL
+- `src/components/MusicAnnouncer.tsx` — UI de anuncio musical (slide-in con mini botón)
+
+---
+
 ## [1.5.1] - 2026-02-26
 
 ### Corregido
@@ -145,6 +212,7 @@ y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+[1.6.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.0
 [1.5.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.5.0
 [1.4.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.4.0
 [1.3.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.3.0

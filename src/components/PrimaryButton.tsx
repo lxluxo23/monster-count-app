@@ -1,6 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { colors, radius } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { radius } from '../theme';
+import type { ColorPalette } from '../theme';
 
 interface PrimaryButtonProps {
   title: string;
@@ -13,6 +15,9 @@ export function PrimaryButton({
   onPress,
   disabled = false,
 }: PrimaryButtonProps): React.JSX.Element {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+
   return (
     <TouchableOpacity
       style={[styles.button, disabled && styles.buttonDisabled]}
@@ -25,7 +30,7 @@ export function PrimaryButton({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     paddingVertical: 18,

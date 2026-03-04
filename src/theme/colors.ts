@@ -1,8 +1,24 @@
 /**
  * Paleta y tokens de color de la app.
- * Un solo lugar para mantener consistencia (DRY).
+ * Soporta modo oscuro y claro.
  */
-export const colors = {
+
+export interface ColorPalette {
+  background: string;
+  surface: string;
+  surfaceElevated: string;
+  border: string;
+  primary: string;
+  primaryDark: string;
+  text: string;
+  textSecondary: string;
+  textMuted: string;
+  disabled: string;
+  white: string;
+  black: string;
+}
+
+export const darkColors: ColorPalette = {
   background: '#0D0D0D',
   surface: '#1A1A1A',
   surfaceElevated: '#252525',
@@ -15,7 +31,25 @@ export const colors = {
   disabled: '#333333',
   white: '#FFFFFF',
   black: '#000000',
-} as const;
+};
+
+export const lightColors: ColorPalette = {
+  background: '#F5F5F5',
+  surface: '#FFFFFF',
+  surfaceElevated: '#EEEEEE',
+  border: '#DDDDDD',
+  primary: '#2ECC71',
+  primaryDark: '#27AE60',
+  text: '#1A1A1A',
+  textSecondary: '#555555',
+  textMuted: '#888888',
+  disabled: '#CCCCCC',
+  white: '#FFFFFF',
+  black: '#000000',
+};
+
+/** @deprecated Usa useTheme() en su lugar. Mantenido para compatibilidad temporal. */
+export const colors = darkColors;
 
 export const spacing = {
   xs: 4,
@@ -33,4 +67,4 @@ export const radius = {
   full: 9999,
 } as const;
 
-export type ColorKey = keyof typeof colors;
+export type ColorKey = keyof ColorPalette;

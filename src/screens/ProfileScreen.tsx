@@ -14,9 +14,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { getMonsterName } from '../constants/monsters';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { spacing, radius } from '../theme';
+import type { ColorPalette } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
+import { useAudioSettings } from '../hooks/useAudioSettings';
 import SettingsModal from './SettingsModal';
 import StatsScreen from './StatsScreen';
 import type { HistoryEntry } from '../types';
@@ -49,8 +52,11 @@ export default function ProfileScreen({
   onSetDailyGoal,
 }: ProfileScreenProps): React.JSX.Element {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { status, user, signInWithGoogle, signOut, isSigningIn } = useAuth();
-  const { enabled: notifEnabled, hour: notifHour, setEnabled: setNotifEnabled, setHour: setNotifHour } = useNotifications();
+  const { enabled: notifEnabled, hour: notifHour, setEnabled: setNotifEnabled, setHour: setNotifHour, weeklyEnabled, setWeeklyEnabled } = useNotifications();
+  const { enabled: audioEnabled, volume: audioVolume, setEnabled: setAudioEnabled, setVolume: setAudioVolume } = useAudioSettings();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -97,11 +103,14 @@ export default function ProfileScreen({
     }
   };
 
-  const menuItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; action: MenuAction }[] = [
+  // 2.4: Agrupación del menú
+  const accountItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; action: MenuAction }[] = [
     { icon: 'person-outline', label: t('profile.editName'), action: 'edit' },
     { icon: 'stats-chart-outline', label: t('profile.statsDetail'), action: 'stats' },
+  ];
+
+  const appItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; action: MenuAction }[] = [
     { icon: 'settings-outline', label: t('profile.settings'), action: 'settings' },
-    ...(isAuthenticated ? [{ icon: 'log-out-outline' as const, label: t('profile.logout'), action: 'logout' as MenuAction }] : []),
   ];
 
   return (
@@ -192,10 +201,10 @@ export default function ProfileScreen({
           )}
         </View>
 
-        {/* Menú */}
+        {/* Menú — 2.4: Agrupación */}
         <View style={styles.menuSection}>
-          <Text style={styles.menuTitle}>{t('profile.menuTitle')}</Text>
-          {menuItems.map((item, index, arr) => (
+          <Text style={styles.menuGroupLabel}>{t('profile.menuGroupAccount')}</Text>
+          {accountItems.map((item, index, arr) => (
             <TouchableOpacity
               key={item.action}
               style={[
@@ -205,23 +214,41 @@ export default function ProfileScreen({
               activeOpacity={0.7}
               onPress={() => handleMenuPress(item.action)}
             >
-              <Ionicons
-                name={item.icon}
-                size={22}
-                color={item.action === 'logout' ? '#E74C3C' : colors.textSecondary}
-              />
-              <Text style={[
-                styles.menuLabel,
-                item.action === 'logout' && styles.menuLabelDestructive,
-              ]}>
-                {item.label}
-              </Text>
-              {item.action !== 'logout' && (
-                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-              )}
+              <Ionicons name={item.icon} size={22} color={colors.textSecondary} />
+              <Text style={styles.menuLabel}>{item.label}</Text>
+              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
             </TouchableOpacity>
           ))}
         </View>
+
+        <View style={styles.menuSection}>
+          <Text style={styles.menuGroupLabel}>{t('profile.menuGroupApp')}</Text>
+          {appItems.map((item) => (
+            <TouchableOpacity
+              key={item.action}
+              style={[styles.menuRow, styles.menuRowLast]}
+              activeOpacity={0.7}
+              onPress={() => handleMenuPress(item.action)}
+            >
+              <Ionicons name={item.icon} size={22} color={colors.textSecondary} />
+              <Text style={styles.menuLabel}>{item.label}</Text>
+              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {isAuthenticated && (
+          <View style={styles.menuSection}>
+            <TouchableOpacity
+              style={[styles.menuRow, styles.menuRowLast]}
+              activeOpacity={0.7}
+              onPress={() => handleMenuPress('logout')}
+            >
+              <Ionicons name="log-out-outline" size={22} color="#E74C3C" />
+              <Text style={[styles.menuLabel, styles.menuLabelDestructive]}>{t('profile.logout')}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         <Text style={styles.footer}>{t('profile.footer')}</Text>
       </ScrollView>
@@ -257,7 +284,6 @@ export default function ProfileScreen({
         </View>
       </Modal>
 
-      {/* Estadísticas detalladas */}
       <StatsScreen
         visible={showStats}
         onClose={() => setShowStats(false)}
@@ -265,7 +291,6 @@ export default function ProfileScreen({
         countByMonsterId={countByMonsterId}
       />
 
-      {/* Modal ajustes */}
       <SettingsModal
         visible={showSettings}
         onClose={() => setShowSettings(false)}
@@ -275,12 +300,18 @@ export default function ProfileScreen({
         onSetNotificationHour={setNotifHour}
         dailyGoal={dailyGoal}
         onSetDailyGoal={onSetDailyGoal}
+        weeklySummaryEnabled={weeklyEnabled}
+        onToggleWeeklySummary={setWeeklyEnabled}
+        audioMoodEnabled={audioEnabled}
+        audioMoodVolume={audioVolume}
+        onToggleAudioMood={setAudioEnabled}
+        onSetAudioMoodVolume={setAudioVolume}
       />
     </>
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { paddingBottom: 48 },
   header: { alignItems: 'center', paddingVertical: spacing.xl },
@@ -348,9 +379,11 @@ const styles = StyleSheet.create({
   menuSection: {
     backgroundColor: colors.surface, marginHorizontal: spacing.lg,
     borderRadius: radius.lg, overflow: 'hidden',
+    marginBottom: spacing.md,
   },
-  menuTitle: {
-    fontSize: 13, fontWeight: '600', color: colors.textMuted,
+  menuGroupLabel: {
+    fontSize: 12, fontWeight: '600', color: colors.textMuted,
+    letterSpacing: 0.8,
     paddingHorizontal: spacing.lg, paddingTop: spacing.md, paddingBottom: spacing.sm,
   },
   menuRow: {
@@ -361,7 +394,7 @@ const styles = StyleSheet.create({
   menuRowLast: { borderBottomWidth: 0 },
   menuLabel: { flex: 1, fontSize: 16, color: colors.text, fontWeight: '500' },
   menuLabelDestructive: { color: '#E74C3C' },
-  footer: { textAlign: 'center', fontSize: 12, color: colors.textMuted, marginTop: spacing.xl },
+  footer: { textAlign: 'center', fontSize: 12, color: colors.textMuted, marginTop: spacing.lg },
   modalOverlay: {
     flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center', alignItems: 'center', padding: spacing.lg,
@@ -370,15 +403,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface, borderRadius: radius.lg,
     padding: spacing.lg, width: '100%', maxWidth: 400,
   },
-  modalContentLarge: { maxHeight: '80%' },
-  modalHeader: {
-    flexDirection: 'row', justifyContent: 'space-between',
-    alignItems: 'center', marginBottom: spacing.lg,
-  },
   modalTitle: { fontSize: 20, fontWeight: '800', color: colors.text },
   input: {
     backgroundColor: colors.background, borderRadius: radius.md,
-    padding: spacing.md, fontSize: 16, color: colors.text, marginBottom: spacing.lg,
+    padding: spacing.md, fontSize: 16, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.md,
   },
   modalButtons: { flexDirection: 'row', gap: spacing.md },
   modalButton: {

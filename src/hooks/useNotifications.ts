@@ -5,10 +5,13 @@ import {
   requestNotificationPermission,
   scheduleDailyReminder,
   cancelDailyReminder,
+  scheduleWeeklySummary,
+  cancelWeeklySummary,
 } from '../services/notificationService';
 
 const KEY_ENABLED = 'notificationsEnabled';
 const KEY_HOUR = 'notificationHour';
+const KEY_WEEKLY = 'weeklySummaryEnabled';
 const DEFAULT_HOUR = 12;
 
 export function useNotifications(): {
@@ -16,6 +19,8 @@ export function useNotifications(): {
   hour: number;
   setEnabled: (value: boolean) => Promise<void>;
   setHour: (hour: number) => Promise<void>;
+  weeklyEnabled: boolean;
+  setWeeklyEnabled: (value: boolean) => Promise<void>;
   loading: boolean;
 } {
   const db = useSQLiteContext();
@@ -23,15 +28,17 @@ export function useNotifications(): {
 
   const [enabled, setEnabledState] = useState(false);
   const [hour, setHourState] = useState(DEFAULT_HOUR);
+  const [weeklyEnabled, setWeeklyEnabledState] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([repo.get(KEY_ENABLED), repo.get(KEY_HOUR)]).then(
-      ([enabledVal, hourVal]) => {
+    Promise.all([repo.get(KEY_ENABLED), repo.get(KEY_HOUR), repo.get(KEY_WEEKLY)]).then(
+      ([enabledVal, hourVal, weeklyVal]) => {
         if (cancelled) return;
         if (enabledVal !== null) setEnabledState(enabledVal === 'true');
         if (hourVal !== null) setHourState(Number(hourVal));
+        if (weeklyVal !== null) setWeeklyEnabledState(weeklyVal === 'true');
         setLoading(false);
       }
     );
@@ -66,5 +73,20 @@ export function useNotifications(): {
     [repo, enabled]
   );
 
-  return { enabled, hour, setEnabled, setHour, loading };
+  const setWeeklyEnabled = useCallback(
+    async (value: boolean) => {
+      if (value) {
+        const granted = await requestNotificationPermission();
+        if (!granted) return;
+        await scheduleWeeklySummary();
+      } else {
+        await cancelWeeklySummary();
+      }
+      setWeeklyEnabledState(value);
+      await repo.set(KEY_WEEKLY, String(value));
+    },
+    [repo]
+  );
+
+  return { enabled, hour, setEnabled, setHour, weeklyEnabled, setWeeklyEnabled, loading };
 }

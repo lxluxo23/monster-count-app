@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, radius, spacing } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { radius, spacing } from '../theme';
+import type { ColorPalette } from '../theme';
 
 interface HistoryCardProps {
   title: string;
@@ -8,6 +10,9 @@ interface HistoryCardProps {
 }
 
 export function HistoryCard({ title, dateLabel }: HistoryCardProps): React.JSX.Element {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
@@ -16,7 +21,7 @@ export function HistoryCard({ title, dateLabel }: HistoryCardProps): React.JSX.E
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.md,

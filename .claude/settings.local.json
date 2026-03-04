@@ -24,7 +24,17 @@
       "Bash(./gradlew:*)",
       "Bash(test:*)",
       "WebFetch(domain:monster-energy.fandom.com)",
-      "WebFetch(domain:www.theimpulsivebuy.com)"
+      "WebFetch(domain:www.theimpulsivebuy.com)",
+      "Bash(./gradlew.bat app:assembleDebug:*)",
+      "Bash(./gradlew.bat clean:*)",
+      "Bash(python3:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:api.deezer.com)",
+      "Bash(npm ls:*)",
+      "Bash(npx expo-modules-autolinking:*)",
+      "Bash(npm info:*)",
+      "Bash(npm explain:*)",
+      "Bash(rm:*)"
     ]
   }
 }

@@ -3,7 +3,7 @@
     "name": "Monster Counter",
     "slug": "monster-counter",
     "scheme": "monstercounter",
-    "version": "1.5.1",
+    "version": "1.6.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -49,7 +49,8 @@
         {
           "cameraPermission": "Monster Counter necesita la cámara para escanear códigos de barras."
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "extra": {
       "eas": {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,8 +11,13 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { spacing, radius } from '../theme';
+import type { ColorPalette } from '../theme';
 import { MONSTER_I18N_KEY } from '../constants/monsters';
+import { useMonsterSound } from '../hooks/useMonsterSound';
+import { useAudioSettings } from '../hooks/useAudioSettings';
+import MusicAnnouncer from '../components/MusicAnnouncer';
 import type { MonsterType } from '../types';
 
 interface MonsterDetailModalProps {
@@ -25,9 +30,11 @@ interface NutritionRowProps {
   label: string;
   value: string;
   icon: string;
+  colors: ColorPalette;
 }
 
-function NutritionRow({ label, value, icon }: NutritionRowProps): React.JSX.Element {
+function NutritionRow({ label, value, icon, colors }: NutritionRowProps): React.JSX.Element {
+  const styles = getStyles(colors);
   return (
     <View style={styles.nutritionRow}>
       <Text style={styles.nutritionIcon}>{icon}</Text>
@@ -43,6 +50,20 @@ export default function MonsterDetailModal({
   onClose,
 }: MonsterDetailModalProps): React.JSX.Element {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+  const { enabled: audioEnabled, volume } = useAudioSettings();
+  const { isPlaying, toggle } = useMonsterSound(monster?.audio?.deezerTrackId, visible, audioEnabled, volume);
+  const [announcerVisible, setAnnouncerVisible] = useState(false);
+
+  // Show announcer when modal opens with audio
+  React.useEffect(() => {
+    if (visible && monster?.audio) {
+      setAnnouncerVisible(true);
+    } else {
+      setAnnouncerVisible(false);
+    }
+  }, [visible, monster?.audio]);
 
   if (!monster) return <></>;
 
@@ -55,12 +76,11 @@ export default function MonsterDetailModal({
   return (
     <Modal visible={visible} transparent animationType="slide" statusBarTranslucent onRequestClose={onClose}>
       <View style={styles.overlay}>
-        {/* Solo el backdrop cierra al tocar. El sheet es View puro para que el ScrollView reciba los gestos sin conflicto */}
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.backdrop} />
         </TouchableWithoutFeedback>
         <View style={[styles.sheet, { borderTopColor: monster.color }]}>
-          {/* Handle */}
+          {/* Handle — 2.2: más grande */}
           <View style={styles.handle} />
 
           {/* Header con imagen */}
@@ -88,7 +108,7 @@ export default function MonsterDetailModal({
               <Text style={styles.description}>{monsterDescription}</Text>
             )}
 
-            {/* Leyenda de la lata */}
+            {/* Leyenda de la lata — 2.3: más sutil */}
             {monsterLegend && (
               <>
                 <Text style={styles.sectionLabel}>{t('detail.legend')}</Text>
@@ -104,29 +124,39 @@ export default function MonsterDetailModal({
               <>
                 <Text style={styles.sectionLabel}>{t('detail.nutritionTitle', { volume: n.volume })}</Text>
                 <View style={styles.nutritionCard}>
-                  <NutritionRow label={t('detail.calories')} value={`${n.kcal} kcal`} icon="🔥" />
+                  <NutritionRow label={t('detail.calories')} value={`${n.kcal} kcal`} icon="🔥" colors={colors} />
                   <View style={styles.divider} />
-                  <NutritionRow label={t('detail.caffeine')} value={`${n.caffeine} mg`} icon="⚡" />
+                  <NutritionRow label={t('detail.caffeine')} value={`${n.caffeine} mg`} icon="⚡" colors={colors} />
                   <View style={styles.divider} />
-                  <NutritionRow label={t('detail.sugar')} value={`${n.sugar} g`} icon="🍬" />
+                  <NutritionRow label={t('detail.sugar')} value={`${n.sugar} g`} icon="🍬" colors={colors} />
                   <View style={styles.divider} />
-                  <NutritionRow label={t('detail.sodium')} value={`${n.sodium} mg`} icon="🧂" />
+                  <NutritionRow label={t('detail.sodium')} value={`${n.sodium} mg`} icon="🧂" colors={colors} />
                 </View>
 
-                {/* Aviso cafeína */}
                 <Text style={styles.disclaimer}>{t('detail.disclaimer')}</Text>
               </>
             )}
 
             <View style={{ height: spacing.xl }} />
           </ScrollView>
+
+          {monster.audio && (
+            <MusicAnnouncer
+              song={monster.audio.song}
+              artist={monster.audio.artist}
+              visible={announcerVisible}
+              monsterColor={monster.color}
+              isPlaying={isPlaying}
+              onToggle={toggle}
+            />
+          )}
         </View>
       </View>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   overlay: {
     flex: 1,
     flexDirection: 'column',
@@ -145,9 +175,9 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   handle: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
+    width: 48,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: colors.border,
     alignSelf: 'center',
     marginTop: spacing.md,
@@ -227,10 +257,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   legendQuote: {
-    fontSize: 48,
-    color: colors.primary,
+    fontSize: 32,
+    color: colors.textMuted,
     fontWeight: '800',
-    lineHeight: 40,
+    lineHeight: 28,
     marginBottom: spacing.sm,
   },
   legendText: {

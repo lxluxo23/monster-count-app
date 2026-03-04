@@ -11,6 +11,7 @@ export interface UserRankEntry {
   userId: string;
   displayName: string;
   count: number;
+  avatarUrl?: string;
 }
 
 export interface GlobalStats {
@@ -79,19 +80,24 @@ export function useGlobalStats(): GlobalStats {
 
       // Fetch profiles: display_name + show_in_ranking (para respetar privacidad)
       const userIds = Object.keys(userCountMap);
-      const profileMap: Record<string, { displayName: string; showInRanking: boolean }> = {};
+      const profileMap: Record<string, { displayName: string; showInRanking: boolean; avatarUrl?: string }> = {};
 
       if (userIds.length > 0) {
         const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
-          .select('id, display_name, show_in_ranking')
+          .select('id, display_name, show_in_ranking, avatar_url')
           .in('id', userIds);
+
+        if (profilesError) {
+          if (__DEV__) console.warn('[GlobalStats] Error al cargar profiles:', profilesError.message);
+        }
 
         for (const p of profiles ?? []) {
           const showInRanking = p.show_in_ranking !== false; // default true si null
           profileMap[p.id] = {
             displayName: (p.display_name as string) || 'Usuario',
             showInRanking,
+            avatarUrl: (p.avatar_url as string) || undefined,
           };
         }
       }
@@ -104,6 +110,7 @@ export function useGlobalStats(): GlobalStats {
             userId: uid,
             displayName: profileMap[uid]?.displayName ?? 'Usuario',
             count,
+            avatarUrl: profileMap[uid]?.avatarUrl,
           }))
           .sort((a, b) => b.count - a.count)
           .slice(0, 10);

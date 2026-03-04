@@ -14,6 +14,7 @@ Notifications.setNotificationHandler({
 });
 
 const DAILY_REMINDER_ID = 'monster-daily-reminder';
+const WEEKLY_SUMMARY_ID = 'monster-weekly-summary';
 const CHANNEL_ID = 'daily-reminder';
 
 async function ensureAndroidChannel(): Promise<void> {
@@ -56,4 +57,27 @@ export async function scheduleDailyReminder(hour: number): Promise<void> {
 
 export async function cancelDailyReminder(): Promise<void> {
   await Notifications.cancelScheduledNotificationAsync(DAILY_REMINDER_ID).catch(() => {});
+}
+
+export async function scheduleWeeklySummary(): Promise<void> {
+  await ensureAndroidChannel();
+  await cancelWeeklySummary();
+  await Notifications.scheduleNotificationAsync({
+    identifier: WEEKLY_SUMMARY_ID,
+    content: {
+      title: i18n.t('notification.title'),
+      body: i18n.t('home.weeklySummary'),
+      ...(Platform.OS === 'android' && { channelId: CHANNEL_ID }),
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+      weekday: 2, // Monday (1=Sun, 2=Mon in expo-notifications)
+      hour: 10,
+      minute: 0,
+    },
+  });
+}
+
+export async function cancelWeeklySummary(): Promise<void> {
+  await Notifications.cancelScheduledNotificationAsync(WEEKLY_SUMMARY_ID).catch(() => {});
 }

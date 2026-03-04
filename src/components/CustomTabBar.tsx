@@ -3,7 +3,9 @@ import { View, TouchableOpacity, StyleSheet, Platform, Text } from 'react-native
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { spacing } from '../theme';
+import type { ColorPalette } from '../theme';
 
 interface CustomTabBarProps extends BottomTabBarProps {
   onScanPress: () => void;
@@ -12,6 +14,8 @@ interface CustomTabBarProps extends BottomTabBarProps {
 export function CustomTabBar({ state, descriptors, navigation, onScanPress }: CustomTabBarProps): React.JSX.Element {
   const SCAN_INDEX = 2; // Home, History, Scan, Community, Profile
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   return (
     <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, Platform.OS === 'ios' ? 28 : 12) }]}>
@@ -80,7 +84,7 @@ export function CustomTabBar({ state, descriptors, navigation, onScanPress }: Cu
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: colors.surface,

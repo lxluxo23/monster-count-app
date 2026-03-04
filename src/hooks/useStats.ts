@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { localDayKey } from '../utils/dateUtils';
 import type { HistoryEntry } from '../types';
 
 export interface DayBar {
@@ -29,10 +30,6 @@ export interface Stats {
   averagePerActiveDay: number;
   averagePerWeek: number;
   verifiedCount: number; // Entradas por cámara (más verificables)
-}
-
-function localDayKey(d: Date): string {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 
 export function useStats(history: HistoryEntry[]): Stats {

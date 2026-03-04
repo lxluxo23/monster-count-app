@@ -10,7 +10,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { colors, spacing, radius } from '../theme';
+import { useTheme, type ThemeMode } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { spacing, radius } from '../theme';
+import type { ColorPalette } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
 import { usePrivacy } from '../hooks/usePrivacy';
 
@@ -23,6 +26,28 @@ const HOUR_PRESETS = [
 
 const GOAL_PRESETS = [0, 1, 2, 3, 4, 5];
 
+const LANGUAGE_OPTIONS = [
+  { code: 'auto', label: 'Auto' },
+  { code: 'es', label: 'ES' },
+  { code: 'en', label: 'EN' },
+  { code: 'pt', label: 'PT' },
+  { code: 'zh', label: 'ZH' },
+  { code: 'ja', label: 'JA' },
+];
+
+const THEME_OPTIONS: { mode: ThemeMode; labelKey: string }[] = [
+  { mode: 'dark', labelKey: 'settings.darkMode' },
+  { mode: 'light', labelKey: 'settings.lightMode' },
+  { mode: 'system', labelKey: 'settings.systemMode' },
+];
+
+const VOLUME_PRESETS = [
+  { label: '25%', value: 0.25 },
+  { label: '50%', value: 0.5 },
+  { label: '75%', value: 0.75 },
+  { label: '100%', value: 1.0 },
+];
+
 interface SettingsModalProps {
   visible: boolean;
   onClose: () => void;
@@ -32,6 +57,12 @@ interface SettingsModalProps {
   onSetNotificationHour: (hour: number) => Promise<void>;
   dailyGoal: number;
   onSetDailyGoal: (value: number) => Promise<void>;
+  weeklySummaryEnabled: boolean;
+  onToggleWeeklySummary: (value: boolean) => Promise<void>;
+  audioMoodEnabled: boolean;
+  audioMoodVolume: number;
+  onToggleAudioMood: (value: boolean) => Promise<void>;
+  onSetAudioMoodVolume: (value: number) => Promise<void>;
 }
 
 export default function SettingsModal({
@@ -43,8 +74,17 @@ export default function SettingsModal({
   onSetNotificationHour,
   dailyGoal,
   onSetDailyGoal,
+  weeklySummaryEnabled,
+  onToggleWeeklySummary,
+  audioMoodEnabled,
+  audioMoodVolume,
+  onToggleAudioMood,
+  onSetAudioMoodVolume,
 }: SettingsModalProps): React.JSX.Element {
   const { t } = useTranslation();
+  const { colors, mode: themeMode, setMode: setThemeMode } = useTheme();
+  const { language: selectedLang, setLanguage } = useLanguage();
+  const styles = getStyles(colors);
   const { status } = useAuth();
   const {
     showInRanking,
@@ -59,10 +99,8 @@ export default function SettingsModal({
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.sheet}>
-          {/* Handle */}
           <View style={styles.handle} />
 
-          {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>{t('settings.title')}</Text>
             <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
@@ -71,6 +109,64 @@ export default function SettingsModal({
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
+            {/* APARIENCIA — 3.3 */}
+            <Text style={styles.sectionLabel}>{t('settings.appearanceSection')}</Text>
+            <View style={styles.card}>
+              <View style={styles.presetWrapNoBorder}>
+                <View style={styles.presets}>
+                  {THEME_OPTIONS.map((opt) => (
+                    <TouchableOpacity
+                      key={opt.mode}
+                      style={[
+                        styles.presetChip,
+                        themeMode === opt.mode && styles.presetChipActive,
+                      ]}
+                      onPress={() => setThemeMode(opt.mode)}
+                      activeOpacity={0.7}
+                    >
+                      <Text
+                        style={[
+                          styles.presetChipText,
+                          themeMode === opt.mode && styles.presetChipTextActive,
+                        ]}
+                      >
+                        {t(opt.labelKey)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
+
+            {/* IDIOMA — 3.4 */}
+            <Text style={styles.sectionLabel}>{t('settings.languageSection')}</Text>
+            <View style={styles.card}>
+              <View style={styles.presetWrapNoBorder}>
+                <View style={styles.presets}>
+                  {LANGUAGE_OPTIONS.map((opt) => (
+                    <TouchableOpacity
+                      key={opt.code}
+                      style={[
+                        styles.presetChip,
+                        selectedLang === opt.code && styles.presetChipActive,
+                      ]}
+                      onPress={() => setLanguage(opt.code as 'auto' | 'es' | 'en' | 'pt' | 'zh' | 'ja')}
+                      activeOpacity={0.7}
+                    >
+                      <Text
+                        style={[
+                          styles.presetChipText,
+                          selectedLang === opt.code && styles.presetChipTextActive,
+                        ]}
+                      >
+                        {opt.code === 'auto' ? t('settings.languageAuto') : opt.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
+
             {/* NOTIFICACIONES */}
             <Text style={styles.sectionLabel}>{t('settings.notificationsSection')}</Text>
             <View style={styles.card}>
@@ -112,6 +208,18 @@ export default function SettingsModal({
                   </View>
                 </View>
               )}
+
+              <View style={[styles.row, styles.rowBorder]}>
+                <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
+                <Text style={styles.rowLabel}>{t('settings.weeklySummary')}</Text>
+                <Switch
+                  value={weeklySummaryEnabled}
+                  onValueChange={onToggleWeeklySummary}
+                  trackColor={{ false: colors.border, true: colors.primary + '80' }}
+                  thumbColor={weeklySummaryEnabled ? colors.primary : colors.textMuted}
+                />
+              </View>
+              <Text style={styles.privacyDesc}>{t('settings.weeklySummaryDesc')}</Text>
             </View>
 
             {/* META DIARIA */}
@@ -146,6 +254,50 @@ export default function SettingsModal({
                   ))}
                 </View>
               </View>
+            </View>
+
+            {/* AUDIO MOOD */}
+            <Text style={styles.sectionLabel}>{t('settings.audioSection')}</Text>
+            <View style={styles.card}>
+              <View style={styles.row}>
+                <Ionicons name="musical-notes-outline" size={20} color={colors.textSecondary} />
+                <Text style={styles.rowLabel}>{t('settings.audioMood')}</Text>
+                <Switch
+                  value={audioMoodEnabled}
+                  onValueChange={onToggleAudioMood}
+                  trackColor={{ false: colors.border, true: colors.primary + '80' }}
+                  thumbColor={audioMoodEnabled ? colors.primary : colors.textMuted}
+                />
+              </View>
+              <Text style={styles.privacyDesc}>{t('settings.audioMoodDesc')}</Text>
+
+              {audioMoodEnabled && (
+                <View style={styles.presetWrap}>
+                  <Text style={styles.presetLabel}>{t('settings.audioVolume')}</Text>
+                  <View style={styles.presets}>
+                    {VOLUME_PRESETS.map((p) => (
+                      <TouchableOpacity
+                        key={p.value}
+                        style={[
+                          styles.presetChip,
+                          audioMoodVolume === p.value && styles.presetChipActive,
+                        ]}
+                        onPress={() => onSetAudioMoodVolume(p.value)}
+                        activeOpacity={0.7}
+                      >
+                        <Text
+                          style={[
+                            styles.presetChipText,
+                            audioMoodVolume === p.value && styles.presetChipTextActive,
+                          ]}
+                        >
+                          {p.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              )}
             </View>
 
             {/* PRIVACIDAD */}
@@ -208,7 +360,7 @@ export default function SettingsModal({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorPalette) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',
@@ -269,6 +421,9 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.border,
     paddingTop: spacing.md,
+  },
+  presetWrapNoBorder: {
+    paddingVertical: spacing.md,
   },
   presetLabel: { fontSize: 13, color: colors.textMuted, marginBottom: spacing.sm },
   presets: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },

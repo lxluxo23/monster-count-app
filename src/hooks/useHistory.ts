@@ -6,6 +6,8 @@ import { syncAchievementsToSupabase } from '../services/achievementSyncService';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { checkRateLimit } from './useRateLimit';
+import { localDayKey } from '../utils/dateUtils';
+import { calculateStreak } from '../utils/streakUtils';
 import type { HistoryEntry, EntrySource } from '../types';
 
 export interface RateLimitConfig {
@@ -31,11 +33,6 @@ function isSameDay(a: Date, b: Date): boolean {
     a.getMonth() === b.getMonth() &&
     a.getFullYear() === b.getFullYear()
   );
-}
-
-// Clave de día en hora local para calcular rachas
-function localDayKey(date: Date): string {
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
 export function useHistory(rateLimit?: RateLimitConfig): {
@@ -100,18 +97,7 @@ export function useHistory(rateLimit?: RateLimitConfig): {
     for (const e of history) {
       countByMonsterId[e.monsterId] = (countByMonsterId[e.monsterId] ?? 0) + 1;
     }
-    const streak = (() => {
-      const dayKeys = new Set(history.map((e) => localDayKey(new Date(e.date))));
-      let count = 0;
-      const ref = new Date();
-      for (let i = 0; i < 365; i++) {
-        const d = new Date(ref);
-        d.setDate(d.getDate() - i);
-        if (dayKeys.has(localDayKey(d))) count++;
-        else break;
-      }
-      return count;
-    })();
+    const streak = calculateStreak(history);
 
     void syncAchievementsToSupabase(user.id, history, total, streak, countByMonsterId);
   }, [status, user, history]);
@@ -177,22 +163,7 @@ export function useHistory(rateLimit?: RateLimitConfig): {
       : null;
 
   // Racha: días consecutivos (incluyendo hoy) con al menos un entry
-  const streak = useMemo(() => {
-    if (history.length === 0) return 0;
-    const dayKeys = new Set(history.map((e) => localDayKey(new Date(e.date))));
-    let count = 0;
-    const ref = new Date();
-    for (let i = 0; i < 365; i++) {
-      const d = new Date(ref);
-      d.setDate(d.getDate() - i);
-      if (dayKeys.has(localDayKey(d))) {
-        count++;
-      } else {
-        break;
-      }
-    }
-    return count;
-  }, [history]);
+  const streak = useMemo(() => calculateStreak(history), [history]);
 
   return { history, loading, add, remove, total, today, streak, countByMonsterId, favoriteMonsterId };
 }

@@ -29,6 +29,13 @@ export interface MonsterNutrition {
   volume: number;   // ml
 }
 
+export interface MonsterAudio {
+  song: string;
+  artist: string;
+  album: string;
+  deezerTrackId: number;
+}
+
 export interface MonsterType {
   id: string;
   name?: string;
@@ -38,4 +45,5 @@ export interface MonsterType {
   description?: string;
   legend?: string;
   nutrition?: MonsterNutrition;
+  audio?: MonsterAudio;
 }
