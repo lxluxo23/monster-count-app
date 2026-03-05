@@ -3,7 +3,7 @@
     "name": "Monster Counter",
     "slug": "monster-counter",
     "scheme": "monstercounter",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",

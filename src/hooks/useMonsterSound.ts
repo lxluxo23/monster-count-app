@@ -1,19 +1,29 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
+
+/** Track metadata resolved at runtime from the Deezer API. */
+export interface ResolvedTrack {
+  song: string;
+  artist: string;
+  previewUrl: string;
+  /** Album cover URL (small, ~56px) from Deezer. */
+  albumCover: string | null;
+}
 
 interface UseMonsterSoundReturn {
   isPlaying: boolean;
   isLoading: boolean;
   toggle: () => void;
+  /** The randomly-selected track for this session (null while loading / if none). */
+  currentTrack: ResolvedTrack | null;
 }
 
 /**
- * Fetches a fresh preview URL from the Deezer public API.
- * Preview URLs contain temporary tokens that expire, so we resolve them at runtime.
+ * Fetches track metadata + preview URL from the Deezer public API.
  */
-async function fetchPreviewUrl(trackId: number): Promise<string | null> {
+async function fetchTrack(trackId: number): Promise<ResolvedTrack | null> {
   try {
-    console.log(`[MonsterSound] Fetching preview for track ${trackId}...`);
+    console.log(`[MonsterSound] Fetching track ${trackId}...`);
     const res = await fetch(`https://api.deezer.com/track/${trackId}`);
     if (!res.ok) {
       console.warn(`[MonsterSound] Deezer API returned ${res.status}`);
@@ -24,17 +34,30 @@ async function fetchPreviewUrl(trackId: number): Promise<string | null> {
       console.warn('[MonsterSound] Deezer API error:', data.error);
       return null;
     }
-    const url = data.preview as string | undefined;
-    console.log(`[MonsterSound] Preview URL: ${url ? 'OK' : 'none'}`);
-    return url ?? null;
+    const preview = data.preview as string | undefined;
+    if (!preview) {
+      console.warn('[MonsterSound] No preview URL available');
+      return null;
+    }
+    return {
+      song: data.title ?? 'Unknown',
+      artist: data.artist?.name ?? 'Unknown',
+      previewUrl: preview,
+      albumCover: data.album?.cover_small ?? data.album?.cover ?? null,
+    };
   } catch (err) {
     console.warn('[MonsterSound] Fetch failed:', err);
     return null;
   }
 }
 
+/** Pick a random element from an array. */
+function pickRandom<T>(arr: readonly T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export function useMonsterSound(
-  deezerTrackId: number | undefined,
+  trackIds: number[] | undefined,
   shouldPlay: boolean,
   audioEnabled: boolean = true,
   volume: number = 0.7,
@@ -43,62 +66,81 @@ export function useMonsterSound(
 
   const [source, setSource] = useState<{ uri: string } | null>(null);
   const [fetching, setFetching] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState<ResolvedTrack | null>(null);
   const hasAutoPlayed = useRef(false);
 
-  // Resolve preview URL when modal opens; clear immediately on close/change
+  // Stable key so the effect only re-runs when the actual IDs change
+  const tracksKey = useMemo(
+    () => trackIds?.join(',') ?? '',
+    [trackIds],
+  );
+
+  // Pick a random track ID, fetch metadata + preview URL
   useEffect(() => {
     setSource(null);
+    setCurrentTrack(null);
     hasAutoPlayed.current = false;
 
-    if (!active || !deezerTrackId) {
+    if (!active || !trackIds || trackIds.length === 0) {
       setFetching(false);
       return;
     }
 
+    const selectedId = pickRandom(trackIds);
     let cancelled = false;
     setFetching(true);
 
-    fetchPreviewUrl(deezerTrackId).then((url) => {
+    fetchTrack(selectedId).then((track) => {
       if (cancelled) return;
       setFetching(false);
-      if (url) {
-        setSource({ uri: url });
+      if (track) {
+        setCurrentTrack(track);
+        setSource({ uri: track.previewUrl });
       }
     });
 
     return () => { cancelled = true; };
-  }, [active, deezerTrackId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, tracksKey]);
 
   const player = useAudioPlayer(source);
   const status = useAudioPlayerStatus(player);
+  const volumeRef = useRef(volume);
+  volumeRef.current = volume;
 
   const isPlaying = status.playing;
   const isLoading = fetching || (!!source && !status.isLoaded);
 
-  // Apply volume changes
+  // Apply volume — run on every volume change and whenever player becomes loaded
   useEffect(() => {
-    if (status.isLoaded) {
+    if (!status.isLoaded) return;
+    try {
       player.volume = volume;
-    }
+    } catch (_) { /* player may have been released */ }
   }, [volume, status.isLoaded, player]);
 
   // Auto-play once when the NEW source is loaded
   useEffect(() => {
     if (source && active && status.isLoaded && !hasAutoPlayed.current) {
       hasAutoPlayed.current = true;
-      player.volume = volume;
-      player.play();
+      try {
+        player.volume = volumeRef.current;
+        player.play();
+      } catch (_) { /* player may have been released */ }
     }
-  }, [source, active, status.isLoaded, player, volume]);
+  }, [source, active, status.isLoaded, player]);
 
   const toggle = useCallback(() => {
     if (!status.isLoaded) return;
-    if (status.playing) {
-      player.pause();
-    } else {
-      player.play();
-    }
+    try {
+      player.volume = volumeRef.current;
+      if (status.playing) {
+        player.pause();
+      } else {
+        player.play();
+      }
+    } catch (_) { /* player may have been released */ }
   }, [player, status.isLoaded, status.playing]);
 
-  return { isPlaying, isLoading, toggle };
+  return { isPlaying, isLoading, toggle, currentTrack };
 }

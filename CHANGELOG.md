@@ -5,6 +5,30 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.6.1] - 2026-03-04
+
+### Añadido
+
+- **Playlist aleatoria por Monster** — `audio` ahora es un array de Deezer track IDs. Cada vez que se abre el detalle, se elige una canción al azar del pool. Añadir canciones es tan simple como agregar un ID más al array.
+- **Metadatos dinámicos desde Deezer** — Ya no se hardcodean nombre, artista ni álbum. El hook `useMonsterSound` resuelve `title`, `artist.name` y `album.cover_small` en runtime con una sola llamada al API.
+- **Album art en MusicAnnouncer** — La portada del álbum (circular, rotando tipo vinilo) reemplaza al icono de notas musicales. Fallback al icono si la imagen falla o no está disponible.
+- **Safe area en MusicAnnouncer** — El componente usa `useSafeAreaInsets` para posicionarse por encima de la barra de navegación de Android.
+- **Safe area en MonsterDetailModal** — Padding inferior del ScrollView respeta `insets.bottom`, evitando que los botones de navegación oculten contenido.
+
+### Cambiado
+
+- **Posición del MusicAnnouncer** — Movido de abajo-izquierda (dentro del sheet) a abajo-derecha (en el overlay), flotando sobre el modal con slide-in desde la derecha.
+- **Rotación del icono más lenta** — De 2.4s a 8s por vuelta, efecto vinilo más suave.
+- **Volumen por defecto** — Cambiado de 0.7 (70%) a 0.25 (25%) para instalaciones nuevas. El usuario lo sube manualmente si lo desea.
+- **Tipo `MonsterAudio` eliminado** — Simplificado: `MonsterType.audio` es ahora `number[]` (Deezer track IDs). Se eliminó la interfaz `MonsterAudio` por innecesaria.
+
+### Corregido
+
+- **Volumen no se aplicaba** — `useAudioSettings` solo leía de SQLite al montar, pero `<Modal>` nunca desmonta sus hijos. Ahora acepta `refreshKey` para re-leer cada vez que el modal se abre, aplicando el volumen correcto.
+- **Volumen robusto en player** — Se aplica `player.volume` al cargar, al hacer play/pause y ante cada cambio de valor, con `volumeRef` para evitar stale closures.
+
+---
+
 ## [1.6.0] - 2026-03-02
 
 ### Añadido
@@ -212,6 +236,7 @@ y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+[1.6.1]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.1
 [1.6.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.0
 [1.5.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.5.0
 [1.4.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.4.0

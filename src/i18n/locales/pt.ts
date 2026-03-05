@@ -65,7 +65,7 @@ const pt = {
     editPlaceholder: 'Digite seu nome',
     editCancel: 'Cancelar',
     editSave: 'Salvar',
-    footer: 'Monster Counter · v1.6.0',
+    footer: 'Monster Counter · v1.6.1',
   },
   publicProfile: {
     title: 'Perfil',
@@ -134,7 +134,7 @@ const pt = {
     audioVolume: 'Volume',
     aboutSection: 'SOBRE',
     appName: 'Monster Counter',
-    version: 'Versão 1.6.0',
+    version: 'Versão 1.6.1',
     copyright: 'Aplicativo para registrar suas latas de Monster Energy.\n© 2026',
   },
   detail: {

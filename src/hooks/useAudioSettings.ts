@@ -6,9 +6,13 @@ const KEY_ENABLED = 'audioMoodEnabled';
 const KEY_VOLUME = 'audioMoodVolume';
 
 const DEFAULT_ENABLED = true;
-const DEFAULT_VOLUME = 0.7;
+const DEFAULT_VOLUME = 0.25;
 
-export function useAudioSettings() {
+/**
+ * @param refreshKey – pass a changing value (e.g. modal `visible`) to force
+ *                     a re-read from SQLite when the consumer becomes active.
+ */
+export function useAudioSettings(refreshKey?: unknown) {
   const db = useSQLiteContext();
   const repo = useMemo(() => createSqlitePreferencesRepository(db), [db]);
 
@@ -27,7 +31,7 @@ export function useAudioSettings() {
       },
     );
     return () => { cancelled = true; };
-  }, [repo]);
+  }, [repo, refreshKey]);
 
   const setEnabled = useCallback(
     async (value: boolean) => {

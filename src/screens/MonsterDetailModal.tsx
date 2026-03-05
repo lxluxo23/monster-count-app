@@ -9,6 +9,7 @@ import {
   Image,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
@@ -51,19 +52,20 @@ export default function MonsterDetailModal({
 }: MonsterDetailModalProps): React.JSX.Element {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const styles = getStyles(colors);
-  const { enabled: audioEnabled, volume } = useAudioSettings();
-  const { isPlaying, toggle } = useMonsterSound(monster?.audio?.deezerTrackId, visible, audioEnabled, volume);
+  const { enabled: audioEnabled, volume } = useAudioSettings(visible);
+  const { isPlaying, toggle, currentTrack } = useMonsterSound(monster?.audio, visible, audioEnabled, volume);
   const [announcerVisible, setAnnouncerVisible] = useState(false);
 
   // Show announcer when modal opens with audio
   React.useEffect(() => {
-    if (visible && monster?.audio) {
+    if (visible && currentTrack) {
       setAnnouncerVisible(true);
     } else {
       setAnnouncerVisible(false);
     }
-  }, [visible, monster?.audio]);
+  }, [visible, currentTrack]);
 
   if (!monster) return <></>;
 
@@ -137,20 +139,21 @@ export default function MonsterDetailModal({
               </>
             )}
 
-            <View style={{ height: spacing.xl }} />
+            <View style={{ height: spacing.xl + insets.bottom }} />
           </ScrollView>
-
-          {monster.audio && (
-            <MusicAnnouncer
-              song={monster.audio.song}
-              artist={monster.audio.artist}
-              visible={announcerVisible}
-              monsterColor={monster.color}
-              isPlaying={isPlaying}
-              onToggle={toggle}
-            />
-          )}
         </View>
+
+        {currentTrack && (
+          <MusicAnnouncer
+            song={currentTrack.song}
+            artist={currentTrack.artist}
+            albumCover={currentTrack.albumCover}
+            visible={announcerVisible}
+            monsterColor={monster.color ?? '#fff'}
+            isPlaying={isPlaying}
+            onToggle={toggle}
+          />
+        )}
       </View>
     </Modal>
   );
