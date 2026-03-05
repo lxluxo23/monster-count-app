@@ -23,7 +23,7 @@
         "backgroundColor": "#2ECC71"
       },
       "package": "com.monstercounter.app",
-      "versionCode": 6,
+      "versionCode": 7,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.RECEIVE_BOOT_COMPLETED",
