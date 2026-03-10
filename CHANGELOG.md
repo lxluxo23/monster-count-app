@@ -5,6 +5,49 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.7.0] - 2026-03-10
+
+Cambios desde 1.6.1:
+
+### Añadido
+
+- **Solicitudes de sabores** — Los usuarios autenticados pueden solicitar nuevos sabores desde la pestaña Comunidad. Formulario con nombre, descripción opcional y foto opcional.
+- **Subida de fotos con compresión** — Las imágenes se comprimen (max 1200px, calidad 60%) antes de subir a Supabase para ahorrar espacio en el plan gratuito.
+- **Aprobación de fotos por admin** — Las fotos nuevas requieren aprobación del admin antes de mostrarse a todos. El admin ve un botón "Aprobar" en solicitudes pendientes.
+- **Visor de imagen** — Al tocar una foto en una solicitud se abre en pantalla completa para ver el detalle.
+- **13 nuevos sabores** — Ultra Peachy Keen, Ultra Paradise, Ultra Golden Pineapple, Juice Ripper, Juice Pipeline Punch, Juice Pacific Punch, Juice Bad Apple, Juice Khaotic, Ultra Violet, Ultra Rosa, Ultra Watermelon, Ultra Strawberry Dreams, Ultra Fiesta Mango. Con imágenes, datos nutricionales e i18n en 5 idiomas.
+- **Códigos de barras** — Añadidos para Ultra Peachy Keen, Ultra Paradise, Ultra Golden Pineapple, Juice Ripper y Juice Pipeline Punch.
+- **Safe areas en formulario** — El modal de solicitud de sabores respeta las áreas seguras (notch, home indicator).
+- **Botón eliminar visible** — Icono de papelera visible para admin/propietario en cada solicitud; botón "Quitar" destacado en el preview de foto del formulario.
+
+### Cambiado
+
+- **Nutrición actualizada** — Valores corregidos para Ultra Peachy Keen, Ultra Paradise, Ultra Golden Pineapple, Juice Ripper y Juice Pipeline Punch según datos oficiales.
+- **Upload de fotos** — Migrado de `fetch`+blob a `expo-file-system`+base64 para compatibilidad con React Native en Supabase Storage.
+- **AsyncStorage** — Downgrade a 2.2.0 por incompatibilidad de 3.x con Expo 55.
+- **React Native** — Fijado a 0.83.2 (compatible con Expo 55).
+
+### Corregido
+
+- **Build Android** — Resuelto error `org.asyncstorage.shared_storage:storage-android:1.0.0` no encontrado.
+- **Errores silenciosos** — El formulario de solicitud muestra Alert con el mensaje de error cuando falla el envío.
+
+### Base de datos / Supabase
+
+- **flavor_requests** — Nueva columna `photo_approved` (boolean, default true). Vista `flavor_requests_with_votes` actualizada.
+- **RLS** — Nueva política "Admin can update any flavor request" para permitir aprobar fotos.
+
+### Dependencias
+
+- **Añadidas**: `base64-arraybuffer`, `expo-image-manipulator`
+
+### Archivos nuevos
+
+- `src/screens/FlavorRequestModal.tsx` — Modal de solicitud de sabores
+- `src/hooks/useFlavorRequests.ts` — Hook para CRUD de solicitudes, votos y aprobación
+
+---
+
 ## [1.6.1] - 2026-03-04
 
 ### Añadido
@@ -236,6 +279,7 @@ y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+[1.7.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.0
 [1.6.1]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.1
 [1.6.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.0
 [1.5.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.5.0

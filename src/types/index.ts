@@ -41,3 +41,17 @@ export interface MonsterType {
   /** Deezer track IDs — the hook resolves metadata & preview at runtime. */
   audio?: number[];
 }
+
+export interface FlavorRequest {
+  id: string;
+  userId: string;
+  name: string;
+  description: string | null;
+  photoPath: string | null;
+  photoUrl: string | null;
+  photoApproved: boolean;
+  createdAt: string;
+  authorName: string | null;
+  voteCount: number;
+  hasVoted: boolean;
+}

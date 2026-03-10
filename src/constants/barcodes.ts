@@ -14,7 +14,7 @@ const RAW_MAP: Record<string, string> = {
   '5060517883836': 'ultra-zero-white',
   '5060896626406': 'ultra-zero-white',
   '9342866000482': 'ultra-zero-white',
-  // Original Green (OG)
+
   '70847811169': 'original-green',
   '7798422620199': 'original-green',
   '5060335632302': 'original-green',
@@ -39,10 +39,10 @@ const RAW_MAP: Record<string, string> = {
   '5060335634306': 'original-green',
   '5061013946001': 'original-green',
   '5060337502900': 'original-green',
-  // Ultra Blue Hawaiian
+
   '70847016205': 'ultra-blue-hawaiian',
   '70847898245': 'ultra-blue-hawaiian',
-  // Classic Zero Sugar
+
   '70847000037': 'classic-zero-sugar',
   '70847000044': 'classic-zero-sugar',
   '7798422620137': 'classic-zero-sugar',
@@ -54,7 +54,7 @@ const RAW_MAP: Record<string, string> = {
   '5060947549883': 'classic-zero-sugar',
   '5060947549852': 'classic-zero-sugar',
   '5060947549715': 'classic-zero-sugar',
-  // Mango Loco
+
   '70847029014': 'mango-loco',
   '70847029007': 'mango-loco',
   '70847035800': 'mango-loco',
@@ -127,7 +127,7 @@ const RAW_MAP: Record<string, string> = {
   '7898938890007': 'mango-loco',
   '9342866000642': 'mango-loco',
   '9342866000796': 'mango-loco',
-  // Aussie Lemonade
+
   '5060947548602': 'aussie-lemonade',
   '70847890607': 'aussie-lemonade',
   '70847896562': 'aussie-lemonade',
@@ -156,6 +156,54 @@ const RAW_MAP: Record<string, string> = {
   '5940568000188': 'aussie-lemonade',
   '9342866001458': 'aussie-lemonade',
   '9342866001472': 'aussie-lemonade',
+
+  '5061013945042': 'ultra-peachy-keen',
+  '70847038115': 'ultra-peachy-keen', // Adicional UPC
+
+  '5060639127375': 'ultra-paradise',
+  '70847026006': 'ultra-paradise', // Adicional UPC
+
+  '70847031406': 'ultra-golden-pineapple',
+  '5060801124119': 'ultra-golden-pineapple', // Adicional EAN
+
+  '70847009559': 'juice-ripper',
+  '5060166691455': 'juice-ripper', // Adicional EAN
+
+  '7798422620120': 'juice-pipeline-punch',
+  '70847019701': 'juice-pipeline-punch', // Adicional UPC
+  '5060517884857': 'juice-pipeline-punch', // Adicional EAN
+
+  // --- NUEVOS SABORES INVESTIGADOS ---
+
+  // Ultra Violet
+  '70847022809': 'ultra-violet',
+  '5060166699314': 'ultra-violet',
+
+  // Ultra Watermelon
+  '70847037910': 'ultra-watermelon',
+  '5060801124614': 'ultra-watermelon',
+
+  // Ultra Fiesta Mango
+  '70847033806': 'ultra-fiesta-mango',
+  '5060801120029': 'ultra-fiesta-mango',
+
+  // Ultra Rosá
+  '70847033400': 'ultra-rosa',
+  '5060639129522': 'ultra-rosa',
+
+  // Juice Pacific Punch
+  '70847033509': 'pacific-punch',
+  '5060639121649': 'pacific-punch',
+
+  // Juice Khaotic
+  '70847035602': 'juice-khaotic',
+  '5060801122092': 'juice-khaotic',
+
+  // Ultra Strawberry Dreams
+  '70847038610': 'ultra-strawberry-dreams',
+
+  // Bad Apple
+  '5061013949828': 'bad-apple',
 };
 
 function normalizeBarcode(data: string): string {

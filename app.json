@@ -3,7 +3,7 @@
     "name": "Monster Counter",
     "slug": "monster-counter",
     "scheme": "monstercounter",
-    "version": "1.6.1",
+    "version": "1.7.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -23,7 +23,7 @@
         "backgroundColor": "#2ECC71"
       },
       "package": "com.monstercounter.app",
-      "versionCode": 7,
+      "versionCode": 8,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -50,7 +50,13 @@
           "cameraPermission": "Monster Counter necesita la cámara para escanear códigos de barras."
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Monster Counter necesita acceso a tus fotos para adjuntar una imagen a tu solicitud de sabor."
+        }
+      ]
     ],
     "extra": {
       "eas": {

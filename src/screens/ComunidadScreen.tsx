@@ -8,8 +8,12 @@ import {
   ActivityIndicator,
   Image,
   Animated,
+  Alert,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PieChart } from 'react-native-gifted-charts';
@@ -18,8 +22,11 @@ import { spacing, radius } from '../theme';
 import type { ColorPalette } from '../theme';
 import { useAchievements, type Achievement } from '../hooks/useAchievements';
 import { useGlobalStats } from '../hooks/useGlobalStats';
+import { useFlavorRequests } from '../hooks/useFlavorRequests';
+import { useAuth } from '../contexts/AuthContext';
 import { getMonsterName, MONSTER_TYPES } from '../constants/monsters';
 import PublicProfileScreen from './PublicProfileScreen';
+import FlavorRequestModal from './FlavorRequestModal';
 import type { HistoryEntry } from '../types';
 
 const SHOWN_ACHIEVEMENTS_KEY = 'unlockedAchievementsShown';
@@ -111,11 +118,16 @@ export default function ComunidadScreen({
 }: ComunidadScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const styles = getStyles(colors);
+  const insets = useSafeAreaInsets();
+  const styles = getStyles(colors, insets);
+  const { status, user } = useAuth();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [imageViewerUri, setImageViewerUri] = useState<string | null>(null);
   const [newlyUnlockedIds, setNewlyUnlockedIds] = useState<Set<string>>(new Set());
   const achievements = useAchievements({ history, total, streak, countByMonsterId });
   const { rankingByMonster, rankingByUser, totalCommunityLatas, loading, error, refresh } = useGlobalStats();
+  const { requests, loading: requestsLoading, isAdmin, submitRequest, toggleVote, deleteRequest, approvePhoto, refresh: refreshRequests } = useFlavorRequests();
 
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
 
@@ -278,6 +290,147 @@ export default function ComunidadScreen({
         </>
       )}
 
+      {/* SOLICITAR SABORES */}
+      <View style={[styles.sectionHeader, styles.sectionHeaderCommunity]}>
+        <Text style={styles.sectionTitle}>{t('comunidad.flavorRequests')}</Text>
+        {status === 'authenticated' && (
+          <TouchableOpacity onPress={() => setShowRequestModal(true)} activeOpacity={0.7}>
+            <Ionicons name="add-circle-outline" size={24} color={colors.primary} />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {requestsLoading && (
+        <ActivityIndicator size="small" color={colors.primary} style={styles.loader} />
+      )}
+
+      {!requestsLoading && requests.length === 0 && (
+        <View style={styles.requestEmptyWrap}>
+          <Text style={styles.requestEmptyText}>{t('comunidad.requestEmpty')}</Text>
+          {status !== 'authenticated' && (
+            <Text style={styles.requestLoginHint}>{t('comunidad.requestLoginToSubmit')}</Text>
+          )}
+        </View>
+      )}
+
+      {!requestsLoading && requests.map((req) => {
+        const canDelete = isAdmin || (user?.id === req.userId);
+        const canApprovePhoto = isAdmin && req.photoPath && !req.photoApproved;
+        const handleDelete = () => {
+          if (!canDelete) return;
+          Alert.alert(
+            t('comunidad.requestDeleteTitle'),
+            t('comunidad.requestDeleteMsg', { name: req.name }),
+            [
+              { text: t('history.cancel'), style: 'cancel' },
+              { text: t('comunidad.requestDelete'), style: 'destructive', onPress: () => deleteRequest(req.id) },
+            ],
+          );
+        };
+        return (
+          <View key={req.id} style={styles.requestCard}>
+            {req.photoUrl ? (
+              <TouchableOpacity
+                onPress={() => setImageViewerUri(req.photoUrl)}
+                activeOpacity={0.8}
+                style={styles.requestPhotoTouchable}
+              >
+                <Image source={{ uri: req.photoUrl }} style={styles.requestPhoto} />
+                {!req.photoApproved && (
+                  <View style={styles.photoPendingBadge}>
+                    <Text style={styles.photoPendingText}>{t('comunidad.photoPending')}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.requestPhotoPlaceholder}>
+                <Ionicons name="image-outline" size={24} color={colors.textMuted} />
+              </View>
+            )}
+            <View style={styles.requestInfo}>
+              <Text style={styles.requestName} numberOfLines={2}>{req.name}</Text>
+              {req.description && (
+                <Text style={styles.requestDesc} numberOfLines={2}>{req.description}</Text>
+              )}
+              {req.authorName && (
+                <Text style={styles.requestAuthor}>{t('comunidad.requestBy', { name: req.authorName })}</Text>
+              )}
+            </View>
+            <View style={styles.requestActions}>
+              {canApprovePhoto && (
+                <TouchableOpacity
+                  style={styles.requestApproveBtn}
+                  onPress={() => approvePhoto(req.id)}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Ionicons name="checkmark-circle-outline" size={20} color={colors.primary} />
+                  <Text style={styles.requestApproveText}>{t('comunidad.approvePhoto')}</Text>
+                </TouchableOpacity>
+              )}
+              {canDelete && (
+                <TouchableOpacity
+                  style={styles.requestDeleteBtn}
+                  onPress={handleDelete}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Ionicons name="trash-outline" size={20} color="#dc3545" />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={[styles.requestVoteBtn, req.hasVoted && styles.requestVoteBtnActive]}
+                onPress={() => {
+                  if (status !== 'authenticated') return;
+                  toggleVote(req.id);
+                }}
+                activeOpacity={status === 'authenticated' ? 0.7 : 1}
+              >
+                <Ionicons
+                  name={req.hasVoted ? 'arrow-up-circle' : 'arrow-up-circle-outline'}
+                  size={22}
+                  color={req.hasVoted ? colors.primary : colors.textMuted}
+                />
+                <Text style={[styles.requestVoteCount, req.hasVoted && styles.requestVoteCountActive]}>
+                  {req.voteCount}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      })}
+
+      {/* Image viewer modal */}
+      <Modal
+        visible={imageViewerUri !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setImageViewerUri(null)}
+      >
+        <Pressable
+          style={styles.imageViewerOverlay}
+          onPress={() => setImageViewerUri(null)}
+        >
+          {imageViewerUri && (
+            <Image
+              source={{ uri: imageViewerUri }}
+              style={styles.imageViewerImage}
+              resizeMode="contain"
+            />
+          )}
+          <TouchableOpacity
+            style={styles.imageViewerClose}
+            onPress={() => setImageViewerUri(null)}
+          >
+            <Ionicons name="close-circle" size={36} color="#fff" />
+          </TouchableOpacity>
+        </Pressable>
+      </Modal>
+
+      <FlavorRequestModal
+        visible={showRequestModal}
+        onClose={() => setShowRequestModal(false)}
+        onSubmit={submitRequest}
+      />
+
       <PublicProfileScreen
         userId={selectedUserId}
         visible={selectedUserId !== null}
@@ -287,7 +440,7 @@ export default function ComunidadScreen({
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
+const getStyles = (colors: ColorPalette, insets: { top: number; bottom: number } = { top: 0, bottom: 0 }) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: spacing.lg, paddingBottom: 48, paddingTop: spacing.md },
 
@@ -387,4 +540,91 @@ const getStyles = (colors: ColorPalette) => StyleSheet.create({
   rankCount: { fontSize: 14, fontWeight: '700', color: colors.primary },
   rankBar: { height: 6, backgroundColor: colors.background, borderRadius: 3, overflow: 'hidden' },
   rankBarFill: { height: 6, borderRadius: 3, minWidth: 3 },
+
+  // Flavor requests
+  requestEmptyWrap: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.xl,
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  requestEmptyText: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
+  requestLoginHint: { fontSize: 12, color: colors.textMuted, fontStyle: 'italic' },
+  requestCard: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
+    gap: spacing.md,
+    alignItems: 'center',
+  },
+  requestPhotoTouchable: { position: 'relative' },
+  requestPhoto: {
+    width: 56,
+    height: 56,
+    borderRadius: radius.md,
+  },
+  photoPendingBadge: {
+    position: 'absolute',
+    bottom: 2,
+    left: 2,
+    right: 2,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    borderRadius: 4,
+    paddingVertical: 2,
+    alignItems: 'center',
+  },
+  photoPendingText: { fontSize: 9, color: '#fff', fontWeight: '600' },
+  requestApproveBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    padding: spacing.sm,
+  },
+  requestApproveText: { fontSize: 12, fontWeight: '600', color: colors.primary },
+  requestPhotoPlaceholder: {
+    width: 56,
+    height: 56,
+    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  requestActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  requestDeleteBtn: {
+    padding: spacing.sm,
+  },
+  requestInfo: { flex: 1 },
+  requestName: { fontSize: 15, fontWeight: '700', color: colors.text },
+  requestDesc: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
+  requestAuthor: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
+  requestVoteBtn: {
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  requestVoteBtnActive: {},
+  requestVoteCount: { fontSize: 12, fontWeight: '700', color: colors.textMuted, marginTop: 2 },
+  requestVoteCountActive: { color: colors.primary },
+  imageViewerOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageViewerImage: {
+    width: '100%',
+    height: '100%',
+  },
+  imageViewerClose: {
+    position: 'absolute',
+    top: insets.top + spacing.sm,
+    right: spacing.lg,
+  },
 });

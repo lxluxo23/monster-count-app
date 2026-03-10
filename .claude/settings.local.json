@@ -34,7 +34,9 @@
       "Bash(npx expo-modules-autolinking:*)",
       "Bash(npm info:*)",
       "Bash(npm explain:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(xargs grep:*)",
+      "Bash(xargs ls:*)"
     ]
   }
 }
