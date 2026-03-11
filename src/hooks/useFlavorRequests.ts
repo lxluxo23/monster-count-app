@@ -34,9 +34,7 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
 
     (async () => {
       try {
-        const { data: rows, error } = await supabase
-          .from('flavor_requests_with_votes')
-          .select('*');
+        const { data: rows, error } = await supabase.from('flavor_requests_with_votes').select('*');
 
         if (error || !rows || cancelled) {
           if (!cancelled) setLoading(false);
@@ -63,9 +61,7 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
           const isAuthor = user?.id === (r.user_id as string);
           let photoUrl: string | null = null;
           if (photoPath && (photoApproved || isAdmin || isAuthor)) {
-            const { data } = supabase.storage
-              .from('flavor-requests')
-              .getPublicUrl(photoPath);
+            const { data } = supabase.storage.from('flavor-requests').getPublicUrl(photoPath);
             photoUrl = data.publicUrl;
           }
           return {
@@ -91,8 +87,10 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
       }
     })();
 
-    return () => { cancelled = true; };
-  }, [tick, user]);
+    return () => {
+      cancelled = true;
+    };
+  }, [tick, user, isAdmin]);
 
   const submitRequest = useCallback(
     async (name: string, description?: string, photoUri?: string) => {
@@ -120,15 +118,13 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
         photoPath = fileName;
       }
 
-      const { error } = await supabase
-        .from('flavor_requests')
-        .insert({
-          user_id: user.id,
-          name: name.trim(),
-          description: description?.trim() || null,
-          photo_path: photoPath,
-          photo_approved: !photoPath,
-        });
+      const { error } = await supabase.from('flavor_requests').insert({
+        user_id: user.id,
+        name: name.trim(),
+        description: description?.trim() || null,
+        photo_path: photoPath,
+        photo_approved: !photoPath,
+      });
 
       if (error) {
         if (__DEV__) console.warn('[FlavorRequests] insert error:', error);
@@ -137,7 +133,7 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
 
       refresh();
     },
-    [user, refresh],
+    [user, refresh]
   );
 
   const toggleVote = useCallback(
@@ -164,11 +160,11 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
         prev.map((r) =>
           r.id === requestId
             ? { ...r, hasVoted: !r.hasVoted, voteCount: r.voteCount + (r.hasVoted ? -1 : 1) }
-            : r,
-        ),
+            : r
+        )
       );
     },
-    [user, requests],
+    [user, requests]
   );
 
   const deleteRequest = useCallback(
@@ -189,7 +185,7 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
       // Optimistic remove
       setRequests((prev) => prev.filter((r) => r.id !== requestId));
     },
-    [user, requests, isAdmin],
+    [user, requests, isAdmin]
   );
 
   const approvePhoto = useCallback(
@@ -212,17 +208,26 @@ export function useFlavorRequests(): UseFlavorRequestsReturn {
         const { data } = supabase.storage.from('flavor-requests').getPublicUrl(target.photoPath);
         setRequests((prev) =>
           prev.map((r) =>
-            r.id === requestId ? { ...r, photoApproved: true, photoUrl: data.publicUrl } : r,
-          ),
+            r.id === requestId ? { ...r, photoApproved: true, photoUrl: data.publicUrl } : r
+          )
         );
       } else {
         setRequests((prev) =>
-          prev.map((r) => (r.id === requestId ? { ...r, photoApproved: true } : r)),
+          prev.map((r) => (r.id === requestId ? { ...r, photoApproved: true } : r))
         );
       }
     },
-    [user, isAdmin, requests],
+    [user, isAdmin, requests]
   );
 
-  return { requests, loading, isAdmin, submitRequest, toggleVote, deleteRequest, approvePhoto, refresh };
+  return {
+    requests,
+    loading,
+    isAdmin,
+    submitRequest,
+    toggleVote,
+    deleteRequest,
+    approvePhoto,
+    refresh,
+  };
 }

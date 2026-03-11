@@ -13,9 +13,7 @@ interface CaffeineWarning {
 export function useCaffeineWarning(history: HistoryEntry[]): CaffeineWarning {
   return useMemo(() => {
     const todayKey = localDayKey(new Date());
-    const caffeineByMonster = new Map(
-      MONSTER_TYPES.map((m) => [m.id, m.nutrition?.caffeine ?? 0]),
-    );
+    const caffeineByMonster = new Map(MONSTER_TYPES.map((m) => [m.id, m.nutrition?.caffeine ?? 0]));
 
     let caffeineToday = 0;
     for (const entry of history) {

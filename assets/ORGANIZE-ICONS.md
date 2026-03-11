@@ -21,11 +21,14 @@ Los siguientes archivos en `assets/` parecen ser los antiguos y necesitan actual
 Según los archivos generados, parece que usaste **Icon Kitchen** o **Android Asset Studio**.
 
 ### Si usaste Icon Kitchen:
+
 Debería haber descargado un ZIP con:
+
 - Los PNG que necesitas copiar a `assets/`
 - La carpeta `res/` con los iconos Android
 
 ### Necesitas:
+
 Busca en la descarga los archivos con el Monster White (deberían ser más grandes en tamaño) y cópialos con estos nombres en `assets/`:
 
 1. **icon.png** → Icono general 1024×1024
@@ -36,6 +39,7 @@ Busca en la descarga los archivos con el Monster White (deberían ser más grand
 ## Acción recomendada:
 
 ¿La herramienta te generó un archivo ZIP? Si es así:
+
 1. Descomprímelo
 2. Busca los PNG principales (suelen estar en una carpeta "ios" o raíz)
 3. Cópialos a `assets/` con los nombres correctos

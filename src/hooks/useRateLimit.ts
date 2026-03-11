@@ -28,18 +28,18 @@ export function useRateLimit(): {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      repo.get(KEY_ENABLED),
-      repo.get(KEY_MAX),
-      repo.get(KEY_WINDOW),
-    ]).then(([e, m, w]) => {
-      if (cancelled) return;
-      if (e !== null) setEnabledState(e === 'true');
-      if (m !== null) setMaxState(Math.max(1, Math.min(10, Number(m))));
-      if (w !== null) setWindowState(Math.max(1, Math.min(60, Number(w))));
-      setLoading(false);
-    });
-    return () => { cancelled = true; };
+    Promise.all([repo.get(KEY_ENABLED), repo.get(KEY_MAX), repo.get(KEY_WINDOW)]).then(
+      ([e, m, w]) => {
+        if (cancelled) return;
+        if (e !== null) setEnabledState(e === 'true');
+        if (m !== null) setMaxState(Math.max(1, Math.min(10, Number(m))));
+        if (w !== null) setWindowState(Math.max(1, Math.min(60, Number(w))));
+        setLoading(false);
+      }
+    );
+    return () => {
+      cancelled = true;
+    };
   }, [repo]);
 
   const setEnabled = useCallback(

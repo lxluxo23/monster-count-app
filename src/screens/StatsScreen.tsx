@@ -67,9 +67,10 @@ export default function StatsScreen({
   const pieDataHour = stats.byHourBucket.map((b, i) => ({
     value: b.count || 0.1,
     color: hourColors[i],
-    text: totalHourEntries > 0 && b.count > 0
-      ? `${Math.round((b.count / totalHourEntries) * 100)}%`
-      : '',
+    text:
+      totalHourEntries > 0 && b.count > 0
+        ? `${Math.round((b.count / totalHourEntries) * 100)}%`
+        : '',
     emoji: b.emoji,
     label: b.label,
     count: b.count,
@@ -91,9 +92,10 @@ export default function StatsScreen({
   const pieDataFlavor = flavorData.map((m) => ({
     value: m.count || 0.1,
     color: m.color,
-    text: totalFlavorEntries > 0 && m.count > 0 && Math.round((m.count / totalFlavorEntries) * 100) >= 5
-      ? `${Math.round((m.count / totalFlavorEntries) * 100)}%`
-      : '',
+    text:
+      totalFlavorEntries > 0 && m.count > 0 && Math.round((m.count / totalFlavorEntries) * 100) >= 5
+        ? `${Math.round((m.count / totalFlavorEntries) * 100)}%`
+        : '',
     name: m.name.replace('Monster ', '').replace('Juice ', '').split(' ').slice(0, 2).join(' '),
     count: m.count,
     pct: totalFlavorEntries > 0 ? Math.round((m.count / totalFlavorEntries) * 100) : 0,
@@ -105,15 +107,15 @@ export default function StatsScreen({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{t('stats.title')}</Text>
-          <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Ionicons name="close" size={28} color={colors.text} />
           </TouchableOpacity>
         </View>
 
-        <ScrollView
-          contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           {/* KPI cards */}
           <View style={styles.kpiGrid}>
             <View style={styles.kpiCard}>
@@ -282,14 +284,16 @@ export default function StatsScreen({
                   />
                 </View>
                 <View style={styles.pieLegend}>
-                  {pieDataFlavor.filter((m) => m.count > 0).map((item, i) => (
-                    <View key={i} style={styles.pieLegendRow}>
-                      <View style={[styles.pieLegendDot, { backgroundColor: item.color }]} />
-                      <Text style={styles.pieLegendName}>{item.name}</Text>
-                      <Text style={styles.pieLegendValue}>{item.count}</Text>
-                      <Text style={styles.pieLegendPct}>{item.pct}%</Text>
-                    </View>
-                  ))}
+                  {pieDataFlavor
+                    .filter((m) => m.count > 0)
+                    .map((item, i) => (
+                      <View key={i} style={styles.pieLegendRow}>
+                        <View style={[styles.pieLegendDot, { backgroundColor: item.color }]} />
+                        <Text style={styles.pieLegendName}>{item.name}</Text>
+                        <Text style={styles.pieLegendValue}>{item.count}</Text>
+                        <Text style={styles.pieLegendPct}>{item.pct}%</Text>
+                      </View>
+                    ))}
                 </View>
               </>
             ) : (
@@ -302,77 +306,84 @@ export default function StatsScreen({
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  headerTitle: { fontSize: 22, fontWeight: '800', color: colors.text },
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: colors.background },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.xl,
+      paddingBottom: spacing.md,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.border,
+    },
+    headerTitle: { fontSize: 22, fontWeight: '800', color: colors.text },
 
-  content: { padding: spacing.lg, paddingBottom: 48 },
+    content: { padding: spacing.lg, paddingBottom: 48 },
 
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: spacing.sm,
-    marginTop: spacing.lg,
-  },
+    sectionTitle: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: spacing.sm,
+      marginTop: spacing.lg,
+    },
 
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    paddingBottom: spacing.xl,
-    overflow: 'hidden',
-  },
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      paddingBottom: spacing.xl,
+      overflow: 'hidden',
+    },
 
-  // KPI
-  kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  kpiCard: {
-    flex: 1,
-    minWidth: '45%',
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    alignItems: 'center',
-  },
-  kpiValue: { fontSize: 30, fontWeight: '800', color: colors.primary },
-  kpiLabel: { fontSize: 12, color: colors.textMuted, marginTop: 4, textAlign: 'center' },
+    // KPI
+    kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+    kpiCard: {
+      flex: 1,
+      minWidth: '45%',
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      alignItems: 'center',
+    },
+    kpiValue: { fontSize: 30, fontWeight: '800', color: colors.primary },
+    kpiLabel: { fontSize: 12, color: colors.textMuted, marginTop: 4, textAlign: 'center' },
 
-  // Record
-  recordCard: { alignItems: 'center', paddingVertical: spacing.xl },
-  recordNumber: { fontSize: 56, fontWeight: '800', color: colors.primary, lineHeight: 64 },
-  recordLabel: { fontSize: 15, color: colors.textMuted, marginTop: 4 },
+    // Record
+    recordCard: { alignItems: 'center', paddingVertical: spacing.xl },
+    recordNumber: { fontSize: 56, fontWeight: '800', color: colors.primary, lineHeight: 64 },
+    recordLabel: { fontSize: 15, color: colors.textMuted, marginTop: 4 },
 
-  // PieChart
-  pieContainer: { alignItems: 'center', marginVertical: spacing.md },
-  pieCenter: { alignItems: 'center', justifyContent: 'center' },
-  pieCenterNumber: { fontSize: 20, fontWeight: '800', color: colors.primary },
-  pieLegend: { gap: 6, marginTop: spacing.sm },
-  pieLegendRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  pieLegendDot: { width: 10, height: 10, borderRadius: 5 },
-  pieLegendEmoji: { fontSize: 16 },
-  pieLegendName: { flex: 1, fontSize: 13, color: colors.text },
-  pieLegendValue: { fontSize: 13, fontWeight: '700', color: colors.text, minWidth: 20, textAlign: 'right' },
-  pieLegendPct: { fontSize: 13, color: colors.textMuted, minWidth: 36, textAlign: 'right' },
+    // PieChart
+    pieContainer: { alignItems: 'center', marginVertical: spacing.md },
+    pieCenter: { alignItems: 'center', justifyContent: 'center' },
+    pieCenterNumber: { fontSize: 20, fontWeight: '800', color: colors.primary },
+    pieLegend: { gap: 6, marginTop: spacing.sm },
+    pieLegendRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+    pieLegendDot: { width: 10, height: 10, borderRadius: 5 },
+    pieLegendEmoji: { fontSize: 16 },
+    pieLegendName: { flex: 1, fontSize: 13, color: colors.text },
+    pieLegendValue: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.text,
+      minWidth: 20,
+      textAlign: 'right',
+    },
+    pieLegendPct: { fontSize: 13, color: colors.textMuted, minWidth: 36, textAlign: 'right' },
 
-  chartWrapper: {
-    width: '100%',
-    overflow: 'hidden',
-  },
+    chartWrapper: {
+      width: '100%',
+      overflow: 'hidden',
+    },
 
-  emptyText: {
-    textAlign: 'center',
-    color: colors.textMuted,
-    fontSize: 14,
-    paddingVertical: spacing.md,
-  },
-});
+    emptyText: {
+      textAlign: 'center',
+      color: colors.textMuted,
+      fontSize: 14,
+      paddingVertical: spacing.md,
+    },
+  });

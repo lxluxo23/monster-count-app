@@ -22,15 +22,15 @@ export function useAudioSettings(refreshKey?: unknown) {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([repo.get(KEY_ENABLED), repo.get(KEY_VOLUME)]).then(
-      ([enabledVal, volumeVal]) => {
-        if (cancelled) return;
-        if (enabledVal !== null) setEnabledState(enabledVal === 'true');
-        if (volumeVal !== null) setVolumeState(Number(volumeVal));
-        setLoading(false);
-      },
-    );
-    return () => { cancelled = true; };
+    Promise.all([repo.get(KEY_ENABLED), repo.get(KEY_VOLUME)]).then(([enabledVal, volumeVal]) => {
+      if (cancelled) return;
+      if (enabledVal !== null) setEnabledState(enabledVal === 'true');
+      if (volumeVal !== null) setVolumeState(Number(volumeVal));
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [repo, refreshKey]);
 
   const setEnabled = useCallback(
@@ -38,7 +38,7 @@ export function useAudioSettings(refreshKey?: unknown) {
       setEnabledState(value);
       await repo.set(KEY_ENABLED, String(value));
     },
-    [repo],
+    [repo]
   );
 
   const setVolume = useCallback(
@@ -46,7 +46,7 @@ export function useAudioSettings(refreshKey?: unknown) {
       setVolumeState(value);
       await repo.set(KEY_VOLUME, String(value));
     },
-    [repo],
+    [repo]
   );
 
   return { enabled, volume, setEnabled, setVolume, loading };

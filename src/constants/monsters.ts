@@ -30,7 +30,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     image: require('../../assets/monsters/ultra-zero-white.webp'),
     nutrition: { kcal: 11, caffeine: 150, sugar: 0, sodium: 370, volume: 500 }, // Sodio ajustado a estándar Ultra
     audio: [
-      3650206152, // Snow Strippers - Under Your Spell 
+      3650206152, // Snow Strippers - Under Your Spell
       3598936822, // PureMiND, HARDSTYLE CVNT, Agartha - Down Under
       2967537321, // Pastel Ghost - Iris
     ],
@@ -44,7 +44,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
       94613616, // Limp Bizkit - Break Stuff
       676162, // Linkin Park - One Step Closer
       15177096, // Rage Against The Machine - Killing In The Name
-      859699 // System Of A Down - Chop Suey!
+      859699, // System Of A Down - Chop Suey!
     ],
   },
   {
@@ -68,7 +68,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
       131744046, // New Order - Blue Monday
       68515055, // Depeche Mode - Enjoy The Silence
       4255662, // Soft Cell - Tainted Love
-      3152080, // The Human League - Don't You Want Me 
+      3152080, // The Human League - Don't You Want Me
     ],
   },
   {
@@ -93,7 +93,6 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
       3598936822, // PureMiND, HARDSTYLE CVNT, Agartha - Down Under
       779266672, // Skegss - Up In The Clouds
       1182053, // Wolfmother - Joker & The Thief
-
     ],
   },
   {
@@ -105,7 +104,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
       872345332, // Tame Impala - Lost In Yesterday
       830336922, // Harry Styles - Watermelon Sugar
       1040154662, // Glass Animals - Heat Waves
-      670812 // The Doors - Peace Frog
+      670812, // The Doors - Peace Frog
     ],
   },
   {
@@ -116,7 +115,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       106314290, // Kygo, Conrad Sewell - Firestone
       4286053, // Empire Of The Sun - We Are The People
-      88936747 // Calvin Harris - Summer
+      88936747, // Calvin Harris - Summer
     ],
   },
   {
@@ -127,7 +126,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       67238728, // Daft Punk - Give Life Back to Music
       1475651602, // Purple Disco Machine, Sophie and the Giants - Hypnotized
-      145426932 // Jamiroquai - Cloud 9
+      145426932, // Jamiroquai - Cloud 9
     ],
   },
   {
@@ -138,7 +137,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       137233986, // The Offspring - The Kids Aren't Alright
       797718, // Pendulum - Propane Nightmares
-      125173830 // blink-182 - First Date
+      125173830, // blink-182 - First Date
     ],
   },
   {
@@ -149,7 +148,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       539765022, // Jack Johnson - Upside Down
       1211140052, // Sticky Fingers - How To Fly
-      2493802811 // Surfaces - Sunday Best
+      2493802811, // Surfaces - Sunday Best
     ],
   },
   {
@@ -160,7 +159,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       378381821, // The Interrupters - Take Back The Power
       772020, //Dropkick Murphys - I'm Shipping Up To Boston
-      1480210192 // Rumjacks - An Irish Pub Song
+      1480210192, // Rumjacks - An Irish Pub Song
     ],
   },
   {
@@ -171,7 +170,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       70322130, // Arctic Monkeys - Do I Wanna Know?
       82917986, //Royal Blood - Out of the Black
-      1092290482 //The White Stripes - Apple Blossom
+      1092290482, //The White Stripes - Apple Blossom
     ],
   },
   {
@@ -182,7 +181,6 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       3131286, //Beastie Boys - Sabotage
       14628999, //Linkin Park - Faint
-
     ],
   },
   {
@@ -191,9 +189,9 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     image: require('../../assets/monsters/ultra-violet.webp'),
     nutrition: { kcal: 11, caffeine: 150, sugar: 0, sodium: 370, volume: 500 },
     audio: [
-      4858204, // Prince - Purple Rain 
+      4858204, // Prince - Purple Rain
       64920072, // Kavinsky - Nightcall
-      819736552 //The Weeknd - Blinding Lights
+      819736552, //The Weeknd - Blinding Lights
     ],
   },
   {
@@ -204,7 +202,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       797228462, // Doja Cat - Say So
       1124841682, // Dua Lipa - Levitating
-      1148585682 // Kali Uchis - Telepatía
+      1148585682, // Kali Uchis - Telepatía
     ],
   },
   {
@@ -215,7 +213,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       830336922, // Harry Styles - Watermelon Sugar
       602456552, //Post Malone - Sunflower
-      1087667882
+      1087667882,
     ],
   },
   {
@@ -226,7 +224,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       728760222, // Bakar - Hell N Back
       3420418861, //Clairo - Sofia
-      2579890802 //Men I Trust - Show Me How
+      2579890802, //Men I Trust - Show Me How
     ],
   },
   {
@@ -237,7 +235,7 @@ export const MONSTER_TYPES: readonly MonsterType[] = [
     audio: [
       1741494297, //Bad Bunny - Después de la Playa
       1415334812, //J Balvin - In Da Getto
-      60842360 // Swedish House Mafia - Don't You Worry Child
+      60842360, // Swedish House Mafia - Don't You Worry Child
     ],
   },
 ];

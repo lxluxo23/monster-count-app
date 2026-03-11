@@ -5,6 +5,16 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.7.2] - 2026-03-10
+
+### Añadido
+
+- **Nuevos idiomas** — Alemán (de), polaco (pl), francés (fr), croata (hr) e hindi (hi). La app soporta ahora 10 idiomas además del auto-detección del sistema.
+- **Pull to refresh** — En la pestaña Comunidad, deslizar hacia abajo actualiza estadísticas globales y solicitudes de sabores.
+- **ESLint** — Configuración oficial de Expo (`eslint-config-expo`). Scripts `npm run lint` y `npm run lint:fix`.
+
+---
+
 ## [1.7.1] - 2026-03-10
 
 ### Cambiado
@@ -239,8 +249,8 @@ Cambios desde 1.6.1:
 ### Añadido
 
 - **Pestaña Comunidad** – Nueva 4ª pestaña con dos secciones:
-  - *Logros*: 9 achievements locales (primera lata, 10/50/100 latas, rachas de 7 y 30 días, coleccionista, madrugador, noctámbulo) con barra de progreso por cada uno.
-  - *Comunidad*: ranking global de sabores y total de latas registradas por todos los usuarios (Supabase).
+  - _Logros_: 9 achievements locales (primera lata, 10/50/100 latas, rachas de 7 y 30 días, coleccionista, madrugador, noctámbulo) con barra de progreso por cada uno.
+  - _Comunidad_: ranking global de sabores y total de latas registradas por todos los usuarios (Supabase).
 - **Estadísticas detalladas** – Pantalla fullscreen accesible desde Perfil con:
   - 4 KPIs: total, días activos, media por día activo, media semanal.
   - Column chart de los últimos 7 días.
@@ -287,6 +297,7 @@ Cambios desde 1.6.1:
 
 ---
 
+[1.7.2]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.2
 [1.7.1]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.1
 [1.7.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.0
 [1.6.1]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.1

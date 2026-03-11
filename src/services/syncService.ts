@@ -11,18 +11,12 @@ export async function processPendingDeletes(
   userId: string
 ): Promise<{ processed: number }> {
   try {
-    const rows = await db.getAllAsync<{ id: string }>(
-      `SELECT id FROM ${TABLE_PENDING_DELETES}`
-    );
+    const rows = await db.getAllAsync<{ id: string }>(`SELECT id FROM ${TABLE_PENDING_DELETES}`);
     if (rows.length === 0) return { processed: 0 };
 
     let processed = 0;
     for (const { id } of rows) {
-      const { error } = await supabase
-        .from('entries')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', userId);
+      const { error } = await supabase.from('entries').delete().eq('id', id).eq('user_id', userId);
 
       if (!error) {
         await db.runAsync(`DELETE FROM ${TABLE_PENDING_DELETES} WHERE id = ?`, id);
@@ -42,15 +36,9 @@ export async function processPendingDeletes(
 /**
  * Añade un id a la cola de deletes pendientes (cuando falla el delete en Supabase).
  */
-export async function addPendingDelete(
-  db: SQLiteDatabase,
-  id: string
-): Promise<void> {
+export async function addPendingDelete(db: SQLiteDatabase, id: string): Promise<void> {
   try {
-    await db.runAsync(
-      `INSERT OR IGNORE INTO ${TABLE_PENDING_DELETES} (id) VALUES (?)`,
-      id
-    );
+    await db.runAsync(`INSERT OR IGNORE INTO ${TABLE_PENDING_DELETES} (id) VALUES (?)`, id);
   } catch (e) {
     const msg = String(e);
     if (__DEV__ && (msg.includes('no such table') || msg.includes('closed resource'))) {
@@ -129,9 +117,7 @@ export async function syncPendingEntries(
     source: e.source ?? 'manual',
   }));
 
-  const { error } = await supabase
-    .from('entries')
-    .upsert(rows, { onConflict: 'id' });
+  const { error } = await supabase.from('entries').upsert(rows, { onConflict: 'id' });
 
   if (error) {
     console.error('[Sync] Error al subir entries:', error.message);

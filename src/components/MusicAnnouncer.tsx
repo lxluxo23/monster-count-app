@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, StyleSheet, Animated, TouchableOpacity, Easing } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, Easing } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -34,7 +34,9 @@ export default function MusicAnnouncer({
   const hasCover = !!albumCover && !coverError;
 
   // Reset cover error when albumCover changes
-  useEffect(() => { setCoverError(false); }, [albumCover]);
+  useEffect(() => {
+    setCoverError(false);
+  }, [albumCover]);
 
   // Slow continuous rotation while playing (vinyl-like)
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function MusicAnnouncer({
           duration: 8000,
           easing: Easing.linear,
           useNativeDriver: true,
-        }),
+        })
       );
       spinRef.current = loop;
       loop.start();
@@ -135,7 +137,11 @@ export default function MusicAnnouncer({
     <>
       {/* Mini floating button when announcer is hidden but music plays */}
       {!shown && isPlaying && (
-        <TouchableOpacity style={[styles.miniButton, { bottom: safeBottom }]} onPress={handleReshow} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={[styles.miniButton, { bottom: safeBottom }]}
+          onPress={handleReshow}
+          activeOpacity={0.7}
+        >
           {coverThumb(24)}
         </TouchableOpacity>
       )}
@@ -144,22 +150,24 @@ export default function MusicAnnouncer({
         <Animated.View
           style={[
             styles.container,
-            { bottom: safeBottom, transform: [{ translateX: slideAnim }], borderRightColor: monsterColor },
+            {
+              bottom: safeBottom,
+              transform: [{ translateX: slideAnim }],
+              borderRightColor: monsterColor,
+            },
           ]}
         >
-          <View style={styles.coverWrap}>
-            {coverThumb(32)}
-          </View>
+          <View style={styles.coverWrap}>{coverThumb(32)}</View>
           <View style={styles.textWrap}>
-            <Text style={styles.songName} numberOfLines={1}>{song}</Text>
-            <Text style={styles.artistName} numberOfLines={1}>{artist}</Text>
+            <Text style={styles.songName} numberOfLines={1}>
+              {song}
+            </Text>
+            <Text style={styles.artistName} numberOfLines={1}>
+              {artist}
+            </Text>
           </View>
           <TouchableOpacity onPress={onToggle} style={styles.playBtn} activeOpacity={0.7}>
-            <Ionicons
-              name={isPlaying ? 'pause' : 'play'}
-              size={18}
-              color="#fff"
-            />
+            <Ionicons name={isPlaying ? 'pause' : 'play'} size={18} color="#fff" />
           </TouchableOpacity>
         </Animated.View>
       )}

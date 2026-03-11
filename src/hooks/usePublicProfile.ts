@@ -91,7 +91,11 @@ export function usePublicProfile(userId: string | null): {
           : null;
 
       // streak
-      const mappedHistory = rows.map((r) => ({ id: '', monsterId: r.monster_id as string, date: r.date as string }));
+      const mappedHistory = rows.map((r) => ({
+        id: '',
+        monsterId: r.monster_id as string,
+        date: r.date as string,
+      }));
       const streak = calculateStreak(mappedHistory);
 
       // 3. Logros
@@ -117,7 +121,9 @@ export function usePublicProfile(userId: string | null): {
     }
 
     fetchProfile();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [userId, tick, t]);
 
   return { data, loading, error, refresh };

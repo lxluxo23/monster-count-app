@@ -11,33 +11,41 @@
 ## Método 1: EAS Build (Recomendado - en la nube)
 
 ### Paso 1: Instalar EAS CLI
+
 ```bash
 npm install -g eas-cli
 ```
 
 ### Paso 2: Login en Expo
+
 ```bash
 eas login
 ```
 
 ### Paso 3: Configurar el proyecto
+
 ```bash
 eas build:configure
 ```
 
 ### Paso 4: Generar APK para probar (preview)
+
 ```bash
 eas build --platform android --profile preview
 ```
+
 Este comando crea un **APK** que puedes instalar directamente en tu móvil para probar.
 
 ### Paso 5: Generar AAB para Play Store (production)
+
 ```bash
 eas build --platform android --profile production
 ```
+
 Este comando crea un **App Bundle (AAB)** optimizado para subir a Google Play Store.
 
 **Notas:**
+
 - El build se hace en servidores de Expo (gratis con límites)
 - Te pedirá crear una keystore (di que sí, Expo la gestiona)
 - Tarda 10-20 minutos
@@ -48,22 +56,28 @@ Este comando crea un **App Bundle (AAB)** optimizado para subir a Google Play St
 ## Método 2: Compilación local con Android Studio
 
 ### Paso 1: Generar carpeta android
+
 ```bash
 npx expo prebuild --platform android
 ```
 
 ### Paso 2: Abrir en Android Studio
+
 1. Abre Android Studio
 2. File → Open → Selecciona la carpeta `android` del proyecto
 3. Espera a que sincronice Gradle
 
 ### Paso 3: Compilar APK
+
 En Android Studio:
+
 - Build → Build Bundle(s) / APK(s) → Build APK(s)
 - El APK estará en: `android\app\build\outputs\apk\release\app-release.apk`
 
 ### Paso 4: Compilar AAB para Play Store
+
 En Android Studio:
+
 - Build → Build Bundle(s) / APK(s) → Build Bundle(s)
 - El AAB estará en: `android\app\build\outputs\bundle\release\app-release.aab`
 
@@ -74,17 +88,21 @@ En Android Studio:
 ## Método 3: Build local con CLI (más rápido)
 
 ### Compilar APK
+
 ```bash
 cd android
 ./gradlew assembleRelease
 ```
+
 APK en: `android\app\build\outputs\apk\release\app-release.apk`
 
 ### Compilar AAB
+
 ```bash
 cd android
 ./gradlew bundleRelease
 ```
+
 AAB en: `android\app\build\outputs\bundle\release\app-release.aab`
 
 ---
@@ -96,11 +114,13 @@ Si usas **EAS Build**, Expo maneja esto automáticamente.
 Si compilas **localmente**, necesitas:
 
 1. **Generar keystore** (solo una vez):
+
 ```bash
 keytool -genkeypair -v -storetype PKCS12 -keystore monster-counter.keystore -alias monster-counter -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 2. **Configurar en** `android/gradle.properties`:
+
 ```properties
 MYAPP_UPLOAD_STORE_FILE=monster-counter.keystore
 MYAPP_UPLOAD_KEY_ALIAS=monster-counter

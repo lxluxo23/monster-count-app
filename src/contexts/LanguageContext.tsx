@@ -1,11 +1,22 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useColorScheme } from 'react-native';
 import * as Localization from 'expo-localization';
 import i18n from '../i18n';
 import { createSqlitePreferencesRepository } from '../db';
 
-export type LanguageCode = 'auto' | 'es' | 'en' | 'pt' | 'zh' | 'ja';
+export type LanguageCode =
+  | 'auto'
+  | 'es'
+  | 'en'
+  | 'pt'
+  | 'zh'
+  | 'ja'
+  | 'de'
+  | 'pl'
+  | 'fr'
+  | 'hr'
+  | 'hi';
 
 interface LanguageContextValue {
   language: LanguageCode;
@@ -16,18 +27,23 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue>({
   language: 'auto',
   setLanguage: async () => {},
-  currentLocale: 'es',
+  currentLocale: 'en',
 });
 
 const KEY_LANGUAGE = 'appLanguage';
 
 function detectSystemLanguage(): string {
-  const locale = Localization.getLocales()[0]?.languageTag ?? 'es';
+  const locale = Localization.getLocales()[0]?.languageTag ?? 'en';
   if (locale.startsWith('zh')) return 'zh';
   if (locale.startsWith('ja')) return 'ja';
   if (locale.startsWith('pt')) return 'pt';
-  if (locale.startsWith('en')) return 'en';
-  return 'es';
+  if (locale.startsWith('es')) return 'es';
+  if (locale.startsWith('de')) return 'de';
+  if (locale.startsWith('pl')) return 'pl';
+  if (locale.startsWith('fr')) return 'fr';
+  if (locale.startsWith('hr')) return 'hr';
+  if (locale.startsWith('hi')) return 'hi';
+  return 'en';
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
@@ -44,7 +60,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }): R
       if (cancelled) return;
       const savedLang = (value as LanguageCode) || 'auto';
       setLanguageState(savedLang);
-      
+
       // Aplicar el idioma
       const locale = savedLang === 'auto' ? detectSystemLanguage() : savedLang;
       setCurrentLocale(locale);
@@ -63,15 +79,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }): R
     }
   }, [language, initialized]);
 
-  const setLanguage = async (code: LanguageCode) => {
-    setLanguageState(code);
-    await repo.set(KEY_LANGUAGE, code);
-    const locale = code === 'auto' ? detectSystemLanguage() : code;
-    setCurrentLocale(locale);
-    i18n.changeLanguage(locale);
-  };
+  const setLanguage = useCallback(
+    async (code: LanguageCode) => {
+      setLanguageState(code);
+      await repo.set(KEY_LANGUAGE, code);
+      const locale = code === 'auto' ? detectSystemLanguage() : code;
+      setCurrentLocale(locale);
+      i18n.changeLanguage(locale);
+    },
+    [repo]
+  );
 
-  const value = useMemo(() => ({ language, setLanguage, currentLocale }), [language, currentLocale]);
+  const value = useMemo(
+    () => ({ language, setLanguage, currentLocale }),
+    [language, setLanguage, currentLocale]
+  );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

@@ -41,7 +41,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
       setModeState(newMode);
       repo.set(KEY_THEME_MODE, newMode);
     },
-    [repo],
+    [repo]
   );
 
   const isDark = mode === 'dark' || (mode === 'system' && systemScheme !== 'light');

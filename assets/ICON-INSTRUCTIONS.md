@@ -5,12 +5,14 @@
 Usa la imagen `assets\icon-source.webp` (Monster Ultra Zero White) para generar todos los tamaños de iconos.
 
 ### Opción A: Usar herramienta online
+
 1. Ve a: https://icon.kitchen/
 2. Sube `assets\icon-source.webp`
 3. Ajusta el padding y fondo según necesites
 4. Descarga el pack de iconos
 
 ### Opción B: Usar Expo (recomendado)
+
 Necesitas convertir el .webp a .png de 1024×1024px primero, luego:
 
 ```bash

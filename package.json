@@ -1,6 +1,6 @@
 {
   "name": "monster-counter",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "main": "index.js",
   "scripts": {
     "start": "expo start",
@@ -14,7 +14,9 @@
     "submit": "eas submit --platform android",
     "prebuild": "expo prebuild --clean",
     "typecheck": "tsc --noEmit",
-    "clean": "expo prebuild --clean && cd android && gradlew.bat clean"
+    "clean": "expo prebuild --clean && cd android && gradlew.bat clean",
+    "lint": "expo lint",
+    "lint:fix": "expo lint --fix"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
@@ -29,6 +31,7 @@
     "expo-audio": "~55.0.8",
     "expo-camera": "~55.0.9",
     "expo-crypto": "~55.0.9",
+    "expo-dev-client": "~55.0.14",
     "expo-font": "~55.0.4",
     "expo-image-manipulator": "~55.0.9",
     "expo-image-picker": "~55.0.11",
@@ -53,6 +56,8 @@
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-native": "^0.73.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~55.0.0",
     "typescript": "~5.9.3"
   },
   "private": true

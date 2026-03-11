@@ -22,6 +22,6 @@ export function useAchievements({
 
   return useMemo(
     () => buildAchievementList(t, history, total, streak, countByMonsterId),
-    [history, total, streak, countByMonsterId, t],
+    [history, total, streak, countByMonsterId, t]
   );
 }

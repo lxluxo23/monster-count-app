@@ -62,7 +62,7 @@ export default function FlavorRequestModal({
     const result = await ImageManipulator.manipulateAsync(
       uri,
       [{ resize: { width: MAX_IMAGE_WIDTH } }],
-      { compress: COMPRESS_QUALITY, format: ImageManipulator.SaveFormat.JPEG },
+      { compress: COMPRESS_QUALITY, format: ImageManipulator.SaveFormat.JPEG }
     );
     return result.uri;
   };
@@ -91,15 +91,11 @@ export default function FlavorRequestModal({
   };
 
   const handlePickPhoto = () => {
-    Alert.alert(
-      t('comunidad.requestPhoto'),
-      undefined,
-      [
-        { text: t('comunidad.requestPhotoCamera'), onPress: takePhoto },
-        { text: t('comunidad.requestPhotoGallery'), onPress: pickFromGallery },
-        { text: t('history.cancel'), style: 'cancel' },
-      ],
-    );
+    Alert.alert(t('comunidad.requestPhoto'), undefined, [
+      { text: t('comunidad.requestPhotoCamera'), onPress: takePhoto },
+      { text: t('comunidad.requestPhotoGallery'), onPress: pickFromGallery },
+      { text: t('history.cancel'), style: 'cancel' },
+    ]);
   };
 
   const handleSubmit = async () => {
@@ -111,18 +107,22 @@ export default function FlavorRequestModal({
       onClose();
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      Alert.alert(
-        t('comunidad.requestErrorTitle'),
-        msg || t('comunidad.requestErrorGeneric'),
-        [{ text: 'OK' }],
-      );
+      Alert.alert(t('comunidad.requestErrorTitle'), msg || t('comunidad.requestErrorGeneric'), [
+        { text: 'OK' },
+      ]);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide" statusBarTranslucent onRequestClose={handleClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      statusBarTranslucent
+      onRequestClose={handleClose}
+    >
       <KeyboardAvoidingView
         style={styles.overlay}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -131,79 +131,91 @@ export default function FlavorRequestModal({
         <View style={styles.sheet}>
           <View style={styles.handle} />
 
-          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" style={styles.scroll}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>{t('comunidad.requestNewFlavor')}</Text>
-            <TouchableOpacity onPress={handleClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <Ionicons name="close-circle" size={28} color={colors.textMuted} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Name */}
-          <Text style={styles.label}>{t('comunidad.requestName')}</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholder={t('comunidad.requestNamePlaceholder')}
-            placeholderTextColor={colors.textMuted}
-            maxLength={100}
-            editable={!submitting}
-          />
-
-          {/* Description */}
-          <Text style={styles.label}>{t('comunidad.requestDescription')}</Text>
-          <TextInput
-            style={[styles.input, styles.inputMultiline]}
-            value={description}
-            onChangeText={setDescription}
-            placeholder={t('comunidad.requestDescriptionPlaceholder')}
-            placeholderTextColor={colors.textMuted}
-            maxLength={500}
-            multiline
-            numberOfLines={3}
-            editable={!submitting}
-          />
-
-          {/* Photo */}
-          <TouchableOpacity style={styles.photoBtn} onPress={handlePickPhoto} disabled={submitting} activeOpacity={0.7}>
-            <Ionicons name="camera-outline" size={20} color={colors.primary} />
-            <Text style={styles.photoBtnText}>
-              {photoUri ? t('comunidad.requestPhotoChange') : t('comunidad.requestPhoto')}
-            </Text>
-          </TouchableOpacity>
-
-          {photoUri && (
-            <View style={styles.previewWrap}>
-              <Image source={{ uri: photoUri }} style={styles.preview} />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            style={styles.scroll}
+          >
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.title}>{t('comunidad.requestNewFlavor')}</Text>
               <TouchableOpacity
-                style={styles.previewRemove}
-                onPress={() => setPhotoUri(null)}
-                disabled={submitting}
-                activeOpacity={0.7}
+                onPress={handleClose}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <View style={styles.previewRemoveInner}>
-                  <Ionicons name="trash" size={18} color="#fff" />
-                  <Text style={styles.previewRemoveText}>{t('comunidad.removePhoto')}</Text>
-                </View>
+                <Ionicons name="close-circle" size={28} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
-          )}
 
-          {/* Submit */}
-          <TouchableOpacity
-            style={[styles.submitBtn, (!name.trim() || submitting) && styles.submitBtnDisabled]}
-            onPress={handleSubmit}
-            disabled={!name.trim() || submitting}
-            activeOpacity={0.7}
-          >
-            {submitting ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.submitBtnText}>{t('comunidad.requestSubmit')}</Text>
+            {/* Name */}
+            <Text style={styles.label}>{t('comunidad.requestName')}</Text>
+            <TextInput
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              placeholder={t('comunidad.requestNamePlaceholder')}
+              placeholderTextColor={colors.textMuted}
+              maxLength={100}
+              editable={!submitting}
+            />
+
+            {/* Description */}
+            <Text style={styles.label}>{t('comunidad.requestDescription')}</Text>
+            <TextInput
+              style={[styles.input, styles.inputMultiline]}
+              value={description}
+              onChangeText={setDescription}
+              placeholder={t('comunidad.requestDescriptionPlaceholder')}
+              placeholderTextColor={colors.textMuted}
+              maxLength={500}
+              multiline
+              numberOfLines={3}
+              editable={!submitting}
+            />
+
+            {/* Photo */}
+            <TouchableOpacity
+              style={styles.photoBtn}
+              onPress={handlePickPhoto}
+              disabled={submitting}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="camera-outline" size={20} color={colors.primary} />
+              <Text style={styles.photoBtnText}>
+                {photoUri ? t('comunidad.requestPhotoChange') : t('comunidad.requestPhoto')}
+              </Text>
+            </TouchableOpacity>
+
+            {photoUri && (
+              <View style={styles.previewWrap}>
+                <Image source={{ uri: photoUri }} style={styles.preview} />
+                <TouchableOpacity
+                  style={styles.previewRemove}
+                  onPress={() => setPhotoUri(null)}
+                  disabled={submitting}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.previewRemoveInner}>
+                    <Ionicons name="trash" size={18} color="#fff" />
+                    <Text style={styles.previewRemoveText}>{t('comunidad.removePhoto')}</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             )}
-          </TouchableOpacity>
+
+            {/* Submit */}
+            <TouchableOpacity
+              style={[styles.submitBtn, (!name.trim() || submitting) && styles.submitBtnDisabled]}
+              onPress={handleSubmit}
+              disabled={!name.trim() || submitting}
+              activeOpacity={0.7}
+            >
+              {submitting ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.submitBtnText}>{t('comunidad.requestSubmit')}</Text>
+              )}
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
@@ -211,80 +223,86 @@ export default function FlavorRequestModal({
   );
 }
 
-const getStyles = (colors: ColorPalette, insets: { top: number; bottom: number }) => StyleSheet.create({
-  overlay: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
-  sheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl + insets.bottom,
-    maxHeight: '85%',
-  },
-  scroll: { maxHeight: 400 },
-  handle: {
-    width: 48,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.border,
-    alignSelf: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.md,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-  },
-  title: { fontSize: 18, fontWeight: '800', color: colors.text },
-  label: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, marginBottom: spacing.sm },
-  input: {
-    backgroundColor: colors.background,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    fontSize: 15,
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  inputMultiline: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  photoBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  photoBtnText: { fontSize: 14, color: colors.primary, fontWeight: '600' },
-  previewWrap: {
-    marginBottom: spacing.md,
-    borderRadius: radius.lg,
-    overflow: 'hidden',
-    alignSelf: 'flex-start',
-  },
-  preview: { width: 120, height: 90, borderRadius: radius.lg },
-  previewRemove: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: 'rgba(220, 53, 69, 0.95)',
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-  },
-  previewRemoveInner: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  previewRemoveText: { fontSize: 12, fontWeight: '600', color: '#fff' },
-  submitBtn: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    marginTop: spacing.sm,
-  },
-  submitBtnDisabled: { opacity: 0.5 },
-  submitBtnText: { fontSize: 16, fontWeight: '700', color: '#fff' },
-});
+const getStyles = (colors: ColorPalette, insets: { top: number; bottom: number }) =>
+  StyleSheet.create({
+    overlay: { flex: 1, justifyContent: 'flex-end' },
+    backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
+    sheet: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: radius.xl,
+      borderTopRightRadius: radius.xl,
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.xl + insets.bottom,
+      maxHeight: '85%',
+    },
+    scroll: { maxHeight: 400 },
+    handle: {
+      width: 48,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: colors.border,
+      alignSelf: 'center',
+      marginTop: spacing.md,
+      marginBottom: spacing.md,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.lg,
+    },
+    title: { fontSize: 18, fontWeight: '800', color: colors.text },
+    label: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors.textSecondary,
+      marginBottom: spacing.sm,
+    },
+    input: {
+      backgroundColor: colors.background,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      fontSize: 15,
+      color: colors.text,
+      marginBottom: spacing.md,
+    },
+    inputMultiline: {
+      minHeight: 80,
+      textAlignVertical: 'top',
+    },
+    photoBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      paddingVertical: spacing.sm,
+      marginBottom: spacing.md,
+    },
+    photoBtnText: { fontSize: 14, color: colors.primary, fontWeight: '600' },
+    previewWrap: {
+      marginBottom: spacing.md,
+      borderRadius: radius.lg,
+      overflow: 'hidden',
+      alignSelf: 'flex-start',
+    },
+    preview: { width: 120, height: 90, borderRadius: radius.lg },
+    previewRemove: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      backgroundColor: 'rgba(220, 53, 69, 0.95)',
+      borderRadius: radius.sm,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 4,
+    },
+    previewRemoveInner: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+    previewRemoveText: { fontSize: 12, fontWeight: '600', color: '#fff' },
+    submitBtn: {
+      backgroundColor: colors.primary,
+      borderRadius: radius.md,
+      paddingVertical: spacing.md,
+      alignItems: 'center',
+      marginTop: spacing.sm,
+    },
+    submitBtnDisabled: { opacity: 0.5 },
+    submitBtnText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  });

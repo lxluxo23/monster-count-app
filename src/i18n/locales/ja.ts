@@ -65,7 +65,7 @@ const ja = {
     editPlaceholder: '名前を入力',
     editCancel: 'キャンセル',
     editSave: '保存',
-    footer: 'Monster Counter · v1.7.1',
+    footer: 'Monster Counter · v1.7.2',
   },
   publicProfile: {
     title: 'プロフィール',
@@ -127,7 +127,20 @@ const ja = {
     afternoon: '午後',
     night: '夜',
     days: { '0': '日', '1': '月', '2': '火', '3': '水', '4': '木', '5': '金', '6': '土' },
-    months: { '0': '1月', '1': '2月', '2': '3月', '3': '4月', '4': '5月', '5': '6月', '6': '7月', '7': '8月', '8': '9月', '9': '10月', '10': '11月', '11': '12月' },
+    months: {
+      '0': '1月',
+      '1': '2月',
+      '2': '3月',
+      '3': '4月',
+      '4': '5月',
+      '5': '6月',
+      '6': '7月',
+      '7': '8月',
+      '8': '9月',
+      '9': '10月',
+      '10': '11月',
+      '11': '12月',
+    },
   },
   settings: {
     title: '設定',
@@ -159,7 +172,7 @@ const ja = {
     audioVolume: '音量',
     aboutSection: 'について',
     appName: 'Monster Counter',
-    version: 'バージョン 1.7.1',
+    version: 'バージョン 1.7.2',
     copyright: 'Monster Energyの記録アプリ。\n© 2026',
   },
   detail: {
@@ -235,33 +248,44 @@ const ja = {
     },
     ultraPeachyKeen: {
       name: 'Monster Ultra Peachy Keen',
-      description: '甘く自然な桃の味。ゼロ糖質、ゼロカロリー。爽やかでジューシー、桃好きにぴったり。',
-      legend: 'Monster Ultra Peachy Keenは熟した桃の甘い味を、Ultraの無糖・無カロリーのフォーミュラと組み合わせました。軽く、フレッシュで飲みやすい。',
+      description:
+        '甘く自然な桃の味。ゼロ糖質、ゼロカロリー。爽やかでジューシー、桃好きにぴったり。',
+      legend:
+        'Monster Ultra Peachy Keenは熟した桃の甘い味を、Ultraの無糖・無カロリーのフォーミュラと組み合わせました。軽く、フレッシュで飲みやすい。',
     },
     ultraParadise: {
       name: 'Monster Ultra Paradise',
-      description: 'トロピカルなキウイとストロベリーの味。ゼロ糖質、ゼロカロリー。緑色で鮮やか、缶の中のパラダイス。',
-      legend: 'Monster Ultra Paradiseはキウイとストロベリーのコンボでトロピカルなパラダイスへ。ゼロ糖質、ゼロカロリー、完全なMonsterエネルギー。',
+      description:
+        'トロピカルなキウイとストロベリーの味。ゼロ糖質、ゼロカロリー。緑色で鮮やか、缶の中のパラダイス。',
+      legend:
+        'Monster Ultra Paradiseはキウイとストロベリーのコンボでトロピカルなパラダイスへ。ゼロ糖質、ゼロカロリー、完全なMonsterエネルギー。',
     },
     ultraGoldenPineapple: {
       name: 'Monster Ultra Golden Pineapple',
-      description: 'ゴールデンなトロピカルパイナップルの味。ゼロ糖質、ゼロカロリー。甘く、トロピカルでMonster Ultraのタッチ。',
-      legend: 'Monster Ultra Golden Pineappleは最も甘いパイナップルの味を、Ultra版で無糖・無カロリーに。',
+      description:
+        'ゴールデンなトロピカルパイナップルの味。ゼロ糖質、ゼロカロリー。甘く、トロピカルでMonster Ultraのタッチ。',
+      legend:
+        'Monster Ultra Golden Pineappleは最も甘いパイナップルの味を、Ultra版で無糖・無カロリーに。',
     },
     juiceRipper: {
       name: 'Juice Monster Ripper',
-      description: 'マンゴー、オレンジ、パッションフルーツの50%果汁。甘く、トロピカルで爆発的。Juiceラインの最高傑作。',
-      legend: 'Juice Monster Ripperはエキゾチックなトロピカル果汁とMonsterエネルギーを組み合わせ。トロピカルへ直行するクレイジーな味。',
+      description:
+        'マンゴー、オレンジ、パッションフルーツの50%果汁。甘く、トロピカルで爆発的。Juiceラインの最高傑作。',
+      legend:
+        'Juice Monster Ripperはエキゾチックなトロピカル果汁とMonsterエネルギーを組み合わせ。トロピカルへ直行するクレイジーな味。',
     },
     juicePipelinePunch: {
       name: 'Juice Monster Pipeline Punch',
-      description: 'グアバ、オレンジ、パッションフルーツのトロピカルフルーツブレンド。甘く、フルーティーで50%本物の果汁。',
-      legend: 'Juice Monster Pipeline Punchはトロピカルフレーバーの爆発。一口ごとにグアバ、オレンジ、パッションフルーツ、完全なMonsterエネルギー。',
+      description:
+        'グアバ、オレンジ、パッションフルーツのトロピカルフルーツブレンド。甘く、フルーティーで50%本物の果汁。',
+      legend:
+        'Juice Monster Pipeline Punchはトロピカルフレーバーの爆発。一口ごとにグアバ、オレンジ、パッションフルーツ、完全なMonsterエネルギー。',
     },
     juicePacificPunch: {
       name: 'Juice Monster Pacific Punch',
       description: '太平洋のトロピカルフルーツブレンド。50%果汁、甘く爽やか。',
-      legend: 'Juice Monster Pacific Punchは太平洋のトロピカルフレーバーとMonsterエネルギーを組み合わせ。',
+      legend:
+        'Juice Monster Pacific Punchは太平洋のトロピカルフレーバーとMonsterエネルギーを組み合わせ。',
     },
     juiceBadApple: {
       name: 'Juice Monster Bad Apple',
@@ -271,7 +295,8 @@ const ja = {
     juiceKhaotic: {
       name: 'Juice Monster Khaotic',
       description: 'カオスなトロピカルフレーバーのブレンド。マンゴーとオレンジの50%果汁。',
-      legend: 'Juice Monster Khaoticはトロピカルフレーバーのカオスな爆発、完全なMonsterエネルギー。',
+      legend:
+        'Juice Monster Khaoticはトロピカルフレーバーのカオスな爆発、完全なMonsterエネルギー。',
     },
     ultraViolet: {
       name: 'Monster Ultra Violet',
@@ -280,8 +305,10 @@ const ja = {
     },
     ultraRosa: {
       name: 'Monster Ultra Rosa',
-      description: 'ピンクグレープフルーツの味。ゼロ糖質、ゼロカロリー。シトラス、爽やかでUltraのタッチ。',
-      legend: 'Monster Ultra Rosaはピンクグレープフルーツの味をUltraの無糖・無カロリーのフォーミュラと組み合わせ。',
+      description:
+        'ピンクグレープフルーツの味。ゼロ糖質、ゼロカロリー。シトラス、爽やかでUltraのタッチ。',
+      legend:
+        'Monster Ultra Rosaはピンクグレープフルーツの味をUltraの無糖・無カロリーのフォーミュラと組み合わせ。',
     },
     ultraWatermelon: {
       name: 'Monster Ultra Watermelon',
@@ -295,7 +322,8 @@ const ja = {
     },
     ultraFiestaMango: {
       name: 'Monster Ultra Fiesta Mango',
-      description: 'フェスティバルなマンゴーの味。ゼロ糖質、ゼロカロリー。トロピカル、甘くUltraのタッチ。',
+      description:
+        'フェスティバルなマンゴーの味。ゼロ糖質、ゼロカロリー。トロピカル、甘くUltraのタッチ。',
       legend: 'Monster Ultra Fiesta MangoはマンゴーのフェスティバルをUltra版で無糖・無カロリーに。',
     },
   },

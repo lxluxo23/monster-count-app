@@ -82,14 +82,17 @@ export default function BarcodeScannerModal({
         }
       } else {
         lastUnknownTime.current = Date.now();
-        Alert.alert(
-          t('scanner.unknownTitle'),
-          t('scanner.unknownMessage', { code: data }),
-          [
-            { text: t('history.cancel'), style: 'cancel' },
-            { text: t('scanner.addManually'), onPress: () => { setScanned(false); setLastBarcode(null); onClose(); } },
-          ]
-        );
+        Alert.alert(t('scanner.unknownTitle'), t('scanner.unknownMessage', { code: data }), [
+          { text: t('history.cancel'), style: 'cancel' },
+          {
+            text: t('scanner.addManually'),
+            onPress: () => {
+              setScanned(false);
+              setLastBarcode(null);
+              onClose();
+            },
+          },
+        ]);
       }
     },
     [scanned, adding, successMonster, onAdd, onClose, t]
@@ -182,118 +185,119 @@ export default function BarcodeScannerModal({
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.md,
-    backgroundColor: colors.background,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: colors.text,
-  },
-  cameraWrap: {
-    flex: 1,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  scanFrame: {
-    position: 'absolute',
-    top: '30%',
-    left: '15%',
-    right: '15%',
-    height: 180,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderRadius: radius.lg,
-    backgroundColor: 'transparent',
-  },
-  addingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  addingText: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  successOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.75)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  successText: {
-    color: '#27AE60',
-    fontSize: 18,
-    fontWeight: '800',
-  },
-  successMonster: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  permissionBox: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.xl,
-    gap: spacing.lg,
-  },
-  permissionText: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  permissionBtn: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.lg,
-  },
-  permissionBtnText: {
-    color: colors.black,
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  footer: {
-    padding: spacing.lg,
-    backgroundColor: colors.background,
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  footerText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-  rescanBtn: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
-  },
-  rescanText: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.xl,
+      paddingBottom: spacing.md,
+      backgroundColor: colors.background,
+    },
+    headerTitle: {
+      fontSize: 20,
+      fontWeight: '800',
+      color: colors.text,
+    },
+    cameraWrap: {
+      flex: 1,
+      position: 'relative',
+      overflow: 'hidden',
+    },
+    scanFrame: {
+      position: 'absolute',
+      top: '30%',
+      left: '15%',
+      right: '15%',
+      height: 180,
+      borderWidth: 2,
+      borderColor: colors.primary,
+      borderRadius: radius.lg,
+      backgroundColor: 'transparent',
+    },
+    addingOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    addingText: {
+      color: colors.text,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    successOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0,0,0,0.75)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    successText: {
+      color: '#27AE60',
+      fontSize: 18,
+      fontWeight: '800',
+    },
+    successMonster: {
+      color: colors.text,
+      fontSize: 16,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    permissionBox: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.xl,
+      gap: spacing.lg,
+    },
+    permissionText: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+    permissionBtn: {
+      backgroundColor: colors.primary,
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.md,
+      borderRadius: radius.lg,
+    },
+    permissionBtnText: {
+      color: colors.black,
+      fontWeight: '700',
+      fontSize: 16,
+    },
+    footer: {
+      padding: spacing.lg,
+      backgroundColor: colors.background,
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    footerText: {
+      fontSize: 14,
+      color: colors.textMuted,
+      textAlign: 'center',
+    },
+    rescanBtn: {
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.lg,
+    },
+    rescanText: {
+      fontSize: 14,
+      color: colors.primary,
+      fontWeight: '600',
+    },
+  });

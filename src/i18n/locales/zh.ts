@@ -65,7 +65,7 @@ const zh = {
     editPlaceholder: '输入你的名字',
     editCancel: '取消',
     editSave: '保存',
-    footer: 'Monster Counter · v1.7.1',
+    footer: 'Monster Counter · v1.7.2',
   },
   publicProfile: {
     title: '个人资料',
@@ -127,7 +127,20 @@ const zh = {
     afternoon: '下午',
     night: '夜间',
     days: { '0': '日', '1': '一', '2': '二', '3': '三', '4': '四', '5': '五', '6': '六' },
-    months: { '0': '1月', '1': '2月', '2': '3月', '3': '4月', '4': '5月', '5': '6月', '6': '7月', '7': '8月', '8': '9月', '9': '10月', '10': '11月', '11': '12月' },
+    months: {
+      '0': '1月',
+      '1': '2月',
+      '2': '3月',
+      '3': '4月',
+      '4': '5月',
+      '5': '6月',
+      '6': '7月',
+      '7': '8月',
+      '8': '9月',
+      '9': '10月',
+      '10': '11月',
+      '11': '12月',
+    },
   },
   settings: {
     title: '设置',
@@ -159,7 +172,7 @@ const zh = {
     audioVolume: '音量',
     aboutSection: '关于',
     appName: 'Monster Counter',
-    version: '版本 1.7.1',
+    version: '版本 1.7.2',
     copyright: 'Monster Energy 罐装饮料记录应用。\n© 2026',
   },
   detail: {
@@ -236,12 +249,14 @@ const zh = {
     ultraPeachyKeen: {
       name: 'Monster Ultra Peachy Keen',
       description: '甜美自然的桃子风味。零糖、零卡路里。清爽多汁，适合桃子爱好者。',
-      legend: 'Monster Ultra Peachy Keen将成熟桃子的甜美与Ultra配方结合——无糖、无卡路里。轻盈、清爽、易饮。',
+      legend:
+        'Monster Ultra Peachy Keen将成熟桃子的甜美与Ultra配方结合——无糖、无卡路里。轻盈、清爽、易饮。',
     },
     ultraParadise: {
       name: 'Monster Ultra Paradise',
       description: '热带奇异果草莓风味。零糖、零卡路里。绿色、活力、清爽，宛如罐中天堂。',
-      legend: 'Monster Ultra Paradise以奇异果和草莓组合带你进入热带天堂。零糖、零卡路里，完整Monster能量。',
+      legend:
+        'Monster Ultra Paradise以奇异果和草莓组合带你进入热带天堂。零糖、零卡路里，完整Monster能量。',
     },
     ultraGoldenPineapple: {
       name: 'Monster Ultra Golden Pineapple',
@@ -256,7 +271,8 @@ const zh = {
     juicePipelinePunch: {
       name: 'Juice Monster Pipeline Punch',
       description: '热带水果混合，含番石榴、橙子和百香果。甜美、果香，50%真实果汁。',
-      legend: 'Juice Monster Pipeline Punch是热带风味的爆发。一口番石榴、橙子、百香果，完整Monster能量。',
+      legend:
+        'Juice Monster Pipeline Punch是热带风味的爆发。一口番石榴、橙子、百香果，完整Monster能量。',
     },
     juicePacificPunch: {
       name: 'Juice Monster Pacific Punch',

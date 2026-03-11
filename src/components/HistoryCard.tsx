@@ -21,23 +21,24 @@ export function HistoryCard({ title, dateLabel }: HistoryCardProps): React.JSX.E
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    padding: spacing.lg,
-    marginBottom: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  title: {
-    color: colors.text,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  date: {
-    color: colors.textMuted,
-    fontSize: 14,
-  },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.md,
+      padding: spacing.lg,
+      marginBottom: 12,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    title: {
+      color: colors.text,
+      fontWeight: '600',
+      fontSize: 16,
+    },
+    date: {
+      color: colors.textMuted,
+      fontSize: 14,
+    },
+  });

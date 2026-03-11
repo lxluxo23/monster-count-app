@@ -13,17 +13,18 @@ interface MonsterChipProps {
   onLongPress?: () => void;
 }
 
-export function MonsterChip({ monster, selected, onPress, onLongPress }: MonsterChipProps): React.JSX.Element {
+export function MonsterChip({
+  monster,
+  selected,
+  onPress,
+  onLongPress,
+}: MonsterChipProps): React.JSX.Element {
   const { colors } = useTheme();
   const styles = getStyles(colors);
   const name = getMonsterName(monster.id);
   return (
     <TouchableOpacity
-      style={[
-        styles.chip,
-        { backgroundColor: monster.color },
-        selected && styles.chipSelected,
-      ]}
+      style={[styles.chip, { backgroundColor: monster.color }, selected && styles.chipSelected]}
       onPress={onPress}
       onLongPress={onLongPress}
       delayLongPress={400}
@@ -43,49 +44,50 @@ export function MonsterChip({ monster, selected, onPress, onLongPress }: Monster
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  chip: {
-    flex: 1,
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 140,
-  },
-  chipSelected: {
-    borderWidth: 4,
-    borderColor: colors.white,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.6,
-    shadowRadius: 12,
-    elevation: 10,
-    transform: [{ scale: 1.02 }],
-  },
-  image: {
-    width: 64,
-    height: 64,
-    marginBottom: spacing.sm,
-  },
-  placeholder: {
-    width: 64,
-    height: 64,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.sm,
-  },
-  placeholderText: {
-    color: colors.text,
-    fontWeight: '800',
-    fontSize: 24,
-  },
-  label: {
-    color: colors.black,
-    fontWeight: '700',
-    fontSize: 13,
-    textAlign: 'center',
-    lineHeight: 16,
-  },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    chip: {
+      flex: 1,
+      paddingVertical: spacing.lg,
+      paddingHorizontal: spacing.md,
+      borderRadius: radius.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 140,
+    },
+    chipSelected: {
+      borderWidth: 4,
+      borderColor: colors.white,
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.6,
+      shadowRadius: 12,
+      elevation: 10,
+      transform: [{ scale: 1.02 }],
+    },
+    image: {
+      width: 64,
+      height: 64,
+      marginBottom: spacing.sm,
+    },
+    placeholder: {
+      width: 64,
+      height: 64,
+      borderRadius: radius.md,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: spacing.sm,
+    },
+    placeholderText: {
+      color: colors.text,
+      fontWeight: '800',
+      fontSize: 24,
+    },
+    label: {
+      color: colors.black,
+      fontWeight: '700',
+      fontSize: 13,
+      textAlign: 'center',
+      lineHeight: 16,
+    },
+  });

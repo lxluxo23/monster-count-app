@@ -25,7 +25,13 @@ interface PublicProfileScreenProps {
   onClose: () => void;
 }
 
-function AchievementCard({ a, colors }: { a: Achievement; colors: ColorPalette }): React.JSX.Element {
+function AchievementCard({
+  a,
+  colors,
+}: {
+  a: Achievement;
+  colors: ColorPalette;
+}): React.JSX.Element {
   const styles = getStyles(colors);
   return (
     <View style={[styles.achCard, a.unlocked && styles.achCardUnlocked]}>
@@ -33,9 +39,7 @@ function AchievementCard({ a, colors }: { a: Achievement; colors: ColorPalette }
       <View style={styles.achContent}>
         <View style={styles.achTop}>
           <Text style={[styles.achTitle, !a.unlocked && styles.achTitleLocked]}>{a.title}</Text>
-          {a.unlocked && (
-            <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
-          )}
+          {a.unlocked && <Ionicons name="checkmark-circle" size={18} color={colors.primary} />}
         </View>
         <Text style={styles.achDesc}>{a.description}</Text>
       </View>
@@ -60,13 +64,16 @@ export default function PublicProfileScreen({
     <Modal visible={visible} animationType="slide" statusBarTranslucent onRequestClose={onClose}>
       <View style={styles.fullScreen}>
         <View style={styles.header}>
-            <Text style={styles.title}>{t('publicProfile.title')}</Text>
-            <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <Ionicons name="close" size={26} color={colors.text} />
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.title}>{t('publicProfile.title')}</Text>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="close" size={26} color={colors.text} />
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.contentArea}>
+        <View style={styles.contentArea}>
           {loading && !isGuest && (
             <View style={styles.center}>
               <ActivityIndicator size="large" color={colors.primary} />
@@ -141,7 +148,8 @@ export default function PublicProfileScreen({
               {data.showAchievements && data.achievements.length > 0 && (
                 <>
                   <Text style={styles.sectionTitle}>
-                    {t('comunidad.achievementsTitle')} ({data.achievements.filter((a) => a.unlocked).length}/{data.achievements.length})
+                    {t('comunidad.achievementsTitle')} (
+                    {data.achievements.filter((a) => a.unlocked).length}/{data.achievements.length})
                   </Text>
                   {data.achievements.map((a) => (
                     <AchievementCard key={a.id} a={a} colors={colors} />
@@ -156,123 +164,124 @@ export default function PublicProfileScreen({
               <View style={{ height: spacing.xl }} />
             </ScrollView>
           )}
-          </View>
+        </View>
       </View>
     </Modal>
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  fullScreen: {
-    flex: 1,
-    backgroundColor: colors.background,
-    paddingHorizontal: spacing.lg,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    paddingTop: spacing.xl,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  title: { fontSize: 20, fontWeight: '800', color: colors.text },
-  contentArea: {
-    flex: 1,
-    minHeight: 0,
-  },
-  center: {
-    paddingVertical: spacing.xl * 2,
-    alignItems: 'center',
-  },
-  errorText: {
-    color: colors.textMuted,
-    fontSize: 16,
-    marginTop: spacing.md,
-  },
-  scroll: { flex: 1, minHeight: 0 },
-  content: { paddingTop: spacing.md, paddingBottom: spacing.xl },
-  avatarWrap: { alignItems: 'center', marginBottom: spacing.md },
-  avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: colors.background,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  avatarImage: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-  },
-  displayName: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginBottom: spacing.md,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    alignItems: 'center',
-  },
-  statValue: { fontSize: 28, fontWeight: '800', color: colors.primary },
-  statLabel: { fontSize: 12, color: colors.textMuted, marginTop: 4 },
-  favoriteCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  favoriteText: { flex: 1 },
-  favoriteLabel: { fontSize: 12, color: colors.textMuted },
-  favoriteName: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: 2 },
-  privacyNote: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textAlign: 'center',
-    fontStyle: 'italic',
-    marginBottom: spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: spacing.md,
-    marginTop: spacing.sm,
-  },
-  achCard: {
-    flexDirection: 'row',
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
-    gap: spacing.md,
-    opacity: 0.7,
-  },
-  achCardUnlocked: {
-    opacity: 1,
-    borderWidth: 1,
-    borderColor: colors.primary + '50',
-  },
-  achEmoji: { fontSize: 24, lineHeight: 32 },
-  achContent: { flex: 1 },
-  achTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: 2 },
-  achTitle: { flex: 1, fontSize: 14, fontWeight: '700', color: colors.text },
-  achTitleLocked: { color: colors.textSecondary },
-  achDesc: { fontSize: 12, color: colors.textMuted },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    fullScreen: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing.lg,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: spacing.lg,
+      paddingTop: spacing.xl,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.border,
+    },
+    title: { fontSize: 20, fontWeight: '800', color: colors.text },
+    contentArea: {
+      flex: 1,
+      minHeight: 0,
+    },
+    center: {
+      paddingVertical: spacing.xl * 2,
+      alignItems: 'center',
+    },
+    errorText: {
+      color: colors.textMuted,
+      fontSize: 16,
+      marginTop: spacing.md,
+    },
+    scroll: { flex: 1, minHeight: 0 },
+    content: { paddingTop: spacing.md, paddingBottom: spacing.xl },
+    avatarWrap: { alignItems: 'center', marginBottom: spacing.md },
+    avatar: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+      backgroundColor: colors.background,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    avatarImage: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+    },
+    displayName: {
+      fontSize: 22,
+      fontWeight: '800',
+      color: colors.text,
+      textAlign: 'center',
+      marginBottom: spacing.lg,
+    },
+    statsRow: {
+      flexDirection: 'row',
+      gap: spacing.md,
+      marginBottom: spacing.md,
+    },
+    statCard: {
+      flex: 1,
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      alignItems: 'center',
+    },
+    statValue: { fontSize: 28, fontWeight: '800', color: colors.primary },
+    statLabel: { fontSize: 12, color: colors.textMuted, marginTop: 4 },
+    favoriteCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      gap: spacing.md,
+      marginBottom: spacing.lg,
+    },
+    favoriteText: { flex: 1 },
+    favoriteLabel: { fontSize: 12, color: colors.textMuted },
+    favoriteName: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: 2 },
+    privacyNote: {
+      fontSize: 14,
+      color: colors.textMuted,
+      textAlign: 'center',
+      fontStyle: 'italic',
+      marginBottom: spacing.lg,
+    },
+    sectionTitle: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: spacing.md,
+      marginTop: spacing.sm,
+    },
+    achCard: {
+      flexDirection: 'row',
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.md,
+      marginBottom: spacing.sm,
+      gap: spacing.md,
+      opacity: 0.7,
+    },
+    achCardUnlocked: {
+      opacity: 1,
+      borderWidth: 1,
+      borderColor: colors.primary + '50',
+    },
+    achEmoji: { fontSize: 24, lineHeight: 32 },
+    achContent: { flex: 1 },
+    achTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: 2 },
+    achTitle: { flex: 1, fontSize: 14, fontWeight: '700', color: colors.text },
+    achTitleLocked: { color: colors.textSecondary },
+    achDesc: { fontSize: 12, color: colors.textMuted },
+  });

@@ -28,7 +28,7 @@ assignees: ''
 
 - Dispositivo/emulador: (ej. Pixel 6, Android 14)
 - Versión de la app: (ej. 1.0.0)
-- Expo Go / build propio: 
+- Expo Go / build propio:
 
 ## Capturas o logs (opcional)
 

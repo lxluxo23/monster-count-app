@@ -13,6 +13,7 @@ App para registrar y llevar la cuenta de latas de **Monster Energy** por tipo. D
 ## Funcionalidades
 
 ### Inicio
+
 - Grid de **6 sabores** de Monster con imágenes reales (Ultra Zero White, Original Green, Ultra Blue Hawaiian, Classic Zero Sugar, Mango Loco, Aussie Lemonade).
 - Stats del día y total general (clicables para ver estadísticas detalladas).
 - **Meta diaria** configurable (0-5 latas) con barra de progreso.
@@ -20,20 +21,24 @@ App para registrar y llevar la cuenta de latas de **Monster Energy** por tipo. D
 - **Long press** en cualquier sabor para ver información nutricional completa.
 
 ### Escáner de Códigos de Barras
+
 - Botón central elevado en el tab bar para escanear latas con la cámara.
 - Soporta **130+ códigos** UPC/EAN de variantes regionales (Argentina, UK, Australia, etc.).
 - Registro automático si el código coincide. Feedback visual al escanear.
 
 ### Historial
+
 - Lista de todas las entradas con tipo, fecha/hora y fuente (manual/cámara).
 - Swipe para eliminar (con sync a Supabase si está autenticado).
 
 ### Comunidad
+
 - **9 logros** desbloqueables con progreso (primera lata, 10/50/100, racha 7/30 días, coleccionista, madrugador, noctámbulo).
 - **Ranking global** de sabores más populares.
 - **Top 10 bebedores** con medallas (respeta la privacidad de cada usuario).
 
 ### Estadísticas Detalladas
+
 - KPIs: total, verificadas (cámara), días activos, promedio diario y semanal.
 - Gráfico de barras de los últimos 7 días.
 - Distribución horaria en 4 bloques (madrugada/mañana/tarde/noche).
@@ -42,11 +47,13 @@ App para registrar y llevar la cuenta de latas de **Monster Energy** por tipo. D
 - Desglose por sabor con barras de progreso.
 
 ### Perfil
+
 - Avatar y nombre editables (sincronizados con Google si está autenticado).
 - Resumen rápido: total, favorito, racha de días consecutivos.
 - Menú: Mis datos, Estadísticas, Ajustes, Cerrar sesión.
 
 ### Más
+
 - **Internacionalización (i18n)**: español, inglés, portugués, chino simplificado y japonés. Detección automática del idioma del dispositivo.
 - **Sincronización cloud**: offline-first con SQLite como fuente de verdad y Supabase como backend. Sync bidireccional al iniciar sesión.
 - **Autenticación**: Google Sign-In nativo (bottom sheet del sistema, sin browser).
@@ -59,17 +66,17 @@ App para registrar y llevar la cuenta de latas de **Monster Energy** por tipo. D
 
 ## Stack Técnico
 
-| Categoría | Tecnología |
-|-----------|------------|
-| Framework | React Native 0.81 + Expo 54 (New Architecture) |
-| Lenguaje | TypeScript 5.9 (strict) |
-| Base de datos local | expo-sqlite v16 (WAL mode) |
-| Backend | Supabase (auth, DB, RLS) |
-| Autenticación | @react-native-google-signin/google-signin v16 |
-| Navegación | @react-navigation/bottom-tabs v7 |
-| i18n | i18next + react-i18next + expo-localization |
-| Notificaciones | expo-notifications |
-| Escáner | expo-camera v17 |
+| Categoría           | Tecnología                                     |
+| ------------------- | ---------------------------------------------- |
+| Framework           | React Native 0.81 + Expo 54 (New Architecture) |
+| Lenguaje            | TypeScript 5.9 (strict)                        |
+| Base de datos local | expo-sqlite v16 (WAL mode)                     |
+| Backend             | Supabase (auth, DB, RLS)                       |
+| Autenticación       | @react-native-google-signin/google-signin v16  |
+| Navegación          | @react-navigation/bottom-tabs v7               |
+| i18n                | i18next + react-i18next + expo-localization    |
+| Notificaciones      | expo-notifications                             |
+| Escáner             | expo-camera v17                                |
 
 ---
 
@@ -102,16 +109,16 @@ EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=tu_web_client_id
 
 ## Scripts
 
-| Comando | Descripción |
-|---------|-------------|
-| `npm start` | Inicia el servidor de desarrollo Expo |
-| `npm run android` | Abre en emulador/dispositivo Android |
-| `npm run ios` | Abre en simulador iOS (solo macOS) |
-| `npm run web` | Abre en navegador |
-| `npm run typecheck` | Verifica tipos TypeScript |
-| `npm run build:preview` | Build APK de prueba (EAS) |
-| `npm run build:prod` | Build AAB de producción (EAS) |
-| `npm run prebuild` | Genera proyecto nativo limpio |
+| Comando                 | Descripción                           |
+| ----------------------- | ------------------------------------- |
+| `npm start`             | Inicia el servidor de desarrollo Expo |
+| `npm run android`       | Abre en emulador/dispositivo Android  |
+| `npm run ios`           | Abre en simulador iOS (solo macOS)    |
+| `npm run web`           | Abre en navegador                     |
+| `npm run typecheck`     | Verifica tipos TypeScript             |
+| `npm run build:preview` | Build APK de prueba (EAS)             |
+| `npm run build:prod`    | Build AAB de producción (EAS)         |
+| `npm run prebuild`      | Genera proyecto nativo limpio         |
 
 ---
 
@@ -174,11 +181,11 @@ EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=tu_web_client_id
 
 Archivo: `monster_counter.db` — Versión actual: **5** (WAL mode)
 
-| Tabla | Descripción |
-|-------|-------------|
-| `entries` | Registros: id, monster_id, date, synced, source |
-| `preferences` | Key-value: userName, dailyGoal, notificaciones, privacidad |
-| `pending_deletes` | Cola de reintentos para deletes fallidos en Supabase |
+| Tabla             | Descripción                                                |
+| ----------------- | ---------------------------------------------------------- |
+| `entries`         | Registros: id, monster_id, date, synced, source            |
+| `preferences`     | Key-value: userName, dailyGoal, notificaciones, privacidad |
+| `pending_deletes` | Cola de reintentos para deletes fallidos en Supabase       |
 
 ---
 
@@ -197,7 +204,7 @@ Archivo: `monster_counter.db` — Versión actual: **5** (WAL mode)
 
 - **Android**: configurado para EAS Build (APK preview, AAB production). Ver [BUILD-INSTRUCTIONS.md](./BUILD-INSTRUCTIONS.md).
 - **Package**: `com.monstercounter.app`
-- **Versión actual**: 1.7.1 (versionCode 9)
+- **Versión actual**: 1.7.2 (versionCode 10)
 
 ---
 

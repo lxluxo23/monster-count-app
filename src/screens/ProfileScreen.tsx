@@ -55,15 +55,27 @@ export default function ProfileScreen({
   const { colors } = useTheme();
   const styles = getStyles(colors);
   const { status, user, signInWithGoogle, signOut, isSigningIn } = useAuth();
-  const { enabled: notifEnabled, hour: notifHour, setEnabled: setNotifEnabled, setHour: setNotifHour, weeklyEnabled, setWeeklyEnabled } = useNotifications();
-  const { enabled: audioEnabled, volume: audioVolume, setEnabled: setAudioEnabled, setVolume: setAudioVolume } = useAudioSettings();
+  const {
+    enabled: notifEnabled,
+    hour: notifHour,
+    setEnabled: setNotifEnabled,
+    setHour: setNotifHour,
+    weeklyEnabled,
+    setWeeklyEnabled,
+  } = useNotifications();
+  const {
+    enabled: audioEnabled,
+    volume: audioVolume,
+    setEnabled: setAudioEnabled,
+    setVolume: setAudioVolume,
+  } = useAudioSettings();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [tempName, setTempName] = useState(userName);
 
   const isAuthenticated = status === 'authenticated';
-  const favoriteCount = favoriteMonsterId ? countByMonsterId[favoriteMonsterId] ?? 0 : 0;
+  const favoriteCount = favoriteMonsterId ? (countByMonsterId[favoriteMonsterId] ?? 0) : 0;
 
   const displayName = userName;
 
@@ -75,14 +87,14 @@ export default function ProfileScreen({
   };
 
   const handleSignOut = () => {
-    Alert.alert(
-      t('profile.logoutTitle'),
-      t('profile.logoutMsg'),
-      [
-        { text: t('profile.logoutCancel'), style: 'cancel' },
-        { text: t('profile.logoutConfirm'), style: 'destructive', onPress: () => signOut().catch(console.error) },
-      ]
-    );
+    Alert.alert(t('profile.logoutTitle'), t('profile.logoutMsg'), [
+      { text: t('profile.logoutCancel'), style: 'cancel' },
+      {
+        text: t('profile.logoutConfirm'),
+        style: 'destructive',
+        onPress: () => signOut().catch(console.error),
+      },
+    ]);
   };
 
   const handleMenuPress = (action: MenuAction) => {
@@ -104,14 +116,20 @@ export default function ProfileScreen({
   };
 
   // 2.4: Agrupación del menú
-  const accountItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; action: MenuAction }[] = [
+  const accountItems: {
+    icon: React.ComponentProps<typeof Ionicons>['name'];
+    label: string;
+    action: MenuAction;
+  }[] = [
     { icon: 'person-outline', label: t('profile.editName'), action: 'edit' },
     { icon: 'stats-chart-outline', label: t('profile.statsDetail'), action: 'stats' },
   ];
 
-  const appItems: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; action: MenuAction }[] = [
-    { icon: 'settings-outline', label: t('profile.settings'), action: 'settings' },
-  ];
+  const appItems: {
+    icon: React.ComponentProps<typeof Ionicons>['name'];
+    label: string;
+    action: MenuAction;
+  }[] = [{ icon: 'settings-outline', label: t('profile.settings'), action: 'settings' }];
 
   return (
     <>
@@ -124,9 +142,12 @@ export default function ProfileScreen({
         <View style={styles.header}>
           <View style={styles.avatarWrap}>
             <View style={styles.avatar}>
-              {isAuthenticated && (user?.user_metadata?.picture ?? user?.user_metadata?.avatar_url) ? (
+              {isAuthenticated &&
+              (user?.user_metadata?.picture ?? user?.user_metadata?.avatar_url) ? (
                 <Image
-                  source={{ uri: (user.user_metadata.picture ?? user.user_metadata.avatar_url) as string }}
+                  source={{
+                    uri: (user.user_metadata.picture ?? user.user_metadata.avatar_url) as string,
+                  }}
                   style={styles.avatarImage}
                 />
               ) : (
@@ -159,10 +180,11 @@ export default function ProfileScreen({
               disabled={isSigningIn}
               activeOpacity={0.8}
             >
-              {isSigningIn
-                ? <ActivityIndicator size="small" color={colors.black} />
-                : <Text style={styles.googleButtonText}>{t('profile.googleBtn')}</Text>
-              }
+              {isSigningIn ? (
+                <ActivityIndicator size="small" color={colors.black} />
+              ) : (
+                <Text style={styles.googleButtonText}>{t('profile.googleBtn')}</Text>
+              )}
             </TouchableOpacity>
           </View>
         )}
@@ -194,7 +216,8 @@ export default function ProfileScreen({
               <View style={styles.favoriteText}>
                 <Text style={styles.favoriteLabel}>{t('profile.favoriteLabel')}</Text>
                 <Text style={styles.favoriteName}>
-                  {getMonsterName(favoriteMonsterId)} · {t('profile.favoriteUnit', { count: favoriteCount })}
+                  {getMonsterName(favoriteMonsterId)} ·{' '}
+                  {t('profile.favoriteUnit', { count: favoriteCount })}
                 </Text>
               </View>
             </View>
@@ -207,10 +230,7 @@ export default function ProfileScreen({
           {accountItems.map((item, index, arr) => (
             <TouchableOpacity
               key={item.action}
-              style={[
-                styles.menuRow,
-                index === arr.length - 1 && styles.menuRowLast,
-              ]}
+              style={[styles.menuRow, index === arr.length - 1 && styles.menuRowLast]}
               activeOpacity={0.7}
               onPress={() => handleMenuPress(item.action)}
             >
@@ -245,7 +265,9 @@ export default function ProfileScreen({
               onPress={() => handleMenuPress('logout')}
             >
               <Ionicons name="log-out-outline" size={22} color="#E74C3C" />
-              <Text style={[styles.menuLabel, styles.menuLabelDestructive]}>{t('profile.logout')}</Text>
+              <Text style={[styles.menuLabel, styles.menuLabelDestructive]}>
+                {t('profile.logout')}
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -311,109 +333,166 @@ export default function ProfileScreen({
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  content: { paddingBottom: 48 },
-  header: { alignItems: 'center', paddingVertical: spacing.xl },
-  avatarWrap: { marginBottom: spacing.md },
-  avatar: {
-    width: 88, height: 88, borderRadius: radius.full,
-    backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 3, borderColor: colors.surfaceElevated,
-    overflow: 'hidden',
-  },
-  avatarImage: {
-    width: 88, height: 88, borderRadius: radius.full,
-  },
-  syncBadge: {
-    position: 'absolute', bottom: 0, right: 0,
-    width: 22, height: 22, borderRadius: radius.full,
-    backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 2, borderColor: colors.background,
-  },
-  greeting: { fontSize: 26, fontWeight: '800', color: colors.text },
-  subGreeting: { fontSize: 15, color: colors.textMuted, marginTop: 4 },
-  authBanner: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.surface, marginHorizontal: spacing.lg,
-    borderRadius: radius.lg, padding: spacing.md,
-    marginBottom: spacing.lg, gap: spacing.md,
-    borderWidth: 1, borderColor: colors.primary + '40',
-  },
-  authBannerText: { flex: 1 },
-  authBannerTitle: { fontSize: 14, fontWeight: '700', color: colors.text },
-  authBannerSub: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
-  googleButton: {
-    backgroundColor: colors.primary, paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm, borderRadius: radius.sm,
-    minWidth: 72, alignItems: 'center',
-  },
-  googleButtonText: { color: colors.black, fontWeight: '700', fontSize: 14 },
-  statsSection: { paddingHorizontal: spacing.lg, marginBottom: spacing.xl },
-  statRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
-  statCard: {
-    flex: 1, backgroundColor: colors.surface,
-    borderRadius: radius.lg, padding: spacing.lg, alignItems: 'center',
-  },
-  statValue: { fontSize: 32, fontWeight: '800', color: colors.primary },
-  statLabel: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
-  streakCard: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.surface, borderRadius: radius.lg,
-    padding: spacing.lg, gap: spacing.md,
-    marginBottom: spacing.md,
-    borderWidth: 1, borderColor: '#FF6B0050',
-  },
-  streakEmoji: { fontSize: 32 },
-  streakText: { flex: 1 },
-  streakValue: { fontSize: 18, fontWeight: '800', color: colors.text },
-  streakLabel: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
-  favoriteCard: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.surface, borderRadius: radius.lg,
-    padding: spacing.lg, gap: spacing.md,
-  },
-  favoriteText: { flex: 1 },
-  favoriteLabel: { fontSize: 12, color: colors.textMuted },
-  favoriteName: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: 2 },
-  menuSection: {
-    backgroundColor: colors.surface, marginHorizontal: spacing.lg,
-    borderRadius: radius.lg, overflow: 'hidden',
-    marginBottom: spacing.md,
-  },
-  menuGroupLabel: {
-    fontSize: 12, fontWeight: '600', color: colors.textMuted,
-    letterSpacing: 0.8,
-    paddingHorizontal: spacing.lg, paddingTop: spacing.md, paddingBottom: spacing.sm,
-  },
-  menuRow: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingVertical: spacing.md, paddingHorizontal: spacing.lg,
-    gap: spacing.md, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border,
-  },
-  menuRowLast: { borderBottomWidth: 0 },
-  menuLabel: { flex: 1, fontSize: 16, color: colors.text, fontWeight: '500' },
-  menuLabelDestructive: { color: '#E74C3C' },
-  footer: { textAlign: 'center', fontSize: 12, color: colors.textMuted, marginTop: spacing.lg },
-  modalOverlay: {
-    flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',
-    justifyContent: 'center', alignItems: 'center', padding: spacing.lg,
-  },
-  modalContent: {
-    backgroundColor: colors.surface, borderRadius: radius.lg,
-    padding: spacing.lg, width: '100%', maxWidth: 400,
-  },
-  modalTitle: { fontSize: 20, fontWeight: '800', color: colors.text },
-  input: {
-    backgroundColor: colors.background, borderRadius: radius.md,
-    padding: spacing.md, fontSize: 16, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.md,
-  },
-  modalButtons: { flexDirection: 'row', gap: spacing.md },
-  modalButton: {
-    flex: 1, paddingVertical: spacing.md, borderRadius: radius.md, alignItems: 'center',
-  },
-  modalButtonCancel: { backgroundColor: colors.background },
-  modalButtonSave: { backgroundColor: colors.primary },
-  modalButtonTextCancel: { color: colors.text, fontWeight: '600', fontSize: 16 },
-  modalButtonTextSave: { color: colors.black, fontWeight: '700', fontSize: 16 },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: colors.background },
+    content: { paddingBottom: 48 },
+    header: { alignItems: 'center', paddingVertical: spacing.xl },
+    avatarWrap: { marginBottom: spacing.md },
+    avatar: {
+      width: 88,
+      height: 88,
+      borderRadius: radius.full,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 3,
+      borderColor: colors.surfaceElevated,
+      overflow: 'hidden',
+    },
+    avatarImage: {
+      width: 88,
+      height: 88,
+      borderRadius: radius.full,
+    },
+    syncBadge: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: 22,
+      height: 22,
+      borderRadius: radius.full,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 2,
+      borderColor: colors.background,
+    },
+    greeting: { fontSize: 26, fontWeight: '800', color: colors.text },
+    subGreeting: { fontSize: 15, color: colors.textMuted, marginTop: 4 },
+    authBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      marginHorizontal: spacing.lg,
+      borderRadius: radius.lg,
+      padding: spacing.md,
+      marginBottom: spacing.lg,
+      gap: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.primary + '40',
+    },
+    authBannerText: { flex: 1 },
+    authBannerTitle: { fontSize: 14, fontWeight: '700', color: colors.text },
+    authBannerSub: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
+    googleButton: {
+      backgroundColor: colors.primary,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      borderRadius: radius.sm,
+      minWidth: 72,
+      alignItems: 'center',
+    },
+    googleButtonText: { color: colors.black, fontWeight: '700', fontSize: 14 },
+    statsSection: { paddingHorizontal: spacing.lg, marginBottom: spacing.xl },
+    statRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
+    statCard: {
+      flex: 1,
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      alignItems: 'center',
+    },
+    statValue: { fontSize: 32, fontWeight: '800', color: colors.primary },
+    statLabel: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
+    streakCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      gap: spacing.md,
+      marginBottom: spacing.md,
+      borderWidth: 1,
+      borderColor: '#FF6B0050',
+    },
+    streakEmoji: { fontSize: 32 },
+    streakText: { flex: 1 },
+    streakValue: { fontSize: 18, fontWeight: '800', color: colors.text },
+    streakLabel: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
+    favoriteCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      gap: spacing.md,
+    },
+    favoriteText: { flex: 1 },
+    favoriteLabel: { fontSize: 12, color: colors.textMuted },
+    favoriteName: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: 2 },
+    menuSection: {
+      backgroundColor: colors.surface,
+      marginHorizontal: spacing.lg,
+      borderRadius: radius.lg,
+      overflow: 'hidden',
+      marginBottom: spacing.md,
+    },
+    menuGroupLabel: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: colors.textMuted,
+      letterSpacing: 0.8,
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.sm,
+    },
+    menuRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+      gap: spacing.md,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.border,
+    },
+    menuRowLast: { borderBottomWidth: 0 },
+    menuLabel: { flex: 1, fontSize: 16, color: colors.text, fontWeight: '500' },
+    menuLabelDestructive: { color: '#E74C3C' },
+    footer: { textAlign: 'center', fontSize: 12, color: colors.textMuted, marginTop: spacing.lg },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.lg,
+    },
+    modalContent: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      width: '100%',
+      maxWidth: 400,
+    },
+    modalTitle: { fontSize: 20, fontWeight: '800', color: colors.text },
+    input: {
+      backgroundColor: colors.background,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      fontSize: 16,
+      color: colors.text,
+      marginBottom: spacing.lg,
+      marginTop: spacing.md,
+    },
+    modalButtons: { flexDirection: 'row', gap: spacing.md },
+    modalButton: {
+      flex: 1,
+      paddingVertical: spacing.md,
+      borderRadius: radius.md,
+      alignItems: 'center',
+    },
+    modalButtonCancel: { backgroundColor: colors.background },
+    modalButtonSave: { backgroundColor: colors.primary },
+    modalButtonTextCancel: { color: colors.text, fontWeight: '600', fontSize: 16 },
+    modalButtonTextSave: { color: colors.black, fontWeight: '700', fontSize: 16 },
+  });

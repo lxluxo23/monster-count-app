@@ -30,21 +30,22 @@ export function PrimaryButton({
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  button: {
-    backgroundColor: colors.primary,
-    paddingVertical: 18,
-    borderRadius: radius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: colors.disabled,
-    opacity: 0.6,
-  },
-  title: {
-    color: colors.black,
-    fontWeight: '800',
-    fontSize: 17,
-  },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    button: {
+      backgroundColor: colors.primary,
+      paddingVertical: 18,
+      borderRadius: radius.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonDisabled: {
+      backgroundColor: colors.disabled,
+      opacity: 0.6,
+    },
+    title: {
+      color: colors.black,
+      fontWeight: '800',
+      fontSize: 17,
+    },
+  });

@@ -59,7 +59,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
       setStatus(existing ? 'authenticated' : 'guest');
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       setStatus(newSession ? 'authenticated' : 'guest');
     });
@@ -89,7 +91,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
       });
 
       if (error) throw error;
-
     } catch (err) {
       if (isErrorWithCode(err)) {
         if (err.code === statusCodes.SIGN_IN_CANCELLED) return;
@@ -106,10 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
   }, []);
 
   const signOut = useCallback(async (): Promise<void> => {
-    await Promise.all([
-      supabase.auth.signOut(),
-      GoogleSignin.signOut(),
-    ]);
+    await Promise.all([supabase.auth.signOut(), GoogleSignin.signOut()]);
   }, []);
 
   const value: AuthContextValue = {

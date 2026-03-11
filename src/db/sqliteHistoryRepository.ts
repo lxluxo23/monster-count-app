@@ -10,9 +10,12 @@ import { TABLE_ENTRIES } from './schema';
 export function createSqliteHistoryRepository(db: SQLiteDatabase): IHistoryRepository {
   return {
     async getAll(): Promise<HistoryEntry[]> {
-      const rows = await db.getAllAsync<{ id: string; monster_id: string; date: string; source?: string }>(
-        `SELECT id, monster_id, date, source FROM ${TABLE_ENTRIES} ORDER BY date DESC`
-      );
+      const rows = await db.getAllAsync<{
+        id: string;
+        monster_id: string;
+        date: string;
+        source?: string;
+      }>(`SELECT id, monster_id, date, source FROM ${TABLE_ENTRIES} ORDER BY date DESC`);
       return rows.map((row) => ({
         id: row.id,
         monsterId: row.monster_id,

@@ -60,7 +60,7 @@ export function useMonsterSound(
   trackIds: number[] | undefined,
   shouldPlay: boolean,
   audioEnabled: boolean = true,
-  volume: number = 0.7,
+  volume: number = 0.7
 ): UseMonsterSoundReturn {
   const active = shouldPlay && audioEnabled;
 
@@ -70,10 +70,7 @@ export function useMonsterSound(
   const hasAutoPlayed = useRef(false);
 
   // Stable key so the effect only re-runs when the actual IDs change
-  const tracksKey = useMemo(
-    () => trackIds?.join(',') ?? '',
-    [trackIds],
-  );
+  const tracksKey = useMemo(() => trackIds?.join(',') ?? '', [trackIds]);
 
   // Pick a random track ID, fetch metadata + preview URL
   useEffect(() => {
@@ -99,7 +96,9 @@ export function useMonsterSound(
       }
     });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, tracksKey]);
 
@@ -116,7 +115,9 @@ export function useMonsterSound(
     if (!status.isLoaded) return;
     try {
       player.volume = volume;
-    } catch (_) { /* player may have been released */ }
+    } catch {
+      /* player may have been released */
+    }
   }, [volume, status.isLoaded, player]);
 
   // Auto-play once when the NEW source is loaded
@@ -126,7 +127,9 @@ export function useMonsterSound(
       try {
         player.volume = volumeRef.current;
         player.play();
-      } catch (_) { /* player may have been released */ }
+      } catch {
+        /* player may have been released */
+      }
     }
   }, [source, active, status.isLoaded, player]);
 
@@ -139,7 +142,9 @@ export function useMonsterSound(
       } else {
         player.play();
       }
-    } catch (_) { /* player may have been released */ }
+    } catch {
+      /* player may have been released */
+    }
   }, [player, status.isLoaded, status.playing]);
 
   return { isPlaying, isLoading, toggle, currentTrack };

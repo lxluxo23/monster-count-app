@@ -27,9 +27,7 @@ export function useWeeklySummary(history: HistoryEntry[]): WeeklySummary {
     const lastWeekStart = new Date(weekStart);
     lastWeekStart.setDate(lastWeekStart.getDate() - 7);
 
-    const caffeineMap = new Map(
-      MONSTER_TYPES.map((m) => [m.id, m.nutrition?.caffeine ?? 0]),
-    );
+    const caffeineMap = new Map(MONSTER_TYPES.map((m) => [m.id, m.nutrition?.caffeine ?? 0]));
 
     let thisWeekCans = 0;
     let lastWeekCans = 0;
@@ -45,9 +43,12 @@ export function useWeeklySummary(history: HistoryEntry[]): WeeklySummary {
       }
     }
 
-    const change = lastWeekCans > 0
-      ? Math.round(((thisWeekCans - lastWeekCans) / lastWeekCans) * 100)
-      : thisWeekCans > 0 ? 100 : 0;
+    const change =
+      lastWeekCans > 0
+        ? Math.round(((thisWeekCans - lastWeekCans) / lastWeekCans) * 100)
+        : thisWeekCans > 0
+          ? 100
+          : 0;
 
     return {
       thisWeekCans,

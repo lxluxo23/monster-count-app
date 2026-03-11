@@ -1,17 +1,9 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  Switch,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme, type ThemeMode } from '../contexts/ThemeContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage, type LanguageCode } from '../contexts/LanguageContext';
 import { spacing, radius } from '../theme';
 import type { ColorPalette } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
@@ -33,6 +25,11 @@ const LANGUAGE_OPTIONS = [
   { code: 'pt', label: 'PT' },
   { code: 'zh', label: 'ZH' },
   { code: 'ja', label: 'JA' },
+  { code: 'de', label: 'DE' },
+  { code: 'pl', label: 'PL' },
+  { code: 'fr', label: 'FR' },
+  { code: 'hr', label: 'HR' },
+  { code: 'hi', label: 'HI' },
 ];
 
 const THEME_OPTIONS: { mode: ThemeMode; labelKey: string }[] = [
@@ -103,7 +100,10 @@ export default function SettingsModal({
 
           <View style={styles.header}>
             <Text style={styles.title}>{t('settings.title')}</Text>
-            <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <TouchableOpacity
+              onPress={onClose}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
               <Ionicons name="close" size={26} color={colors.text} />
             </TouchableOpacity>
           </View>
@@ -117,10 +117,7 @@ export default function SettingsModal({
                   {THEME_OPTIONS.map((opt) => (
                     <TouchableOpacity
                       key={opt.mode}
-                      style={[
-                        styles.presetChip,
-                        themeMode === opt.mode && styles.presetChipActive,
-                      ]}
+                      style={[styles.presetChip, themeMode === opt.mode && styles.presetChipActive]}
                       onPress={() => setThemeMode(opt.mode)}
                       activeOpacity={0.7}
                     >
@@ -150,7 +147,7 @@ export default function SettingsModal({
                         styles.presetChip,
                         selectedLang === opt.code && styles.presetChipActive,
                       ]}
-                      onPress={() => setLanguage(opt.code as 'auto' | 'es' | 'en' | 'pt' | 'zh' | 'ja')}
+                      onPress={() => setLanguage(opt.code as LanguageCode)}
                       activeOpacity={0.7}
                     >
                       <Text
@@ -235,10 +232,7 @@ export default function SettingsModal({
                   {GOAL_PRESETS.map((g) => (
                     <TouchableOpacity
                       key={g}
-                      style={[
-                        styles.presetChip,
-                        dailyGoal === g && styles.presetChipActive,
-                      ]}
+                      style={[styles.presetChip, dailyGoal === g && styles.presetChipActive]}
                       onPress={() => onSetDailyGoal(g)}
                       activeOpacity={0.7}
                     >
@@ -360,109 +354,110 @@ export default function SettingsModal({
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'flex-end',
-  },
-  sheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-    maxHeight: '80%',
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.border,
-    alignSelf: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  title: { fontSize: 20, fontWeight: '800', color: colors.text },
-  sectionLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textMuted,
-    letterSpacing: 0.8,
-    marginBottom: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  card: {
-    backgroundColor: colors.background,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
-  },
-  rowBorder: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
-  },
-  rowLabel: { flex: 1, fontSize: 16, color: colors.text, fontWeight: '500' },
-  presetWrap: {
-    paddingBottom: spacing.md,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
-    paddingTop: spacing.md,
-  },
-  presetWrapNoBorder: {
-    paddingVertical: spacing.md,
-  },
-  presetLabel: { fontSize: 13, color: colors.textMuted, marginBottom: spacing.sm },
-  presets: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
-  presetChip: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  presetChipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  presetChipText: { fontSize: 14, color: colors.textSecondary, fontWeight: '500' },
-  presetChipTextActive: { color: colors.black, fontWeight: '700' },
-  privacyDesc: {
-    fontSize: 12,
-    color: colors.textMuted,
-    paddingBottom: spacing.md,
-    paddingHorizontal: spacing.sm,
-    lineHeight: 16,
-  },
-  aboutRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-  },
-  aboutApp: { fontSize: 16, fontWeight: '700', color: colors.text },
-  aboutVersion: { fontSize: 14, color: colors.textMuted },
-  aboutCopyright: {
-    fontSize: 13,
-    color: colors.textMuted,
-    paddingBottom: spacing.md,
-    lineHeight: 20,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
-    paddingTop: spacing.md,
-  },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      justifyContent: 'flex-end',
+    },
+    sheet: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: radius.xl,
+      borderTopRightRadius: radius.xl,
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.xl,
+      maxHeight: '80%',
+    },
+    handle: {
+      width: 40,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: colors.border,
+      alignSelf: 'center',
+      marginTop: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    title: { fontSize: 20, fontWeight: '800', color: colors.text },
+    sectionLabel: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: colors.textMuted,
+      letterSpacing: 0.8,
+      marginBottom: spacing.sm,
+      marginTop: spacing.lg,
+    },
+    card: {
+      backgroundColor: colors.background,
+      borderRadius: radius.lg,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.lg,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+      paddingVertical: spacing.md,
+    },
+    rowBorder: {
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.border,
+    },
+    rowLabel: { flex: 1, fontSize: 16, color: colors.text, fontWeight: '500' },
+    presetWrap: {
+      paddingBottom: spacing.md,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.border,
+      paddingTop: spacing.md,
+    },
+    presetWrapNoBorder: {
+      paddingVertical: spacing.md,
+    },
+    presetLabel: { fontSize: 13, color: colors.textMuted, marginBottom: spacing.sm },
+    presets: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
+    presetChip: {
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderRadius: radius.full,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+    },
+    presetChipActive: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    presetChipText: { fontSize: 14, color: colors.textSecondary, fontWeight: '500' },
+    presetChipTextActive: { color: colors.black, fontWeight: '700' },
+    privacyDesc: {
+      fontSize: 12,
+      color: colors.textMuted,
+      paddingBottom: spacing.md,
+      paddingHorizontal: spacing.sm,
+      lineHeight: 16,
+    },
+    aboutRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: spacing.md,
+    },
+    aboutApp: { fontSize: 16, fontWeight: '700', color: colors.text },
+    aboutVersion: { fontSize: 14, color: colors.textMuted },
+    aboutCopyright: {
+      fontSize: 13,
+      color: colors.textMuted,
+      paddingBottom: spacing.md,
+      lineHeight: 20,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.border,
+      paddingTop: spacing.md,
+    },
+  });

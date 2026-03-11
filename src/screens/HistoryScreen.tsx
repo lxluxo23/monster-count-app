@@ -1,6 +1,15 @@
 import React, { useRef, useCallback, useState, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, Animated, Alert, ScrollView, TouchableOpacity } from 'react-native';
-import { Swipeable, RectButton } from 'react-native-gesture-handler';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Animated,
+  Alert,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { HistoryCard } from '../components';
@@ -49,14 +58,14 @@ export default function HistoryScreen({
   const [filterMonsterId, setFilterMonsterId] = useState<string | null>(null);
 
   const filteredHistory = useMemo(
-    () => filterMonsterId ? history.filter((e) => e.monsterId === filterMonsterId) : history,
-    [history, filterMonsterId],
+    () => (filterMonsterId ? history.filter((e) => e.monsterId === filterMonsterId) : history),
+    [history, filterMonsterId]
   );
 
   const renderRightActions = useCallback(
     (
       _progress: Animated.AnimatedInterpolation<number>,
-      dragX: Animated.AnimatedInterpolation<number>,
+      dragX: Animated.AnimatedInterpolation<number>
     ) => {
       const scale = dragX.interpolate({
         inputRange: [-80, 0],
@@ -72,7 +81,7 @@ export default function HistoryScreen({
         </View>
       );
     },
-    [styles.deleteAction, colors.white],
+    [styles.deleteAction, colors.white]
   );
 
   if (loading) {
@@ -110,7 +119,9 @@ export default function HistoryScreen({
           onPress={() => setFilterMonsterId(null)}
           activeOpacity={0.7}
         >
-          <Text style={[styles.filterChipText, filterMonsterId === null && styles.filterChipTextActive]}>
+          <Text
+            style={[styles.filterChipText, filterMonsterId === null && styles.filterChipTextActive]}
+          >
             {t('history.filterAll')}
           </Text>
         </TouchableOpacity>
@@ -191,105 +202,106 @@ export default function HistoryScreen({
   );
 }
 
-const getStyles = (colors: ColorPalette) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.lg,
-  },
-  loading: {
-    color: colors.textMuted,
-    fontSize: 17,
-  },
-  empty: {
-    color: colors.text,
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: '600',
-  },
-  emptySub: {
-    color: colors.textMuted,
-    marginTop: 10,
-    fontSize: 15,
-  },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: colors.text,
-  },
-  count: {
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-  filterRow: {
-    paddingHorizontal: spacing.lg,
-    gap: spacing.sm,
-    paddingBottom: spacing.md,
-    alignItems: 'center',
-  },
-  filterChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    flexShrink: 0,
-    flexGrow: 0,
-  },
-  filterChipActive: {
-    backgroundColor: colors.primary + '25',
-    borderColor: colors.primary,
-  },
-  filterChipText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.textMuted,
-  },
-  filterChipTextActive: {
-    color: colors.primary,
-  },
-  filterDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  list: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: 32,
-  },
-  emptyFilter: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: spacing.xl * 2,
-  },
-  emptyFilterText: {
-    color: colors.textMuted,
-    fontSize: 15,
-  },
-  deleteAction: {
-    backgroundColor: '#E74C3C',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 80,
-    borderRadius: radius.md,
-    marginBottom: 12,
-  },
-});
+const getStyles = (colors: ColorPalette) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.lg,
+    },
+    loading: {
+      color: colors.textMuted,
+      fontSize: 17,
+    },
+    empty: {
+      color: colors.text,
+      fontSize: 18,
+      textAlign: 'center',
+      fontWeight: '600',
+    },
+    emptySub: {
+      color: colors.textMuted,
+      marginTop: 10,
+      fontSize: 15,
+    },
+    header: {
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.sm,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '800',
+      color: colors.text,
+    },
+    count: {
+      fontSize: 14,
+      color: colors.textMuted,
+    },
+    filterRow: {
+      paddingHorizontal: spacing.lg,
+      gap: spacing.sm,
+      paddingBottom: spacing.md,
+      alignItems: 'center',
+    },
+    filterChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: radius.full,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      flexShrink: 0,
+      flexGrow: 0,
+    },
+    filterChipActive: {
+      backgroundColor: colors.primary + '25',
+      borderColor: colors.primary,
+    },
+    filterChipText: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors.textMuted,
+    },
+    filterChipTextActive: {
+      color: colors.primary,
+    },
+    filterDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+    },
+    list: {
+      paddingHorizontal: spacing.lg,
+      paddingBottom: 32,
+    },
+    emptyFilter: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: spacing.xl * 2,
+    },
+    emptyFilterText: {
+      color: colors.textMuted,
+      fontSize: 15,
+    },
+    deleteAction: {
+      backgroundColor: '#E74C3C',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 80,
+      borderRadius: radius.md,
+      marginBottom: 12,
+    },
+  });

@@ -65,7 +65,7 @@ const pt = {
     editPlaceholder: 'Digite seu nome',
     editCancel: 'Cancelar',
     editSave: 'Salvar',
-    footer: 'Monster Counter · v1.7.1',
+    footer: 'Monster Counter · v1.7.2',
   },
   publicProfile: {
     title: 'Perfil',
@@ -127,7 +127,20 @@ const pt = {
     afternoon: 'Tarde',
     night: 'Noite',
     days: { '0': 'Dom', '1': 'Seg', '2': 'Ter', '3': 'Qua', '4': 'Qui', '5': 'Sex', '6': 'Sáb' },
-    months: { '0': 'Jan', '1': 'Fev', '2': 'Mar', '3': 'Abr', '4': 'Mai', '5': 'Jun', '6': 'Jul', '7': 'Ago', '8': 'Set', '9': 'Out', '10': 'Nov', '11': 'Dez' },
+    months: {
+      '0': 'Jan',
+      '1': 'Fev',
+      '2': 'Mar',
+      '3': 'Abr',
+      '4': 'Mai',
+      '5': 'Jun',
+      '6': 'Jul',
+      '7': 'Ago',
+      '8': 'Set',
+      '9': 'Out',
+      '10': 'Nov',
+      '11': 'Dez',
+    },
   },
   settings: {
     title: 'Configurações',
@@ -159,7 +172,7 @@ const pt = {
     audioVolume: 'Volume',
     aboutSection: 'SOBRE',
     appName: 'Monster Counter',
-    version: 'Versão 1.7.1',
+    version: 'Versão 1.7.2',
     copyright: 'Aplicativo para registrar suas latas de Monster Energy.\n© 2026',
   },
   detail: {
@@ -205,8 +218,8 @@ const pt = {
       desc: 'Registre um Monster antes das 8:00',
     },
     withYourNoctulo: {
-      title: 'Com seu noctulo',
-      desc: 'Tome um Monster com seu noctulo depois das 23:00',
+      title: 'Coruja noturna',
+      desc: 'Registre um Monster depois das 23:00',
     },
   },
   scanner: {
@@ -232,98 +245,134 @@ const pt = {
   monsters: {
     ultraZeroWhite: {
       name: 'Monster Ultra Zero White',
-      description: 'Zero açúcar, zero calorias. Sabor suave com toque cítrico e acabamento ultra limpo. O favorito de quem cuida da forma sem abrir mão da energia.',
-      legend: 'Algumas pessoas são impossíveis de agradar. Assim que conseguem o que querem, vão atrás de novos desafios. Nossos riders e Monster Girls não são diferentes... faz tempo que estão nos dando pistas. Pediam um novo Monster. Algo menos doce, mais leve, sem calorias, mas com toda a potência da nossa mistura energética Monster. O branco é o novo preto. Nos desafiamos: Monster Energy Zero Ultra.',
+      description:
+        'Zero açúcar, zero calorias. Sabor suave com toque cítrico e acabamento ultra limpo. O favorito de quem cuida da forma sem abrir mão da energia.',
+      legend:
+        'Algumas pessoas são impossíveis de agradar. Assim que conseguem o que querem, vão atrás de novos desafios. Nossos riders e Monster Girls não são diferentes... faz tempo que estão nos dando pistas. Pediam um novo Monster. Algo menos doce, mais leve, sem calorias, mas com toda a potência da nossa mistura energética Monster. O branco é o novo preto. Nos desafiamos: Monster Energy Zero Ultra.',
     },
     originalGreen: {
       name: 'Monster Original Green OG',
-      description: 'O clássico original. Sabor intenso e doce com a fórmula energética que começou tudo em 2002. Uma lata, um legado.',
-      legend: 'Abra caminho com a bebida energética mais poderosa do planeta: Monster Energy. Vai fundo, mas desce suave, com um sabor fácil de beber. É a combinação perfeita dos ingredientes certos nas proporções certas para te dar aquele boost descomunal que só a Monster consegue dar. Unleash the Beast!',
+      description:
+        'O clássico original. Sabor intenso e doce com a fórmula energética que começou tudo em 2002. Uma lata, um legado.',
+      legend:
+        'Abra caminho com a bebida energética mais poderosa do planeta: Monster Energy. Vai fundo, mas desce suave, com um sabor fácil de beber. É a combinação perfeita dos ingredientes certos nas proporções certas para te dar aquele boost descomunal que só a Monster consegue dar. Unleash the Beast!',
     },
     ultraBlueHawaiian: {
       name: 'Monster Ultra Blue Hawaiian',
-      description: 'Sabor tropical de abacaxi e maracujá. Zero açúcar, zero calorias. Te transporta direto para as praias do Havaí a cada gole.',
-      legend: 'Seja no modo fera, de férias ou simplesmente relaxando ao estilo ilhéu, o Ultra Blue Hawaiian vai te acender para dar o melhor de você. Leve, refrescante e muito fácil de beber, com um toque tiki tropical. O Blue Hawaiian é uma combinação incrível de sabores de frutas polinésias exóticas com muito sabor, mas sem nenhum açúcar.',
+      description:
+        'Sabor tropical de abacaxi e maracujá. Zero açúcar, zero calorias. Te transporta direto para as praias do Havaí a cada gole.',
+      legend:
+        'Seja no modo fera, de férias ou simplesmente relaxando ao estilo ilhéu, o Ultra Blue Hawaiian vai te acender para dar o melhor de você. Leve, refrescante e muito fácil de beber, com um toque tiki tropical. O Blue Hawaiian é uma combinação incrível de sabores de frutas polinésias exóticas com muito sabor, mas sem nenhum açúcar.',
     },
     classicZeroSugar: {
       name: 'Monster Energy Classic Zero Sugar',
-      description: 'O sabor do Monster Original, mas sem açúcar nem calorias. O melhor dos dois mundos para quem não quer abrir mão do clássico.',
-      legend: 'Monster Zero Sugar tem a combinação ideal dos ingredientes certos nas proporções exatas para te dar exatamente o impulso que você precisa, com o mesmo sabor do OG, mas com Zero Açúcar. Combata o cansaço com cafeína e melhore o desempenho mental e a concentração. Tudo do Monster, nada do açúcar.',
+      description:
+        'O sabor do Monster Original, mas sem açúcar nem calorias. O melhor dos dois mundos para quem não quer abrir mão do clássico.',
+      legend:
+        'Monster Zero Sugar tem a combinação ideal dos ingredientes certos nas proporções exatas para te dar exatamente o impulso que você precisa, com o mesmo sabor do OG, mas com Zero Açúcar. Combata o cansaço com cafeína e melhore o desempenho mental e a concentração. Tudo do Monster, nada do açúcar.',
     },
     mangoLoco: {
       name: 'Juice Monster Mango Loco',
-      description: '50% de suco de frutas tropicais com manga e maracujá amarelo. Doce, frutado e explosivo. Para quem prefere algo mais natural e suculento.',
-      legend: 'Na véspera do Día de los Muertos, amigos e família se reúnem para celebrar. As calêndulas, o misticismo e as memórias, combinados com comida e bebida, convidam os espíritos dos falecidos para a festa. O Mango Loco é uma mistura celestial de sucos exóticos capaz de atrair até o espírito mais teimoso. Sabor louco de verdade, com a magia certa da Monster para manter a festa por dias.',
+      description:
+        '50% de suco de frutas tropicais com manga e maracujá amarelo. Doce, frutado e explosivo. Para quem prefere algo mais natural e suculento.',
+      legend:
+        'Na véspera do Día de los Muertos, amigos e família se reúnem para celebrar. As calêndulas, o misticismo e as memórias, combinados com comida e bebida, convidam os espíritos dos falecidos para a festa. O Mango Loco é uma mistura celestial de sucos exóticos capaz de atrair até o espírito mais teimoso. Sabor louco de verdade, com a magia certa da Monster para manter a festa por dias.',
     },
     aussieLemonade: {
       name: 'Monster Energy Aussie Lemonade',
-      description: 'Sabor de limonada australiana refrescante. Zero açúcar, zero calorias. Cítrico, vibrante e com toda a energia da Monster. Ideal para o verão.',
-      legend: 'Inspirados pela terra dos antípodas, com mais de 10.000 praias, a Grande Barreira de Corais e os cítricos mais exóticos do planeta, criamos a Aussie Style Lemonade. A versão Monster da limonada clássica: encontramos o equilíbrio perfeito entre ácido e doce com uma explosão de cítrico fresco. Como sempre, repleta da nossa famosa mistura energética Monster. Abra bem gelada e vai fundo. Unleash the Beast!',
+      description:
+        'Sabor de limonada australiana refrescante. Zero açúcar, zero calorias. Cítrico, vibrante e com toda a energia da Monster. Ideal para o verão.',
+      legend:
+        'Inspirados pela terra dos antípodas, com mais de 10.000 praias, a Grande Barreira de Corais e os cítricos mais exóticos do planeta, criamos a Aussie Style Lemonade. A versão Monster da limonada clássica: encontramos o equilíbrio perfeito entre ácido e doce com uma explosão de cítrico fresco. Como sempre, repleta da nossa famosa mistura energética Monster. Abra bem gelada e vai fundo. Unleash the Beast!',
     },
     ultraPeachyKeen: {
       name: 'Monster Ultra Peachy Keen',
-      description: 'Sabor doce e natural de pêssego. Zero açúcar, zero calorias. Refrescante e suculento, perfeito para quem ama pêssego.',
-      legend: 'Monster Ultra Peachy Keen combina o sabor doce do pêssego maduro com a fórmula Ultra sem açúcar nem calorias. Leve, fresco e fácil de beber.',
+      description:
+        'Sabor doce e natural de pêssego. Zero açúcar, zero calorias. Refrescante e suculento, perfeito para quem ama pêssego.',
+      legend:
+        'Monster Ultra Peachy Keen combina o sabor doce do pêssego maduro com a fórmula Ultra sem açúcar nem calorias. Leve, fresco e fácil de beber.',
     },
     ultraParadise: {
       name: 'Monster Ultra Paradise',
-      description: 'Sabor tropical de kiwi e morango. Zero açúcar, zero calorias. Verde, vibrante e refrescante como um paraíso em lata.',
-      legend: 'Monster Ultra Paradise leva você a um paraíso tropical com sua combinação de kiwi e morango. Zero açúcar, zero calorias, toda a energia Monster.',
+      description:
+        'Sabor tropical de kiwi e morango. Zero açúcar, zero calorias. Verde, vibrante e refrescante como um paraíso em lata.',
+      legend:
+        'Monster Ultra Paradise leva você a um paraíso tropical com sua combinação de kiwi e morango. Zero açúcar, zero calorias, toda a energia Monster.',
     },
     ultraGoldenPineapple: {
       name: 'Monster Ultra Golden Pineapple',
-      description: 'Sabor tropical de abacaxi dourado. Zero açúcar, zero calorias. Doce, tropical e com o toque Ultra da Monster.',
-      legend: 'Monster Ultra Golden Pineapple captura o sabor do abacaxi mais doce em uma versão Ultra sem açúcar nem calorias.',
+      description:
+        'Sabor tropical de abacaxi dourado. Zero açúcar, zero calorias. Doce, tropical e com o toque Ultra da Monster.',
+      legend:
+        'Monster Ultra Golden Pineapple captura o sabor do abacaxi mais doce em uma versão Ultra sem açúcar nem calorias.',
     },
     juiceRipper: {
       name: 'Juice Monster Ripper',
-      description: '50% suco de frutas com manga, laranja e maracujá. Doce, tropical e explosivo. A linha Juice no seu melhor.',
-      legend: 'Juice Monster Ripper combina sucos tropicais exóticos com a energia Monster. Um sabor louco que te leva direto ao trópico.',
+      description:
+        '50% suco de frutas com manga, laranja e maracujá. Doce, tropical e explosivo. A linha Juice no seu melhor.',
+      legend:
+        'Juice Monster Ripper combina sucos tropicais exóticos com a energia Monster. Um sabor louco que te leva direto ao trópico.',
     },
     juicePipelinePunch: {
       name: 'Juice Monster Pipeline Punch',
-      description: 'Mistura tropical de frutas com goiaba, laranja e maracujá. Doce, frutado e com 50% suco de frutas reais.',
-      legend: 'Juice Monster Pipeline Punch é uma explosão de sabores tropicais. Goiaba, laranja e maracujá em cada gole, com toda a energia Monster.',
+      description:
+        'Mistura tropical de frutas com goiaba, laranja e maracujá. Doce, frutado e com 50% suco de frutas reais.',
+      legend:
+        'Juice Monster Pipeline Punch é uma explosão de sabores tropicais. Goiaba, laranja e maracujá em cada gole, com toda a energia Monster.',
     },
     juicePacificPunch: {
       name: 'Juice Monster Pacific Punch',
-      description: 'Mistura tropical do Pacífico com frutas exóticas. 50% suco de frutas, doce e refrescante.',
-      legend: 'Juice Monster Pacific Punch combina sabores tropicais do Pacífico com a energia Monster.',
+      description:
+        'Mistura tropical do Pacífico com frutas exóticas. 50% suco de frutas, doce e refrescante.',
+      legend:
+        'Juice Monster Pacific Punch combina sabores tropicais do Pacífico com a energia Monster.',
     },
     juiceBadApple: {
       name: 'Juice Monster Bad Apple',
-      description: 'Sabor de maçã verde ácida. 50% suco de frutas, doce e refrescante com toque ácido.',
-      legend: 'Juice Monster Bad Apple é a maçã proibida em versão Monster. Doce, ácida e explosiva.',
+      description:
+        'Sabor de maçã verde ácida. 50% suco de frutas, doce e refrescante com toque ácido.',
+      legend:
+        'Juice Monster Bad Apple é a maçã proibida em versão Monster. Doce, ácida e explosiva.',
     },
     juiceKhaotic: {
       name: 'Juice Monster Khaotic',
       description: 'Mistura caótica de sabores tropicais. 50% suco de frutas com manga e laranja.',
-      legend: 'Juice Monster Khaotic é uma explosão caótica de sabores tropicais com toda a energia Monster.',
+      legend:
+        'Juice Monster Khaotic é uma explosão caótica de sabores tropicais com toda a energia Monster.',
     },
     ultraViolet: {
       name: 'Monster Ultra Violet',
-      description: 'Sabor de uva violeta. Zero açúcar, zero calorias. Doce, frutado e com o toque Ultra.',
-      legend: 'Monster Ultra Violet captura o sabor da uva mais doce em versão Ultra sem açúcar nem calorias.',
+      description:
+        'Sabor de uva violeta. Zero açúcar, zero calorias. Doce, frutado e com o toque Ultra.',
+      legend:
+        'Monster Ultra Violet captura o sabor da uva mais doce em versão Ultra sem açúcar nem calorias.',
     },
     ultraRosa: {
       name: 'Monster Ultra Rosa',
-      description: 'Sabor de toranja rosa. Zero açúcar, zero calorias. Cítrico, refrescante e com o toque Ultra.',
-      legend: 'Monster Ultra Rosa combina o sabor da toranja rosa com a fórmula Ultra sem açúcar nem calorias.',
+      description:
+        'Sabor de toranja rosa. Zero açúcar, zero calorias. Cítrico, refrescante e com o toque Ultra.',
+      legend:
+        'Monster Ultra Rosa combina o sabor da toranja rosa com a fórmula Ultra sem açúcar nem calorias.',
     },
     ultraWatermelon: {
       name: 'Monster Ultra Watermelon',
-      description: 'Sabor de melancia fresca. Zero açúcar, zero calorias. Doce, refrescante e perfeito para o verão.',
-      legend: 'Monster Ultra Watermelon é a melancia mais doce em versão Ultra. Zero açúcar, zero calorias.',
+      description:
+        'Sabor de melancia fresca. Zero açúcar, zero calorias. Doce, refrescante e perfeito para o verão.',
+      legend:
+        'Monster Ultra Watermelon é a melancia mais doce em versão Ultra. Zero açúcar, zero calorias.',
     },
     ultraStrawberryDreams: {
       name: 'Monster Ultra Strawberry Dreams',
-      description: 'Sabor de morango dos sonhos. Zero açúcar, zero calorias. Doce, cremoso e com o toque Ultra.',
+      description:
+        'Sabor de morango dos sonhos. Zero açúcar, zero calorias. Doce, cremoso e com o toque Ultra.',
       legend: 'Monster Ultra Strawberry Dreams te leva a um sonho de morangos com a fórmula Ultra.',
     },
     ultraFiestaMango: {
       name: 'Monster Ultra Fiesta Mango',
-      description: 'Sabor de manga festivo. Zero açúcar, zero calorias. Tropical, doce e com o toque Ultra.',
-      legend: 'Monster Ultra Fiesta Mango é uma festa de manga em versão Ultra sem açúcar nem calorias.',
+      description:
+        'Sabor de manga festivo. Zero açúcar, zero calorias. Tropical, doce e com o toque Ultra.',
+      legend:
+        'Monster Ultra Fiesta Mango é uma festa de manga em versão Ultra sem açúcar nem calorias.',
     },
   },
 } as const;

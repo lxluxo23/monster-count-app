@@ -106,9 +106,7 @@ export function useStats(history: HistoryEntry[]): Stats {
 
     // ── Promedios ────────────────────────────────────────────────────────────
     const averagePerActiveDay =
-      totalDaysActive > 0
-        ? Math.round((history.length / totalDaysActive) * 10) / 10
-        : 0;
+      totalDaysActive > 0 ? Math.round((history.length / totalDaysActive) * 10) / 10 : 0;
 
     const cutoff28 = new Date(now);
     cutoff28.setDate(cutoff28.getDate() - 28);

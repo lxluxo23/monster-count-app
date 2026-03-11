@@ -41,9 +41,7 @@ export function useGlobalStats(): GlobalStats {
       setError(null);
 
       // Fetch entries con monster_id y user_id
-      const { data, error: sbError } = await supabase
-        .from('entries')
-        .select('monster_id, user_id');
+      const { data, error: sbError } = await supabase.from('entries').select('monster_id, user_id');
 
       if (cancelled) return;
 
@@ -80,7 +78,10 @@ export function useGlobalStats(): GlobalStats {
 
       // Fetch profiles: display_name + show_in_ranking (para respetar privacidad)
       const userIds = Object.keys(userCountMap);
-      const profileMap: Record<string, { displayName: string; showInRanking: boolean; avatarUrl?: string }> = {};
+      const profileMap: Record<
+        string,
+        { displayName: string; showInRanking: boolean; avatarUrl?: string }
+      > = {};
 
       if (userIds.length > 0) {
         const { data: profiles, error: profilesError } = await supabase
@@ -89,7 +90,8 @@ export function useGlobalStats(): GlobalStats {
           .in('id', userIds);
 
         if (profilesError) {
-          if (__DEV__) console.warn('[GlobalStats] Error al cargar profiles:', profilesError.message);
+          if (__DEV__)
+            console.warn('[GlobalStats] Error al cargar profiles:', profilesError.message);
         }
 
         for (const p of profiles ?? []) {
@@ -122,7 +124,9 @@ export function useGlobalStats(): GlobalStats {
     }
 
     fetchStats();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [tick]);
 
   return { rankingByMonster, rankingByUser, totalCommunityLatas, loading, error, refresh };

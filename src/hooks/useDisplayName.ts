@@ -32,7 +32,9 @@ export function useDisplayName(): {
       if (!cancelled && value) setDisplayNameState(value);
       setLoading(false);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [repo]);
 
   // 2. Al autenticarse: sincroniza con Supabase profiles
@@ -49,7 +51,9 @@ export function useDisplayName(): {
 
       if (cancelled) return;
 
-      const avatarUrl = (user.user_metadata?.picture ?? user.user_metadata?.avatar_url) as string | undefined;
+      const avatarUrl = (user.user_metadata?.picture ?? user.user_metadata?.avatar_url) as
+        | string
+        | undefined;
 
       if (data?.display_name) {
         // Ya tiene nombre en Supabase → úsalo
@@ -73,9 +77,13 @@ export function useDisplayName(): {
         if (!cancelled) setDisplayNameState(googleName);
         await repo.set(KEY_USER_NAME, googleName);
       }
-    })().catch((err) => { if (__DEV__) console.warn('[DisplayName] Sync falló:', err); });
+    })().catch((err) => {
+      if (__DEV__) console.warn('[DisplayName] Sync falló:', err);
+    });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [status, user, repo]);
 
   // 3. Guardar: SQLite + Supabase si autenticado
@@ -84,7 +92,9 @@ export function useDisplayName(): {
       setDisplayNameState(name);
       await repo.set(KEY_USER_NAME, name);
       if (status === 'authenticated' && user) {
-        const avatarUrl = (user.user_metadata?.picture ?? user.user_metadata?.avatar_url) as string | undefined;
+        const avatarUrl = (user.user_metadata?.picture ?? user.user_metadata?.avatar_url) as
+          | string
+          | undefined;
         await supabase.from('profiles').upsert({
           id: user.id,
           display_name: name,

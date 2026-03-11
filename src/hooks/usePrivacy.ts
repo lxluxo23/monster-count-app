@@ -38,7 +38,9 @@ export function usePrivacy(): {
         if (s !== null) setShowStatsState(s === 'true');
       }
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [repo]);
 
   // 2. Al autenticarse: sincroniza con Supabase profiles
@@ -72,9 +74,13 @@ export function usePrivacy(): {
           await repo.set(KEY_SHOW_STATS, String(val));
         }
       }
-    })().catch((err) => { if (__DEV__) console.warn('[Privacy] Sync falló:', err); });
+    })().catch((err) => {
+      if (__DEV__) console.warn('[Privacy] Sync falló:', err);
+    });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [status, user, repo]);
 
   // 3. Guardar: SQLite + Supabase si autenticado

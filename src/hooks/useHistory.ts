@@ -1,12 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createSqliteHistoryRepository } from '../db';
-import { syncPendingEntries, pullEntriesFromSupabase, processPendingDeletes, addPendingDelete } from '../services/syncService';
+import {
+  syncPendingEntries,
+  pullEntriesFromSupabase,
+  processPendingDeletes,
+  addPendingDelete,
+} from '../services/syncService';
 import { syncAchievementsToSupabase } from '../services/achievementSyncService';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { checkRateLimit } from './useRateLimit';
-import { localDayKey } from '../utils/dateUtils';
 import { calculateStreak } from '../utils/streakUtils';
 import type { HistoryEntry, EntrySource } from '../types';
 
@@ -60,7 +64,9 @@ export function useHistory(rateLimit?: RateLimitConfig): {
       if (!cancelled) setHistory(list);
       setLoading(false);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [repo]);
 
   // Sync completo al autenticarse: primero baja, luego sube
@@ -92,7 +98,6 @@ export function useHistory(rateLimit?: RateLimitConfig): {
     if (status !== 'authenticated' || !user) return;
 
     const total = history.length;
-    const todayCount = history.filter((e) => isSameDay(new Date(e.date), new Date())).length;
     const countByMonsterId: Record<string, number> = {};
     for (const e of history) {
       countByMonsterId[e.monsterId] = (countByMonsterId[e.monsterId] ?? 0) + 1;
@@ -107,12 +112,7 @@ export function useHistory(rateLimit?: RateLimitConfig): {
       const enabled = rateLimit?.enabled ?? false;
       const maxPerWindow = rateLimit?.maxPerWindow ?? 2;
       const windowMinutes = rateLimit?.windowMinutes ?? 10;
-      const { allowed, waitUntil } = checkRateLimit(
-        history,
-        enabled,
-        maxPerWindow,
-        windowMinutes
-      );
+      const { allowed, waitUntil } = checkRateLimit(history, enabled, maxPerWindow, windowMinutes);
       if (!allowed) {
         const mins = waitUntil
           ? Math.ceil((waitUntil.getTime() - Date.now()) / 60000)
@@ -141,7 +141,8 @@ export function useHistory(rateLimit?: RateLimitConfig): {
           .eq('user_id', user.id);
 
         if (error) {
-          if (__DEV__) console.warn('[Sync] Delete en Supabase falló, se reintentará:', error.message);
+          if (__DEV__)
+            console.warn('[Sync] Delete en Supabase falló, se reintentará:', error.message);
           await addPendingDelete(db, id);
         }
       }
@@ -165,5 +166,15 @@ export function useHistory(rateLimit?: RateLimitConfig): {
   // Racha: días consecutivos (incluyendo hoy) con al menos un entry
   const streak = useMemo(() => calculateStreak(history), [history]);
 
-  return { history, loading, add, remove, total, today, streak, countByMonsterId, favoriteMonsterId };
+  return {
+    history,
+    loading,
+    add,
+    remove,
+    total,
+    today,
+    streak,
+    countByMonsterId,
+    favoriteMonsterId,
+  };
 }
