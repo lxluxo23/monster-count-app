@@ -47,7 +47,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Monster Counter necesita la cámara para escanear códigos de barras."
+          "cameraPermission": "Monster Counter necesita la cámara para escanear códigos de barras.",
+          "recordAudioAndroid": false
         }
       ],
       [
