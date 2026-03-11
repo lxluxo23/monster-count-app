@@ -1,0 +1,1 @@
+🔧 Cumplimiento Play Store: eliminado el permiso FOREGROUND_SERVICE_MEDIA_PLAYBACK. El audio sigue funcionando cuando la app está abierta.

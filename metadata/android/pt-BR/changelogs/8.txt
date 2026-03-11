@@ -1,0 +1,13 @@
+🥤 Solicitar sabores: sugira novos sabores com nome, descrição e foto opcional.
+
+📸 Compressão de fotos: as imagens são comprimidas antes do upload para economizar espaço.
+
+✅ Aprovação de fotos: fotos novas precisam de aprovação do admin antes de aparecer para todos.
+
+🖼️ Visualizador de imagem: toque em qualquer foto em uma solicitação para ver em tela cheia.
+
+➕ 13 sabores novos: Ultra Peachy Keen, Paradise, Golden Pineapple, Violet, Rosa, Watermelon, Strawberry Dreams, Fiesta Mango, Juice Ripper, Pipeline Punch, Pacific Punch, Bad Apple, Khaotic.
+
+📦 Novos códigos de barras para 5 sabores (escaneie para registrar).
+
+📊 Dados nutricionais atualizados para todos os sabores novos.

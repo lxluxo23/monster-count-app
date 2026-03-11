@@ -197,7 +197,7 @@ Archivo: `monster_counter.db` — Versión actual: **5** (WAL mode)
 
 - **Android**: configurado para EAS Build (APK preview, AAB production). Ver [BUILD-INSTRUCTIONS.md](./BUILD-INSTRUCTIONS.md).
 - **Package**: `com.monstercounter.app`
-- **Versión actual**: 1.5.1 (versionCode 6)
+- **Versión actual**: 1.7.1 (versionCode 9)
 
 ---
 

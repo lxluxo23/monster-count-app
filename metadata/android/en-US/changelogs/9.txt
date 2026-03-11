@@ -1,0 +1,1 @@
+🔧 Play Store compliance: removed FOREGROUND_SERVICE_MEDIA_PLAYBACK permission. Audio still works when the app is open.

@@ -65,7 +65,7 @@ const zh = {
     editPlaceholder: '输入你的名字',
     editCancel: '取消',
     editSave: '保存',
-    footer: 'Monster Counter · v1.7.0',
+    footer: 'Monster Counter · v1.7.1',
   },
   publicProfile: {
     title: '个人资料',
@@ -159,7 +159,7 @@ const zh = {
     audioVolume: '音量',
     aboutSection: '关于',
     appName: 'Monster Counter',
-    version: '版本 1.7.0',
+    version: '版本 1.7.1',
     copyright: 'Monster Energy 罐装饮料记录应用。\n© 2026',
   },
   detail: {

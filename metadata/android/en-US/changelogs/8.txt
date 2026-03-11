@@ -1,0 +1,13 @@
+🥤 Request new flavors: suggest flavors with name, description, and optional photo.
+
+📸 Photo compression: images are compressed before upload to save storage.
+
+✅ Admin approval: new photos require admin approval before being visible to everyone.
+
+🖼️ Image viewer: tap any photo in a flavor request to view it full screen.
+
+➕ 13 new flavors: Ultra Peachy Keen, Paradise, Golden Pineapple, Violet, Rosa, Watermelon, Strawberry Dreams, Fiesta Mango, Juice Ripper, Pipeline Punch, Pacific Punch, Bad Apple, Khaotic.
+
+📦 New barcodes for 5 flavors (scan to register).
+
+📊 Updated nutrition data for all new flavors.

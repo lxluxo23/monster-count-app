@@ -5,6 +5,14 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.7.1] - 2026-03-10
+
+### Cambiado
+
+- **expo-audio** — `enableBackgroundPlayback: false` y `recordAudioAndroid: false` para cumplir con las políticas de Google Play. El audio sigue funcionando en primer plano; se elimina el permiso `FOREGROUND_SERVICE_MEDIA_PLAYBACK` que causaba rechazos.
+
+---
+
 ## [1.7.0] - 2026-03-10
 
 Cambios desde 1.6.1:
@@ -279,6 +287,7 @@ Cambios desde 1.6.1:
 
 ---
 
+[1.7.1]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.1
 [1.7.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.0
 [1.6.1]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.1
 [1.6.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.6.0

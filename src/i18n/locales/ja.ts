@@ -65,7 +65,7 @@ const ja = {
     editPlaceholder: '名前を入力',
     editCancel: 'キャンセル',
     editSave: '保存',
-    footer: 'Monster Counter · v1.7.0',
+    footer: 'Monster Counter · v1.7.1',
   },
   publicProfile: {
     title: 'プロフィール',
@@ -159,7 +159,7 @@ const ja = {
     audioVolume: '音量',
     aboutSection: 'について',
     appName: 'Monster Counter',
-    version: 'バージョン 1.7.0',
+    version: 'バージョン 1.7.1',
     copyright: 'Monster Energyの記録アプリ。\n© 2026',
   },
   detail: {
