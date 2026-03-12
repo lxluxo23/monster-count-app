@@ -1,0 +1,18 @@
+Monster Counter vous permet d'enregistrer chaque canette Monster Energy. Enregistrez vos favoris, scannez les codes-barres et débloquez des succès.
+
+FONCTIONNALITÉS
+
+• Suivi par saveur — Ultra Zero White, Original Green, Mango Loco, Aussie Lemonade et 20+ autres
+• Scanner de codes-barres — Scannez les canettes avec l'appareil photo pour un enregistrement instantané (130+ codes)
+• Objectif quotidien — Définissez une cible (0–5 canettes) et suivez vos progrès
+• Historique — Journal complet avec date, heure et source (manuel/appareil). Glissez pour supprimer
+• Succès — 9 badges débloquables : première canette, 10/50/100, série 7 jours, série 30 jours, collectionneur, lève-tôt, couche-tard
+• Communauté — Classement mondial des saveurs, top buveurs, proposez de nouvelles saveurs
+• Statistiques — Total, vérifiées, jours actifs, graphique hebdomadaire, répartition horaire, tendance 6 mois
+• Synchronisation cloud — Offline-first avec Supabase. Connectez-vous avec Google pour synchroniser
+• Confidentialité — Option pour masquer votre nom dans les classements et statistiques
+• Rappel quotidien — Notification configurable (9h, 12h, 18h, 21h)
+• Thème sombre — Mode sombre natif
+• 10 langues — Français, anglais, espagnol, portugais, chinois, japonais, allemand, polonais, croate, hindi
+
+Unleash the Beast. Suivez aussi.

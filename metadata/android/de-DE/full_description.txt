@@ -1,0 +1,18 @@
+Monster Counter hilft dir, jede Monster Energy Dose zu erfassen. Registriere deine Favoriten, scanne Barcodes und schalte Erfolge frei.
+
+FUNKTIONEN
+
+• Verfolgung nach Geschmack — Ultra Zero White, Original Green, Mango Loco, Aussie Lemonade und 20+ weitere
+• Barcode-Scanner — Scanne Dosen mit der Kamera für sofortige Registrierung (130+ Codes)
+• Tagesziel — Setze ein Ziel (0–5 Dosen) und verfolge deinen Fortschritt
+• Verlauf — Vollständiges Protokoll mit Datum, Uhrzeit und Quelle (manuell/Kamera). Wischen zum Löschen
+• Erfolge — 9 freischaltbare Abzeichen: erste Dose, 10/50/100, 7-Tage-Serie, 30-Tage-Serie, Sammler, Frühaufsteher, Nachteule
+• Community — Globale Geschmacks-Rangliste, Top-Trinker, neue Geschmacksrichtungen vorschlagen
+• Statistiken — Gesamt, verifiziert, aktive Tage, Wochenchart, Stundenveteilung, 6-Monats-Trend
+• Cloud-Sync — Offline-first mit Supabase. Mit Google anmelden zum Synchronisieren
+• Datenschutz — Option zum Ausblenden deines Namens in Rankings und Statistiken
+• Tägliche Erinnerung — Konfigurierbare Benachrichtigung (9:00, 12:00, 18:00, 21:00)
+• Dunkles Design — Nativer Dark Mode
+• 10 Sprachen — Deutsch, Englisch, Spanisch, Portugiesisch, Chinesisch, Japanisch, Polnisch, Französisch, Kroatisch, Hindi
+
+Unleash the Beast. Track it too.

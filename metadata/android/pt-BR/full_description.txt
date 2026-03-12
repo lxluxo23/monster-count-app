@@ -1,0 +1,18 @@
+Monster Counter permite registrar cada lata de Monster Energy que você bebe. Registre seus favoritos, escaneie códigos de barras e desbloqueie conquistas.
+
+RECURSOS
+
+• Rastreamento por sabor — Ultra Zero White, Original Green, Mango Loco, Aussie Lemonade e mais de 20 sabores
+• Escâner de códigos — Escaneie latas com a câmera para registro instantâneo (mais de 130 códigos)
+• Meta diária — Defina um objetivo (0–5 latas) e acompanhe seu progresso
+• Histórico — Registro completo com data, hora e origem (manual ou câmera). Deslize para excluir
+• Conquistas — 9 emblemas desbloqueáveis: primeira lata, 10/50/100, sequência 7 dias, sequência 30 dias, colecionador, madrugador, coruja
+• Comunidade — Ranking global de sabores, top bebedores, sugira novos sabores
+• Estatísticas — Total, verificadas, dias ativos, gráfico semanal, distribuição horária, tendência 6 meses
+• Sincronização na nuvem — Offline-first com Supabase. Entre com Google para sincronizar
+• Privacidade — Opção para ocultar seu nome em rankings e estatísticas
+• Lembrete diário — Notificação configurável (9:00, 12:00, 18:00, 21:00)
+• Tema escuro — Modo escuro nativo
+• 10 idiomas — Português, inglês, espanhol, chinês, japonês, alemão, polonês, francês, croata, hindi
+
+Unleash the Beast. Rastreie também.

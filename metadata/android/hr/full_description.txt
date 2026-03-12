@@ -1,0 +1,18 @@
+Monster Counter omogućuje registraciju svake Monster Energy limenke. Zabilježite favorite, skenirajte crtične kodove i otključajte postignuća.
+
+ZNAČAJKE
+
+• Praćenje po okusu — Ultra Zero White, Original Green, Mango Loco, Aussie Lemonade i 20+ drugih
+• Skener crtičnih kodova — Skenirajte limenke kamerom za trenutnu registraciju (130+ kodova)
+• Dnevni cilj — Postavite cilj (0–5 limenki) i pratite napredak
+• Povijest — Potpuni zapisnik s datumom, vremenom i izvorom (ručno/kamera). Povucite za brisanje
+• Postignuća — 9 otključivih znački: prva limenka, 10/50/100, serija 7 dana, serija 30 dana, kolekcionar, ranoraničar, noćna ptica
+• Zajednica — Globalni ranking okusa, top pijači, predložite nove okuse
+• Statistika — Ukupno, provjereno, aktivni dani, tjedni graf, raspodjela po satima, trend 6 mjeseci
+• Sinkronizacija u oblaku — Offline-first s Supabase. Prijavite se s Googleom za sinkronizaciju
+• Privatnost — Opcija skrivanja imena u rankingima i statistici
+• Dnevni podsjetnik — Konfigurabilna obavijest (9:00, 12:00, 18:00, 21:00)
+• Tamna tema — Nativni tamni način
+• 10 jezika — Hrvatski, engleski, španjolski, portugalski, kineski, japanski, njemački, poljski, francuski, hindi
+
+Unleash the Beast. Pratite i vi.

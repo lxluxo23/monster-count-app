@@ -1,0 +1,17 @@
+Monster Counter te permite llevar un registro sencillo de las latas de Monster Energy que consumes.
+
+¿Qué puedes hacer?
+
+• Registrar cada lata que tomes eligiendo el tipo: Monster Ultra Zero White, Original Green, Ultra Blue Hawaiian, Classic Zero Sugar, Juice Monster Mango Loco y más de 20 sabores.
+• Escanear códigos de barras con la cámara para registro instantáneo (130+ códigos).
+• Ver tu historial con fecha y hora de cada registro. Desliza para eliminar.
+• Consultar estadísticas: total de latas, cuántas tomaste hoy, cuál es tu Monster favorito, gráficos semanales y tendencias.
+• Desbloquear logros: primera lata, 10/50/100, racha 7 días, racha 30 días, coleccionista, madrugador, noctámbulo.
+• Comunidad: ranking global de sabores, top bebedores, sugiere nuevos sabores.
+• Perfil con resumen, editar nombre, estadísticas detalladas y más opciones.
+• Sincronizar en la nube (opcional) con Google para tener tus datos en todos tus dispositivos.
+• Recordatorio diario configurable. Tema oscuro. 10 idiomas.
+
+Todo se guarda en tu dispositivo. No recopilamos ni compartimos tus datos con terceros.
+
+Ideal para quien quiere llevar la cuenta de sus Monster Energy de forma rápida y visual.

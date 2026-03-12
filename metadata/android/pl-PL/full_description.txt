@@ -1,0 +1,18 @@
+Monster Counter pozwala rejestrować każdą puszkę Monster Energy. Dodawaj ulubione, skanuj kody kreskowe i odblokuj osiągnięcia.
+
+FUNKCJE
+
+• Śledzenie smaków — Ultra Zero White, Original Green, Mango Loco, Aussie Lemonade i 20+ innych
+• Skaner kodów — Skanuj puszki aparatem do natychmiastowej rejestracji (130+ kodów)
+• Cel dzienny — Ustaw cel (0–5 puszek) i śledź postępy
+• Historia — Pełny dziennik z datą, godziną i źródłem (ręcznie/aparat). Przesuń, aby usunąć
+• Osiągnięcia — 9 odblokowywalnych odznak: pierwsza puszka, 10/50/100, seria 7 dni, seria 30 dni, kolekcjoner, skowronek, sowa
+• Społeczność — Globalny ranking smaków, top pijący, proponuj nowe smaki
+• Statystyki — Łącznie, zweryfikowane, dni aktywne, wykres tygodniowy, rozkład godzinowy, trend 6 miesięcy
+• Synchronizacja w chmurze — Offline-first z Supabase. Zaloguj się przez Google do synchronizacji
+• Prywatność — Opcja ukrycia nazwy w rankingach i statystykach
+• Przypomnienie dzienne — Konfigurowalne powiadomienie (9:00, 12:00, 18:00, 21:00)
+• Ciemny motyw — Natywny tryb ciemny
+• 10 języków — Polski, angielski, hiszpański, portugalski, chiński, japoński, niemiecki, francuski, chorwacki, hindi
+
+Unleash the Beast. Śledź też.

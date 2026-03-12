@@ -1,0 +1,18 @@
+Monster Counter lets you track every Monster Energy can you drink. Register your favorites, scan barcodes, and unlock achievements.
+
+FEATURES
+
+• Track by flavor — Ultra Zero White, Original Green, Mango Loco, Aussie Lemonade, and 20+ more
+• Barcode scanner — Scan cans with your camera for instant registration (130+ codes supported)
+• Daily goal — Set a target (0–5 cans) and track your progress
+• History — Full log with date, time, and source (manual or camera). Swipe to delete
+• Achievements — 9 unlockable badges: first can, 10/50/100, 7-day streak, 30-day streak, collector, early bird, night owl
+• Community — Global flavor ranking, top drinkers leaderboard, suggest new flavors
+• Stats — Total, verified count, active days, weekly chart, hourly distribution, 6-month trend
+• Cloud sync — Offline-first with Supabase. Sign in with Google to sync across devices
+• Privacy — Toggle to hide your name from rankings and stats
+• Daily reminder — Configurable notification (9:00, 12:00, 18:00, 21:00)
+• Dark theme — Native dark mode
+• 10 languages — English, Spanish, Portuguese, Chinese, Japanese, German, Polish, French, Croatian, Hindi
+
+Unleash the Beast. Track it too.
