@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -23,6 +23,7 @@ import { useAudioSettings } from '../hooks/useAudioSettings';
 import SettingsModal from './SettingsModal';
 import StatsScreen from './StatsScreen';
 import type { HistoryEntry } from '../types';
+import { useSupportAd } from '../hooks/useSupportAd';
 
 interface ProfileScreenProps {
   total: number;
@@ -69,6 +70,7 @@ export default function ProfileScreen({
     setEnabled: setAudioEnabled,
     setVolume: setAudioVolume,
   } = useAudioSettings();
+  const { loading: adLoading, showAd } = useSupportAd();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -85,6 +87,15 @@ export default function ProfileScreen({
       setShowEditModal(false);
     }
   };
+
+  const handleSupportAd = useCallback(async () => {
+    const result = await showAd();
+    if (result === 'rewarded') {
+      Alert.alert(t('profile.supportThanksTitle'), t('profile.supportThanks'));
+    } else if (result === 'error') {
+      Alert.alert('Oops', t('profile.supportError'));
+    }
+  }, [showAd, t]);
 
   const handleSignOut = () => {
     Alert.alert(t('profile.logoutTitle'), t('profile.logoutMsg'), [
@@ -256,6 +267,24 @@ export default function ProfileScreen({
             </TouchableOpacity>
           ))}
         </View>
+
+        <TouchableOpacity
+          style={styles.supportCard}
+          activeOpacity={0.8}
+          onPress={handleSupportAd}
+          disabled={adLoading}
+        >
+          <Ionicons name="heart-outline" size={24} color={colors.primary} />
+          <View style={styles.supportTextWrap}>
+            <Text style={styles.supportTitle}>{t('profile.supportAd')}</Text>
+            <Text style={styles.supportSub}>{t('profile.supportAdSub')}</Text>
+          </View>
+          {adLoading ? (
+            <ActivityIndicator size="small" color={colors.primary} />
+          ) : (
+            <Ionicons name="play-circle-outline" size={28} color={colors.primary} />
+          )}
+        </TouchableOpacity>
 
         {isAuthenticated && (
           <View style={styles.menuSection}>
@@ -459,6 +488,21 @@ const getStyles = (colors: ColorPalette) =>
     menuRowLast: { borderBottomWidth: 0 },
     menuLabel: { flex: 1, fontSize: 16, color: colors.text, fontWeight: '500' },
     menuLabelDestructive: { color: '#E74C3C' },
+    supportCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      marginHorizontal: spacing.lg,
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+      gap: spacing.md,
+      marginBottom: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.primary + '30',
+    },
+    supportTextWrap: { flex: 1 },
+    supportTitle: { fontSize: 15, fontWeight: '700', color: colors.text },
+    supportSub: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
     footer: { textAlign: 'center', fontSize: 12, color: colors.textMuted, marginTop: spacing.lg },
     modalOverlay: {
       flex: 1,

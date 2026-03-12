@@ -65,7 +65,12 @@ const en = {
     editPlaceholder: 'Enter your name',
     editCancel: 'Cancel',
     editSave: 'Save',
-    footer: 'Monster Counter · v1.7.2',
+    supportAd: 'Buy the dev a Monster',
+    supportAdSub: 'Watch a short ad · 100% voluntary',
+    supportThanksTitle: 'Thanks!',
+    supportThanks: 'Thanks for the Monster! Your support means a lot',
+    supportError: 'Could not load the ad. Try again later.',
+    footer: 'Monster Counter · v1.7.3',
   },
   publicProfile: {
     title: 'Profile',

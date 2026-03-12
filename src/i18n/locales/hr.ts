@@ -65,7 +65,12 @@ const hr = {
     editPlaceholder: 'Unesi svoje ime',
     editCancel: 'Odustani',
     editSave: 'Spremi',
-    footer: 'Monster Counter · v1.7.2',
+    supportAd: 'Pocasti deva Monsterom',
+    supportAdSub: 'Pogledaj kratki oglas · 100% dobrovoljno',
+    supportThanksTitle: 'Hvala!',
+    supportThanks: 'Hvala za Monster! Tvoja podrska puno znaci',
+    supportError: 'Nije moguce ucitati oglas. Pokusaj kasnije.',
+    footer: 'Monster Counter · v1.7.3',
   },
   publicProfile: {
     title: 'Profil',

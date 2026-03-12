@@ -3,7 +3,7 @@
     "name": "Monster Counter",
     "slug": "monster-counter",
     "scheme": "monstercounter",
-    "version": "1.7.2",
+    "version": "1.7.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -23,7 +23,7 @@
         "backgroundColor": "#2ECC71"
       },
       "package": "com.monstercounter.app",
-      "versionCode": 10,
+      "versionCode": 11,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -63,6 +63,13 @@
         "expo-image-picker",
         {
           "photosPermission": "Monster Counter necesita acceso a tus fotos para adjuntar una imagen a tu solicitud de sabor."
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-7256119170225426~1129709523",
+          "iosAppId": "ca-app-pub-7256119170225426~1129709523"
         }
       ]
     ],

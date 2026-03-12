@@ -65,7 +65,12 @@ const ja = {
     editPlaceholder: '名前を入力',
     editCancel: 'キャンセル',
     editSave: '保存',
-    footer: 'Monster Counter · v1.7.2',
+    supportAd: '開発者にMonsterをおごる',
+    supportAdSub: '短い広告を見る · 完全任意',
+    supportThanksTitle: 'ありがとう！',
+    supportThanks: 'Monsterありがとう！応援がとても嬉しいです',
+    supportError: '広告を読み込めませんでした。後でもう一度お試しください。',
+    footer: 'Monster Counter · v1.7.3',
   },
   publicProfile: {
     title: 'プロフィール',

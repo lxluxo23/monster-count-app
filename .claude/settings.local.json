@@ -36,7 +36,9 @@
       "Bash(npm explain:*)",
       "Bash(rm:*)",
       "Bash(xargs grep:*)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(tree -L 2 -I 'node_modules' /c/Users/luis/monster-counter 2>/dev/null || find /c/Users/luis/monster-counter -maxdepth 2 -not -path \"*/node_modules/*\" -type d | head -30)",
+      "WebFetch(domain:lcespedes.dev)"
     ]
   }
 }

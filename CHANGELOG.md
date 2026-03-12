@@ -5,6 +5,15 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.7.3] - 2026-03-12
+
+### Añadido
+
+- **Anuncio de apoyo** — Nueva card en Perfil para apoyar al desarrollador viendo un anuncio recompensado (100% voluntario). Hook `useSupportAd` con Google Mobile Ads.
+- **app-ads.txt** — Archivo añadido al sitio de privacidad para cumplir con las políticas de Google Ads.
+
+---
+
 ## [1.7.2] - 2026-03-10
 
 ### Añadido
@@ -297,6 +306,7 @@ Cambios desde 1.6.1:
 
 ---
 
+[1.7.3]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.3
 [1.7.2]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.2
 [1.7.1]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.1
 [1.7.0]: https://github.com/lxluxo23/monster-count-app/releases/tag/v1.7.0

@@ -6,6 +6,7 @@ FROM nginx:alpine
 # Contenido: index en / y copia en /privacidad.html
 COPY privacy-policy.html /usr/share/nginx/html/index.html
 RUN cp /usr/share/nginx/html/index.html /usr/share/nginx/html/privacidad.html
+COPY app-ads.txt /usr/share/nginx/html/app-ads.txt
 
 # Config mínima: / y redirección /privacidad -> /
 COPY nginx.conf /etc/nginx/conf.d/default.conf

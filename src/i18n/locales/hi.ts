@@ -65,7 +65,12 @@ const hi = {
     editPlaceholder: 'अपना नाम दर्ज करें',
     editCancel: 'रद्द करें',
     editSave: 'सेव करें',
-    footer: 'Monster Counter · v1.7.2',
+    supportAd: 'डेवलपर को एक Monster दिलाओ',
+    supportAdSub: 'एक छोटा विज्ञापन देखें · 100% स्वैच्छिक',
+    supportThanksTitle: 'धन्यवाद!',
+    supportThanks: 'Monster के लिए धन्यवाद! आपका समर्थन बहुत मायने रखता है',
+    supportError: 'विज्ञापन लोड नहीं हो सका। बाद में पुनः प्रयास करें।',
+    footer: 'Monster Counter · v1.7.3',
   },
   publicProfile: {
     title: 'प्रोफ़ाइल',

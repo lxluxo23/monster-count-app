@@ -65,7 +65,12 @@ const zh = {
     editPlaceholder: '输入你的名字',
     editCancel: '取消',
     editSave: '保存',
-    footer: 'Monster Counter · v1.7.2',
+    supportAd: '请开发者喝一罐Monster',
+    supportAdSub: '观看一个短广告 · 完全自愿',
+    supportThanksTitle: '谢谢！',
+    supportThanks: '感谢你的Monster！你的支持意义重大',
+    supportError: '无法加载广告，请稍后再试。',
+    footer: 'Monster Counter · v1.7.3',
   },
   publicProfile: {
     title: '个人资料',
